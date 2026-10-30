@@ -95,7 +95,8 @@
         .rarity-legendary .car-badge { background: var(--c-legendary); color: #000; }
         .rarity-special .car-badge { background: linear-gradient(90deg, #ff00ff, #00ffff); color: #000; }
         
-        .car-image-container { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)); }
+        .car-image-container { height: 110px; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .car-image { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)); }
         .car-placeholder { font-size: 60px; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.5)); }
         
         .car-plate-mini { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); font-family: 'Arial Narrow', sans-serif; font-weight: 700; font-size: 8px; padding: 2px 4px; border-radius: 2px; border: 1px solid #000; white-space: nowrap; z-index: 2; }
@@ -409,11 +410,9 @@
                         <div class="race-controls">
                             <select class="race-select" id="race-car-select"></select>
                             <div class="race-stats-preview" id="race-stats-preview"></div>
-                            
                             <h4 style="font-size:13px; margin:8px 0 4px;">Выберите соперника:</h4>
                             <div class="opponent-list" id="opponent-list"></div>
                             <div class="selected-opponent-info" id="selected-opponent-info"></div>
-                            
                             <div class="race-bet-row"><input type="number" id="race-bet" placeholder="Ставка (1000-100000)" min="1000" max="100000" value="5000"><button id="start-race-btn">🏁 Старт</button></div>
                             <div class="race-result" id="race-result"></div>
                         </div>
@@ -516,7 +515,7 @@
         // Расширенный список машин (61 штука) с реальными характеристиками
         const CAR_TEMPLATE = [
             // ОБЫЧНЫЕ (12)
-            { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'common', price: 5000, emoji: '🚗', desc: 'Классика советского автопрома. Заднеприводный седан, выпускавшийся с 1982 по 2012 год. Простая конструкция, доступные запчасти и отличная ремонтопригодность сделали её легендой.', power: 70, speed: 160, acceleration: 17.5, weight: 1030, drive: 'Задний', fuel: 9.5,  image: 'https://i.postimg.cc/CMQ4Rxrx/lada-2107-19-no-bg-preview-(carve-photos)-(1).png' },
+            { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'common', price: 5000, emoji: '🚗', desc: 'Классика советского автопрома. Заднеприводный седан, выпускавшийся с 1982 по 2012 год. Простая конструкция, доступные запчасти и отличная ремонтопригодность сделали её легендой.', power: 70, speed: 160, acceleration: 17.5, weight: 1030, drive: 'Задний', fuel: 9.5, image: 'https://i.postimg.cc/CMQ4Rxrx/lada-2107-19-no-bg-preview-(carve-photos)-(1).png' },
             { id: 'logan', name: 'Renault Logan', rarity: 'common', price: 8000, emoji: '🚙', desc: 'Бюджетный седан, разработанный для развивающихся рынков. Славится своей надежностью и простотой обслуживания. Первое поколение выпускалось с 2004 года.', power: 82, speed: 170, acceleration: 12.5, weight: 1065, drive: 'Передний', fuel: 7.0 },
             { id: 'granta', name: 'Lada Granta', rarity: 'common', price: 10000, emoji: '🚗', desc: 'Современный бюджетный автомобиль АвтоВАЗа, пришедший на смену «Калине». Выпускается с 2011 года. Отличается низкой ценой и доступным обслуживанием.', power: 87, speed: 175, acceleration: 11.8, weight: 1080, drive: 'Передний', fuel: 6.8 },
             { id: 'duster', name: 'Renault Duster', rarity: 'common', price: 12000, emoji: '🚙', desc: 'Компактный кроссовер, ставший бестселлером в России благодаря доступной цене и хорошей проходимости. Первое поколение выпускается с 2010 года.', power: 115, speed: 180, acceleration: 10.5, weight: 1380, drive: 'Полный', fuel: 7.5 },
@@ -589,7 +588,6 @@
             { id: 'ufo', name: 'НЛО', rarity: 'special', price: 10000000, emoji: '👽', desc: 'Неопознанный летающий объект. Инопланетные технологии, антигравитация и скорость света. Никто не знает, откуда он взялся.', power: 9999, speed: 999, acceleration: 0.5, weight: 1000, drive: 'Полный', fuel: 0 }
         ];
 
-        // Уменьшенные шансы
         const CASES = [
             { id: 'case1', name: 'Новичок', price: 1000, icon: '📦', chances: { common: 95, rare: 5, epic: 0, mythic: 0, legendary: 0, special: 0 } },
             { id: 'case2', name: 'Любитель', price: 5000, icon: '🎁', chances: { common: 80, rare: 18, epic: 2, mythic: 0, legendary: 0, special: 0 } },
@@ -651,7 +649,7 @@
             xp: 0,
             cars: JSON.parse(JSON.stringify(CAR_TEMPLATE)).map((c, i) => ({
                 ...c,
-                owned: i === 3, // Duster уже в гараже
+                owned: i === 3,
                 tuning: { engine: 0, suspension: 0, brakes: 0, turbo: 0, tires: 0 },
                 plate: null,
                 color: null,
@@ -673,9 +671,8 @@
             selectedOpponent: null
         };
 
-        // Загрузка/сохранение
         function loadState() {
-            const saved = localStorage.getItem('autoGarageLegendV6');
+            const saved = localStorage.getItem('autoGarageLegendV7');
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
@@ -697,10 +694,10 @@
                     if (parsed.lastTaskRefresh) state.lastTaskRefresh = parsed.lastTaskRefresh;
                     if (parsed.unlockedAchievements) state.unlockedAchievements = parsed.unlockedAchievements;
                     if (parsed.lastTournament) state.lastTournament = parsed.lastTournament;
-                } catch (e) { console.warn('Ошибка загрузки:', e); localStorage.removeItem('autoGarageLegendV6'); }
+                } catch (e) { console.warn('Ошибка загрузки:', e); localStorage.removeItem('autoGarageLegendV7'); }
             }
         }
-        function saveState() { state.lastTick = Date.now(); localStorage.setItem('autoGarageLegendV6', JSON.stringify(state)); }
+        function saveState() { state.lastTick = Date.now(); localStorage.setItem('autoGarageLegendV7', JSON.stringify(state)); }
 
         function updateBalance() { document.getElementById('balance-amount').textContent = Math.floor(state.balance).toLocaleString('ru-RU'); }
         function updateLevel() {
@@ -792,7 +789,7 @@
             }));
         }
 
-        // --- АВТОСАЛОН ---
+        // --- АВТОСАЛОН (ИСПРАВЛЕНО: теперь с картинками) ---
         function renderShop() {
             const container = document.getElementById('shop-list');
             container.innerHTML = '';
@@ -808,7 +805,9 @@
             filteredCars.forEach(car => {
                 const card = document.createElement('div');
                 card.className = `car-card rarity-${car.rarity}`;
-                let imageHtml = `<div class="car-image-container"><div class="car-placeholder">${car.emoji}</div></div>`;
+                let imageHtml = car.image 
+                    ? `<div class="car-image-container"><img src="${car.image}" class="car-image" alt="${car.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div></div>`
+                    : `<div class="car-image-container"><div class="car-placeholder">${car.emoji}</div></div>`;
                 card.innerHTML = `<div class="car-top"><span class="car-badge">${RARITIES[car.rarity].label}</span></div>${imageHtml}<div class="car-name">${car.name}</div><div class="car-price">${car.price.toLocaleString('ru-RU')} ₽</div><div class="btn-row"><button class="btn-action btn-info info-btn" data-id="${car.id}">Инфо</button><button class="btn-action btn-buy buy-btn" data-id="${car.id}">Купить</button></div>`;
                 container.appendChild(card);
             });
@@ -835,22 +834,16 @@
                     <div class="modal-title" style="color: var(--c-${car.rarity})">${car.name}</div>
                     <div class="car-badge" style="background: var(--c-${car.rarity}); color:#fff; display:inline-block; margin-bottom:12px;">${RARITIES[car.rarity].label}</div>
                     <div class="modal-desc">${car.desc}</div>
-                    
                     <div class="stat-row"><span class="stat-label">Мощность</span><span class="stat-value">${car.power} л.с.</span></div>
                     <div class="stat-bar"><div class="stat-bar-fill" style="width:${Math.min(100, car.power/15)}%"></div></div>
-                    
                     <div class="stat-row" style="margin-top:8px;"><span class="stat-label">Макс. скорость</span><span class="stat-value">${car.speed} км/ч</span></div>
                     <div class="stat-bar"><div class="stat-bar-fill" style="width:${Math.min(100, car.speed/4)}%"></div></div>
-                    
                     <div class="stat-row" style="margin-top:8px;"><span class="stat-label">Разгон 0–100</span><span class="stat-value">${car.acceleration} с</span></div>
                     <div class="stat-bar"><div class="stat-bar-fill" style="width:${Math.min(100, 100/car.acceleration)}%"></div></div>
-                    
                     <div class="stat-row" style="margin-top:8px;"><span class="stat-label">Вес</span><span class="stat-value">${car.weight} кг</span></div>
                     <div class="stat-bar"><div class="stat-bar-fill" style="width:${Math.min(100, 100 - car.weight/50)}%"></div></div>
-                    
                     <div class="stat-row" style="margin-top:8px;"><span class="stat-label">Привод</span><span class="stat-value">${car.drive}</span></div>
                     <div class="stat-row"><span class="stat-label">Расход топлива</span><span class="stat-value">${car.fuel} л/100 км</span></div>
-                    
                     <button class="modal-close">Закрыть</button>
                 </div>`;
             document.body.appendChild(overlay);
@@ -1015,39 +1008,26 @@
             const statsPreview = document.getElementById('race-stats-preview'); let isRacing = false;
             const opponentListEl = document.getElementById('opponent-list'); const selectedInfoEl = document.getElementById('selected-opponent-info');
 
-            // Генерация соперников
             function generateOpponents() {
                 const owned = state.cars.filter(c => c.owned);
                 if (!owned.length) return [];
-                const playerCar = owned[0]; // для баланса
+                const playerCar = state.cars.find(c => c.id === carSelect.value) || owned[0];
                 const opponents = [];
                 const allCars = state.cars;
-                
-                // 5 соперников разной сложности
                 for (let i = 0; i < 5; i++) {
                     const randomCar = allCars[Math.floor(Math.random() * allCars.length)];
-                    // Шанс победы зависит от разницы в мощности и разгоне
                     const playerPower = (playerCar.power || 100) + (playerCar.tuning.engine||0)*20 + (playerCar.tuning.turbo||0)*30;
-                    const enemyPower = (randomCar.power || 100) + Math.floor(Math.random()*50);
+                    const enemyTuning = Math.floor(Math.random() * 15);
+                    const enemyPower = (randomCar.power || 100) + enemyTuning * 10;
                     const playerAccel = playerCar.acceleration || 10;
                     const enemyAccel = randomCar.acceleration || 10;
-                    
                     const powerRatio = playerPower / (playerPower + enemyPower);
-                    const accelRatio = enemyAccel / (playerAccel + enemyAccel); // чем меньше разгон, тем лучше
+                    const accelRatio = enemyAccel / (playerAccel + enemyAccel);
                     let winChance = (powerRatio * 0.6 + accelRatio * 0.4) * 100;
                     winChance = Math.max(5, Math.min(95, Math.round(winChance)));
-                    
                     const multiplier = (100 / winChance).toFixed(2);
-                    
-                    opponents.push({
-                        id: 'opp_' + i + '_' + Date.now(),
-                        car: randomCar,
-                        winChance: winChance,
-                        multiplier: parseFloat(multiplier),
-                        name: 'Соперник ' + (i + 1)
-                    });
+                    opponents.push({ id: 'opp_' + i + '_' + Date.now(), car: randomCar, winChance: winChance, multiplier: parseFloat(multiplier), name: 'Соперник ' + (i + 1) });
                 }
-                // Сортируем по шансу (от высокого к низкому)
                 opponents.sort((a, b) => b.winChance - a.winChance);
                 return opponents;
             }
@@ -1055,23 +1035,11 @@
             function renderOpponents() {
                 const opponents = generateOpponents();
                 opponentListEl.innerHTML = '';
-                if (!opponents.length) {
-                    opponentListEl.innerHTML = '<p style="color:var(--text-muted);font-size:12px;">Купите машину, чтобы участвовать в гонках.</p>';
-                    return;
-                }
+                if (!opponents.length) { opponentListEl.innerHTML = '<p style="color:var(--text-muted);font-size:12px;">Купите машину, чтобы участвовать в гонках.</p>'; return; }
                 opponents.forEach((opp, idx) => {
                     const card = document.createElement('div');
                     card.className = 'opponent-card' + (state.selectedOpponent && state.selectedOpponent.id === opp.id ? ' selected' : '');
-                    card.innerHTML = `
-                        <div class="opponent-info">
-                            <div class="opponent-name">${opp.name}</div>
-                            <div class="opponent-car">${opp.car.emoji} ${opp.car.name}</div>
-                        </div>
-                        <div class="opponent-chance">
-                            <div class="chance-val" style="color: ${opp.winChance > 50 ? 'var(--success)' : opp.winChance > 25 ? 'var(--c-legendary)' : 'var(--danger)'}">${opp.winChance}%</div>
-                            <div class="mult-val">x${opp.multiplier}</div>
-                        </div>
-                    `;
+                    card.innerHTML = `<div class="opponent-info"><div class="opponent-name">${opp.name}</div><div class="opponent-car">${opp.car.emoji} ${opp.car.name}</div></div><div class="opponent-chance"><div class="chance-val" style="color: ${opp.winChance > 50 ? 'var(--success)' : opp.winChance > 25 ? 'var(--c-legendary)' : 'var(--danger)'}">${opp.winChance}%</div><div class="mult-val">x${opp.multiplier}</div></div>`;
                     card.addEventListener('click', () => {
                         state.selectedOpponent = opp;
                         document.querySelectorAll('.opponent-card').forEach(c => c.classList.remove('selected'));
@@ -1080,7 +1048,6 @@
                     });
                     opponentListEl.appendChild(card);
                 });
-                // Автовыбор первого
                 if (!state.selectedOpponent || !opponents.find(o => o.id === state.selectedOpponent.id)) {
                     state.selectedOpponent = opponents[0];
                     opponentListEl.querySelector('.opponent-card')?.classList.add('selected');
@@ -1092,16 +1059,13 @@
                 if (state.selectedOpponent) {
                     selectedInfoEl.classList.add('active');
                     selectedInfoEl.innerHTML = `Выбран: <b>${state.selectedOpponent.name}</b> (${state.selectedOpponent.car.name}) · Шанс победы: <b>${state.selectedOpponent.winChance}%</b> · Коэф. выигрыша: <b style="color:var(--success)">x${state.selectedOpponent.multiplier}</b>`;
-                } else {
-                    selectedInfoEl.classList.remove('active');
-                }
+                } else selectedInfoEl.classList.remove('active');
             }
 
             function updateCarSelect() {
                 const owned = state.cars.filter(c => c.owned); carSelect.innerHTML = '';
                 owned.forEach(car => { const opt = document.createElement('option'); opt.value = car.id; opt.textContent = car.name; carSelect.appendChild(opt); });
-                updateRaceInfo();
-                renderOpponents();
+                updateRaceInfo(); renderOpponents();
             }
 
             function updateRaceInfo() {
@@ -1120,37 +1084,29 @@
                 if (state.balance < bet) return alert('Недостаточно средств!');
                 const car = state.cars.find(c => c.id === carSelect.value); if (!car) return;
                 if (!state.selectedOpponent) return alert('Выберите соперника!');
-                
                 state.balance -= bet; state.stats.races++; updateBalance(); saveState();
                 isRacing = true; resultEl.textContent = '';
                 playerCarContainer.style.left = '10px'; enemyCarContainer.style.left = '10px';
-                
                 const opp = state.selectedOpponent;
                 enemyNameEl.textContent = opp.car.name; enemyCarEl.textContent = opp.car.emoji;
                 if (Math.random() > 0.5) { enemyPlateEl.style.display = 'inline-block'; const fake = generatePlate('RU'); enemyPlateEl.textContent = fake.main + ' ' + fake.region; } else enemyPlateEl.style.display = 'none';
-                
-                // Результат по шансу
                 const playerWins = Math.random() * 100 < opp.winChance;
                 const trackWidth = document.querySelector('.race-track').offsetWidth - 80;
                 playerCarContainer.style.transition = 'left 2.5s cubic-bezier(0.25,0.1,0.25,1)';
                 enemyCarContainer.style.transition = 'left 2.5s cubic-bezier(0.25,0.1,0.25,1)';
                 playerCarContainer.style.left = (playerWins ? trackWidth : trackWidth * 0.7) + 'px';
                 enemyCarContainer.style.left = (playerWins ? trackWidth * 0.7 : trackWidth) + 'px';
-                
                 setTimeout(() => {
                     if (playerWins) {
                         const winAmount = Math.floor(bet * opp.multiplier);
                         state.balance += winAmount; state.stats.wins++; addXP(25);
                         resultEl.innerHTML = `<span style="color:var(--success)">🏆 Победа! Вы выиграли ${winAmount} ₽ (x${opp.multiplier})</span>`;
-                    } else {
-                        resultEl.innerHTML = `<span style="color:var(--danger)">💀 Поражение! Вы потеряли ${bet} ₽</span>`;
-                    }
+                    } else resultEl.innerHTML = `<span style="color:var(--danger)">💀 Поражение! Вы потеряли ${bet} ₽</span>`;
                     updateBalance(); saveState(); isRacing = false;
                     playerCarContainer.style.transition = ''; enemyCarContainer.style.transition = '';
-                    renderOpponents(); // новые соперники
+                    renderOpponents();
                 }, 2600);
             });
-            
             updateCarSelect();
             document.querySelector('[data-tab="earn"]').addEventListener('click', () => { updateCarSelect(); renderOpponents(); });
         }
@@ -1231,13 +1187,7 @@
                 for (let i = 0; i < 3 - otherAuctions.length; i++) {
                     const randomCar = state.cars[Math.floor(Math.random() * state.cars.length)];
                     const markup = 0.7 + Math.random() * 0.3;
-                    state.auctions.push({
-                        id: 'bot_' + Date.now() + i,
-                        carId: randomCar.id,
-                        price: Math.floor(randomCar.price * markup),
-                        expiresAt: Date.now() + 24*60*60*1000,
-                        listedBy: 'bot'
-                    });
+                    state.auctions.push({ id: 'bot_' + Date.now() + i, carId: randomCar.id, price: Math.floor(randomCar.price * markup), expiresAt: Date.now() + 24*60*60*1000, listedBy: 'bot' });
                 }
                 saveState();
                 otherAuctions = state.auctions.filter(a => a.listedBy !== 'user');
@@ -1435,7 +1385,7 @@
             }));
         }
 
-        // Запуск
+        // --- ЗАПУСК ---
         try {
             loadState();
             tickIncome();
