@@ -595,12 +595,11 @@
             { name: 'Зеленый', color: '#00ff88' }, { name: 'Красный', color: '#ef4444' }, { name: 'Фиолетовый', color: '#a855f7' }
         ];
 
-        const ACHIEVEMENTS = [
+                const ACHIEVEMENTS = [
             { id: 'first_car', title: 'Первая тачка', desc: 'Купите первую машину', reward: 5000, icon: '🚗', check: (s) => s.cars.filter(c => c.owned).length >= 2 },
             { id: 'rich', title: 'Богач', desc: 'Накопите 1 000 000 ₽', reward: 100000, icon: '💰', check: (s) => s.balance >= 1000000 },
             { id: 'racer', title: 'Гонщик', desc: 'Выиграйте 10 гонок', reward: 50000, icon: '🏁', check: (s) => s.stats.wins >= 10 },
             { id: 'collector', title: 'Коллекционер', desc: 'Соберите 10 машин', reward: 100000, icon: '🏆', check: (s) => s.cars.filter(c => c.owned).length >= 10 },
-            { id: 'tuner', title: 'Тюнер
             { id: 'tuner', title: 'Тюнер', desc: 'Прокачайте любую машину до 10 уровня', reward: 30000, icon: '🔧', check: (s) => s.cars.some(c => (c.tuning.engine||0)+(c.tuning.suspension||0)+(c.tuning.brakes||0) >= 10) },
             { id: 'lucky', title: 'Везунчик', desc: 'Выиграйте x10 в рулетке', reward: 200000, icon: '🎰', check: (s) => s.stats.maxRoulette >= 10 },
             { id: 'case_opener', title: 'Открывашка', desc: 'Откройте 10 кейсов', reward: 50000, icon: '🎁', check: (s) => s.stats.casesOpened >= 10 },
@@ -1395,18 +1394,31 @@
             });
         }
 
-        function setupBonus() {
-            const btn = document.getElementById('bonus-btn'); const cooldown = 24 * 60 * 60 * 1000;
+              function setupBonus() {
+            const btn = document.getElementById('bonus-btn');
+            const cooldown = 24 * 60 * 60 * 1000;
             const check = () => {
                 const now = Date.now();
-                if (now - state.lastBonus < cooldown) { btn.disabled = true; btn.textContent = `⏳ ${Math.ceil((cooldown - (now - state.lastBonus)) / 3600000)} ч.`; }
-                else { btn.disabled = false; btn.innerHTML = '🎁 Бонус <span style="opacity:0.8;font-size:12px">+1000 ₽</span>'; }
+                if (now - state.lastBonus < cooldown) {
+                    btn.disabled = true;
+                    btn.textContent = `⏳ ${Math.ceil((cooldown - (now - state.lastBonus)) / 3600000)} ч.`;
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = '🎁 Бонус <span style="opacity:0.8;font-size:12px">+1000 ₽</span>';
+                }
             };
             btn.addEventListener('click', () => {
-                if (Date.now() - state.lastBonus >= cooldown) { state.balance +=
-1000; state.lastBonus = Date.now(); addXP(10); saveState(); updateBalance(); check(); }
+                if (Date.now() - state.lastBonus >= cooldown) {
+                    state.balance += 1000;
+                    state.lastBonus = Date.now();
+                    addXP(10);
+                    saveState();
+                    updateBalance();
+                    check();
+                }
             });
-            check(); setInterval(check, 60000);
+            check();
+            setInterval(check, 60000);
         }
 
         // --- НАВИГАЦИЯ ---
