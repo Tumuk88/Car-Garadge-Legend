@@ -448,7 +448,6 @@
                     <button class="earn-tab-btn" data-panel="tournament">🏆 Турнир</button>
                 </div>
                 <div id="earn-race" class="earn-panel active">
-                                   <div id="earn-race" class="earn-panel active">
                     <!-- Экран выбора соперника -->
                     <div id="race-opponents-screen">
                         <div class="race-header">
@@ -1131,7 +1130,7 @@
 
         // --- ГОНКИ (НОВАЯ СИСТЕМА) ---
         function setupRace() {
-            c        // --- ГОНКИ (НОВАЯ СИСТЕМА ПО РЕФЕРЕНСУ) ---
+        // --- ГОНКИ (НОВАЯ СИСТЕМА ПО РЕФЕРЕНСУ) ---
         let raceState = 'idle';
         let currentOpponent = null;
         let raceStartTime = 0;
@@ -1407,7 +1406,6 @@
             document.getElementById('race-opponents-screen').style.display = 'block';
             renderRaceOpponents();
         }
-            }
 
             function generateOpponents() {
                 const owned = state.cars.filter(c => c.owned);
