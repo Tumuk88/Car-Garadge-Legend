@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -46,7 +45,7 @@
         .filter-scroll::-webkit-scrollbar { display: none; }
         .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; }
         .filter-btn.active { color: #fff; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
-        .filter-btn[data-r="common"].active { background: var(--c-common); border-color: var(--c-common); }
+        .filter-btn[data-r="common"].active { background: var(--c-common); border-color: var(--c-common); color:#000; }
         .filter-btn[data-r="rare"].active { background: var(--c-rare); border-color: var(--c-rare); }
         .filter-btn[data-r="epic"].active { background: var(--c-epic); border-color: var(--c-epic); }
         .filter-btn[data-r="mythic"].active { background: var(--c-mythic); border-color: var(--c-mythic); }
@@ -71,14 +70,18 @@
         .rarity-mythic .car-badge { background: var(--c-mythic); }
         .rarity-legendary .car-badge { background: var(--c-legendary); color: #000; }
         .rarity-special .car-badge { background: linear-gradient(90deg, #ff00ff, #00ffff); color: #000; }
-        .car-image-container { height: 110px; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .car-image { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)); }
-        .car-placeholder { font-size: 60px; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.5)); }
-        .car-plate-mini { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); font-family: 'Arial Narrow', sans-serif; font-weight: 700; font-size: 8px; padding: 2px 4px; border-radius: 2px; border: 1px solid #000; white-space: nowrap; z-index: 2; }
+
+        /* Контейнер изображения авто — с подсветкой днища */
+        .car-image-container { height: 130px; width: 100%; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .car-image { max-width: 92%; max-height: 100%; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)); transition: filter 0.3s; }
+        .car-placeholder { font-size: 60px; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.5)); position: relative; z-index: 2; }
+        /* Цветная подложка-подсветка по всему днищу (по ширине авто) */
+        .car-glow-under { position: absolute; bottom: 6px; left: 8%; right: 8%; height: 26px; border-radius: 50%; filter: blur(14px); opacity: 0.9; z-index: 1; transition: background 0.3s; }
+        .car-plate-mini { position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); font-family: 'Arial Narrow', sans-serif; font-weight: 700; font-size: 8px; padding: 2px 4px; border-radius: 2px; border: 1px solid #000; white-space: nowrap; z-index: 3; }
         .car-plate-mini.ru { background: #fff; color: #000; border-left: 12px solid #0033aa; }
         .car-plate-mini.kz { background: #fff; color: #000; border-left: 12px solid #0072bc; }
         .car-plate-mini.by { background: #fff; color: #000; border-left: 12px solid #c8102e; }
-        .car-neon { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 60px; height: 6px; border-radius: 50%; filter: blur(4px); opacity: 0.8; }
+
         .car-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
         .car-price { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
         .car-income { font-size: 12px; color: var(--success); font-weight: 600; margin-bottom: 10px; }
@@ -186,47 +189,8 @@
         .earn-panel { display: none; }
         .earn-panel.active { display: block; }
 
-        /* НОВАЯ СИСТЕМА ГОНОК */
         .race-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; }
-        .race-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-        .race-track-new { position: relative; height: 240px; background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 12px; margin: 16px 0; overflow: hidden; border: 1px solid var(--border); }
-        .track-road { position: absolute; left: 0; right: 0; bottom: 0; height: 110px; background: #2a2a3e; border-top: 3px solid #444; }
-        .track-lane-line { position: absolute; left: 0; right: 0; bottom: 55px; height: 3px; background: repeating-linear-gradient(90deg, #777 0, #777 15px, transparent 15px, transparent 30px); }
-        .race-lane-new { position: absolute; left: 0; right: 0; display: flex; align-items: flex-end; padding: 0 20px; height: 50%; }
-        .race-lane-new.top { top: 0; justify-content: flex-start; }
-        .race-lane-new.bottom { bottom: 0; justify-content: flex-start; }
-        .race-car-static { display: flex; flex-direction: column; align-items: center; width: 100px; position: relative; }
-        .race-car-static .car-emoji-big { font-size: 56px; filter: drop-shadow(0 6px 6px rgba(0,0,0,0.6)); }
-        .race-car-static .car-img-big { width: 90px; height: 60px; object-fit: contain; filter: drop-shadow(0 6px 6px rgba(0,0,0,0.6)); }
-        .race-car-static .plate-under { margin-top: 2px; padding: 2px 6px; background: #fff; color: #000; font-family: 'Arial Narrow', sans-serif; font-weight: 700; font-size: 10px; border: 1px solid #000; border-radius: 2px; white-space: nowrap; }
-        .race-car-static .plate-under.ru { border-left: 12px solid #0033aa; }
-        .race-car-static .plate-under.kz { border-left: 12px solid #0072bc; }
-        .race-car-static .plate-under.by { border-left: 12px solid #c8102e; }
-        .race-progress-container { margin: 12px 0; display: flex; flex-direction: column; gap: 6px; }
-        .race-progress-row { display: flex; align-items: center; gap: 8px; }
-        .race-progress-bar { flex: 1; height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; overflow: hidden; position: relative; }
-        .race-progress-fill-player { height: 100%; background: linear-gradient(90deg, #3b82f6, #00f0ff); width: 0%; transition: width 0.1s linear; }
-        .race-progress-fill-enemy { height: 100%; background: linear-gradient(90deg, #ef4444, #ff00aa); width: 0%; transition: width 0.1s linear; }
-        .race-progress-label { font-size: 11px; color: var(--text-muted); font-weight: 700; min-width: 80px; }
-        .race-timer { text-align: center; font-size: 28px; font-weight: 800; color: var(--accent); margin: 8px 0; font-variant-numeric: tabular-nums; }
-        .race-countdown { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 110px; font-weight: 900; color: #fff; text-shadow: 0 0 30px var(--accent); z-index: 5; animation: countdownPulse 1s ease-in-out; }
-        @keyframes countdownPulse { 0% { transform: translate(-50%, -50%) scale(2); opacity: 0; } 30% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-        .race-countdown.go { color: var(--success); text-shadow: 0 0 40px var(--success); }
-        .btn-gas { width: 100%; padding: 22px; font-size: 26px; font-weight: 900; background: linear-gradient(135deg, #00ff88, #00cc66); color: #000; border: none; border-radius: 20px; cursor: pointer; margin: 12px 0; box-shadow: 0 0 30px rgba(0,255,136,0.5); animation: gasPulse 1s infinite; }
-        @keyframes gasPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0,255,136,0.5); } 50% { transform: scale(1.02); box-shadow: 0 0 50px rgba(0,255,136,0.8); } }
-
         .opponent-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; max-height: 300px; overflow-y: auto; }
-        .opponent-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
-        .opponent-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
-        .opponent-card.selected { border-color: var(--c-legendary); background: rgba(251,191,36,0.1); }
-        .opponent-info { flex: 1; }
-        .opponent-name { font-weight: 700; font-size: 13px; }
-        .opponent-car { font-size: 11px; color: var(--text-muted); }
-        .opponent-chance { text-align: right; }
-        .opponent-chance .chance-val { font-weight: 800; font-size: 14px; }
-        .opponent-chance .mult-val { font-size: 11px; color: var(--success); }
-        .selected-opponent-info { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; font-size: 12px; display: none; }
-        .selected-opponent-info.active { display: block; }
 
         .roulette-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; }
         .roulette-legend { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 16px; font-size: 11px; }
@@ -294,13 +258,13 @@
         .bonus-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
         #error-box { position: fixed; bottom: 0; left: 0; right: 0; background: #ef4444; color: white; padding: 10px; font-size: 12px; z-index: 9999; display: none; }
-                /* --- СТИЛИ ДЛЯ НОВОЙ СИСТЕМЫ ГОНОК --- */
+
+        /* --- ГОНКИ --- */
         .race-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .race-header-left { display: flex; align-items: center; gap: 12px; }
         .race-level-badge { background: #333; color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid #ffaa00; }
         .race-title { font-size: 28px; font-weight: 800; }
         .race-balance { background: #1a1a24; padding: 8px 16px; border-radius: 20px; font-weight: 700; border: 1px solid var(--border); }
-        
         .race-my-car { background: #15151e; border-radius: 20px; padding: 16px; margin-bottom: 20px; }
         .race-my-car-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 12px; }
         .race-my-car-card { background: #1e1e2a; border-radius: 16px; padding: 16px; display: flex; gap: 16px; align-items: center; border: 2px solid #3b82f6; margin-bottom: 16px; }
@@ -308,12 +272,10 @@
         .race-my-car-card .info { flex: 1; }
         .race-my-car-card .name { font-weight: 800; font-size: 18px; margin-bottom: 4px; }
         .race-my-car-card .power { color: var(--text-muted); font-size: 14px; margin-bottom: 8px; }
-        
         .race-fuel { background: #1e1e2a; border-radius: 12px; padding: 12px; }
         .race-fuel-text { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
         .race-fuel-bar { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
         .race-fuel-fill { height: 100%; width: 80%; background: #ffaa00; }
-        
         .race-opponents-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 12px; }
         .race-opponents-list { display: flex; flex-direction: column; gap: 12px; }
         .race-opponent-card { background: #15151e; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
@@ -332,13 +294,11 @@
         .prize-win { font-weight: 800; color: var(--success); font-size: 16px; }
         .prize-bet { font-size: 12px; color: var(--text-muted); }
 
-        /* Экран гонки */
         .race-back-btn { color: #3b82f6; font-weight: 700; cursor: pointer; }
         .race-drag-area { display: flex; justify-content: space-between; margin-bottom: 24px; }
         .race-timer-label, .race-gap-label { font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
         .race-timer, .race-gap { font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; }
         .race-gap { color: var(--success); }
-        
         .race-progress-area { background: #15151e; border-radius: 16px; padding: 16px; margin-bottom: 24px; position: relative; }
         .race-progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
         .race-car-info { display: flex; flex-direction: column; align-items: center; width: 80px; }
@@ -346,17 +306,14 @@
         .race-car-img img { width: 60px; height: 30px; object-fit: contain; }
         .race-car-name { font-size: 12px; font-weight: 700; text-align: center; display: flex; flex-direction: column; }
         .race-car-power { color: var(--text-muted); font-size: 10px; font-weight: 400; margin-top: 2px; }
-        
         .race-bar-container { flex: 1; height: 10px; background: #333; border-radius: 5px; position: relative; }
         .race-bar { height: 100%; border-radius: 5px; background: #3b82f6; width: 0%; transition: width 0.1s linear; position: relative; }
         .race-bar::after { content: '❖'; position: absolute; right: -6px; top: -4px; font-size: 14px; color: #fff; }
         .race-track-distances { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); padding-top: 8px; border-top: 1px dashed #333; margin-top: 8px; }
-        
         .race-traffic-lights { display: flex; justify-content: center; gap: 12px; margin-bottom: 24px; }
         .race-traffic-lights .light { width: 48px; height: 48px; border-radius: 50%; background: #1e1e2a; border: 2px solid #333; }
         .race-traffic-lights .light.active-yellow { background: #ffaa00; box-shadow: 0 0 20px #ffaa00; border-color: #ffaa00; }
         .race-traffic-lights .light.active-green { background: var(--success); box-shadow: 0 0 20px var(--success); border-color: var(--success); }
-        
         .race-speed-block { background: #15151e; border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; position: relative; }
         .race-speed-value { font-size: 48px; font-weight: 800; line-height: 1; }
         .race-speed-unit { font-size: 14px; color: var(--text-muted); font-weight: 400; }
@@ -365,12 +322,9 @@
         .race-gear span:last-child { font-size: 32px; font-weight: 800; }
         .race-speed-bar { position: absolute; bottom: 8px; left: 16px; right: 16px; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
         .race-speed-fill { height: 100%; background: linear-gradient(90deg, #00ff88, #ffaa00, #ef4444); transition: width 0.1s linear; }
-        
         .race-hint-text { text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 16px; }
         .btn-gas { width: 100%; padding: 20px; font-size: 24px; font-weight: 900; background: var(--success); color: #000; border: none; border-radius: 16px; cursor: pointer; }
         .btn-gas:disabled { background: #1e1e2a; color: #555; cursor: not-allowed; }
-
-        /* Экран результатов */
         .race-result-content { text-align: center; padding: 24px 0; }
         .race-result-stats { background: #15151e; border-radius: 16px; padding: 16px; margin-bottom: 16px; }
         .race-result-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid #333; }
@@ -382,7 +336,7 @@
         .race-result-time { text-align: right; font-weight: 700; font-size: 16px; }
         .race-result-start-info { background: #1e1e2a; padding: 12px; border-radius: 12px; font-size: 14px; color: var(--text-muted); margin-bottom: 24px; font-weight: 700; }
         .race-next-btn { width: 100%; padding: 18px; font-size: 18px; font-weight: 800; background: #3b82f6; color: #fff; border: none; border-radius: 16px; cursor: pointer; }
-     </style>
+    </style>
 </head>
 <body>
     <div id="app">
@@ -448,7 +402,6 @@
                     <button class="earn-tab-btn" data-panel="tournament">🏆 Турнир</button>
                 </div>
                 <div id="earn-race" class="earn-panel active">
-                    <!-- Экран выбора соперника -->
                     <div id="race-opponents-screen">
                         <div class="race-header">
                             <div class="race-header-left">
@@ -457,7 +410,6 @@
                             </div>
                             <div class="race-balance">7.2 млн ₽</div>
                         </div>
-                        
                         <div class="race-my-car">
                             <div class="race-my-car-header">
                                 <span>ТВОЯ МАШИНА</span>
@@ -469,7 +421,6 @@
                                 <div class="race-fuel-bar"><div class="race-fuel-fill"></div></div>
                             </div>
                         </div>
-
                         <div class="race-opponents-header">
                             <span>СОПЕРНИКИ · КЛАСС A</span>
                             <span>ДРЭГ 402 М</span>
@@ -477,12 +428,10 @@
                         <div id="race-opponents-list" class="race-opponents-list"></div>
                     </div>
 
-                    <!-- Экран самой гонки -->
                     <div id="race-active-screen" style="display:none;">
                         <div class="race-header">
                             <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
                         </div>
-                        
                         <div class="race-drag-area">
                             <div class="race-timer-block">
                                 <div class="race-timer-label">ВРЕМЯ</div>
@@ -493,7 +442,6 @@
                                 <div class="race-gap" id="race-gap">—</div>
                             </div>
                         </div>
-                        
                         <div class="race-progress-area">
                             <div class="race-progress-row" id="player-race-row">
                                 <div class="race-car-info">
@@ -519,37 +467,30 @@
                                 <span>402 M</span>
                             </div>
                         </div>
-
                         <div class="race-traffic-lights" id="race-traffic-lights">
                             <div class="light"></div>
                             <div class="light"></div>
                             <div class="light"></div>
                             <div class="light"></div>
                         </div>
-
                         <div class="race-speed-block">
                             <div class="race-speed-value"><span id="race-speed">0</span> <span class="race-speed-unit">км/ч</span></div>
                             <div class="race-gear"><span class="race-gear-label">ПЕРЕДАЧА</span> <span id="race-gear">N</span></div>
                             <div class="race-speed-bar"><div id="race-speed-fill" style="width: 0%;"></div></div>
                         </div>
-
                         <div class="race-hint-text" id="race-hint">Жми «Газ», когда загорится зелёный</div>
-                        
                         <button class="btn-gas" id="gas-btn" disabled>ГАЗ!</button>
                     </div>
 
-                    <!-- Экран результатов -->
                     <div id="race-result-screen" style="display:none;">
                         <div class="race-header">
                             <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
                         </div>
-                        
                         <div class="race-result-content">
                             <h1 id="race-result-title" style="color:var(--success); font-size: 32px; font-weight: 800;">Победа!</h1>
                             <div id="race-result-diff" style="color:var(--text-muted); font-size: 16px; margin-bottom: 24px;">быстрее на 1,999 с</div>
                             <div id="race-result-prize" style="color:var(--success); font-size: 28px; font-weight: 800; margin-bottom: 4px;">+15 000 ₽</div>
                             <div style="color:var(--text-muted); font-size: 14px; margin-bottom: 24px;">приз</div>
-                            
                             <div class="race-result-stats">
                                 <div class="race-result-row" id="result-player-row">
                                     <div class="race-car-img" id="result-player-img">🚗</div>
@@ -568,9 +509,7 @@
                                     <div class="race-result-time" id="result-enemy-time">10,396 с<br><span style="font-size:12px; color:var(--text-muted);" id="result-enemy-speed">211 км/ч</span></div>
                                 </div>
                             </div>
-                            
                             <div class="race-result-start-info" id="race-start-info">Нормальный старт · 345 мс</div>
-                            
                             <button class="race-next-btn" id="race-next-btn">Ещё гонка</button>
                         </div>
                     </div>
@@ -663,8 +602,7 @@
 
         const RARITIES = { common: { label: 'Обычная' }, rare: { label: 'Редкая' }, epic: { label: 'Эпическая' }, mythic: { label: 'Мифическая' }, legendary: { label: 'Легендарная' }, special: { label: 'Специальная' } };
         const INCOME_RATES = { common: 400, rare: 1200, epic: 3200, mythic: 8000, legendary: 20000, special: 60000 };
-
-               const CAR_TEMPLATE = [
+        const CAR_TEMPLATE = [
             // ОБЫЧНЫЕ (12)
             { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'common', price: 5000, emoji: '🚗', desc: 'Классика советского автопрома. Заднеприводный седан, выпускавшийся с 1982 по 2012 год. Простая конструкция, доступные запчасти и отличная ремонтопригодность сделали её легендой.', power: 70, speed: 160, acceleration: 17.5, weight: 1030, drive: 'Задний', fuel: 9.5, image: 'https://i.postimg.cc/CMQ4Rxrx/lada-2107-19-no-bg-preview-(carve-photos)-(1).png' },
             { id: 'logan', name: 'Renault Logan', rarity: 'common', price: 8000, emoji: '🚙', desc: 'Бюджетный седан, разработанный для развивающихся рынков. Славится своей надежностью и простотой обслуживания. Первое поколение выпускалось с 2004 года.', power: 82, speed: 170, acceleration: 12.5, weight: 1065, drive: 'Передний', fuel: 7.0, image: 'https://i.postimg.cc/x1tDBYXK/logan2-(1)-edited-free-(carve-photos).png' },
@@ -727,7 +665,7 @@
             { id: 'pagani', name: 'Pagani Huayra', rarity: 'legendary', price: 1100000, emoji: '🏎️', desc: 'Итальянский гиперкар ручной сборки. Выпускается с 2011 года. Твин-турбо V12 от AMG, 730 л.с. и уникальный дизайн.', power: 730, speed: 383, acceleration: 2.8, weight: 1350, drive: 'Задний', fuel: 14.0, image: 'https://i.postimg.cc/7W6yq8r8/pagani-huayra.png' },
             { id: 'aston_valkyrie', name: 'Aston Martin Valkyrie', rarity: 'legendary', price: 1200000, emoji: '🏎️', desc: 'Болид Формулы-1 для дорог. Выпускается с 2021 года. 1160 л.с., гибридная силовая установка и экстремальная аэродинамика.', power: 1160, speed: 402, acceleration: 2.5, weight: 1030, drive: 'Задний', fuel: 15.0, image: 'https://i.postimg.cc/8X6yq8r8/aston-martin-valkyrie.png' },
             { id: 'rr_sweptail', name: 'Rolls-Royce Sweptail', rarity: 'legendary', price: 1300000, emoji: '🚘', desc: 'Эксклюзивный автомобиль за $12.8 млн. Выпущен в единственном экземпляре в 2017 году. Ручная сборка и уникальный дизайн.', power: 453, speed: 250, acceleration: 5.5, weight: 2600, drive: 'Задний', fuel: 16.0, image: 'https://i.postimg.cc/9Y6yq8r8/rolls-royce-sweptail.png' },
-            { id: 'rimac', name: 'Rimac Nevera', rarity: 'legendary', price: 1400000, emoji: '🏎️', desc: 'Электрический гиперкар. Выпускается с 2021 года. 1914 л.с., разгон до 100 за 1.85 секунды и максимальная скорость 412 км/ч.', power: 1914, speed: 412, acceleration: 1.85, weight: 2150, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/1Z6yq8r8/rimac-nevera.png' },
+                        { id: 'rimac', name: 'Rimac Nevera', rarity: 'legendary', price: 1400000, emoji: '🏎️', desc: 'Электрический гиперкар. Выпускается с 2021 года. 1914 л.с., разгон до 100 за 1.85 секунды и максимальная скорость 412 км/ч.', power: 1914, speed: 412, acceleration: 1.85, weight: 2150, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/1Z6yq8r8/rimac-nevera.png' },
 
             // СПЕЦИАЛЬНЫЕ (7)
             { id: 'cybertruck', name: 'Tesla Cybertruck', rarity: 'special', price: 1500000, emoji: '🛻', desc: 'Электрический пикап будущего. Выпускается с 2023 года. Нержавеющая сталь, футуристичный дизайн и мощность 845 л.с.', power: 845, speed: 210, acceleration: 2.9, weight: 3000, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/2A6yq8r8/tesla-cybertruck.png' },
@@ -753,7 +691,7 @@
         ];
 
         const COLORS = [
-            { name: 'Белый', hex: '#ffffff' }, { name: 'Черный', hex: '#000000' }, { name: 'Красный', hex: '#ef4444' },
+            { name: 'Белый', hex: '#ffffff' }, { name: 'Черный', hex: '#1a1a1a' }, { name: 'Красный', hex: '#ef4444' },
             { name: 'Синий', hex: '#3b82f6' }, { name: 'Зеленый', hex: '#10b981' }, { name: 'Желтый', hex: '#fbbf24' },
             { name: 'Фиолетовый', hex: '#a855f7' }, { name: 'Розовый', hex: '#ec4899' }, { name: 'Оранжевый', hex: '#f97316' },
             { name: 'Серый', hex: '#6b7280' }
@@ -763,7 +701,7 @@
             { name: 'Зеленый', color: '#00ff88' }, { name: 'Красный', color: '#ef4444' }, { name: 'Фиолетовый', color: '#a855f7' }
         ];
 
-                const ACHIEVEMENTS = [
+        const ACHIEVEMENTS = [
             { id: 'first_car', title: 'Первая тачка', desc: 'Купите первую машину', reward: 5000, icon: '🚗', check: (s) => s.cars.filter(c => c.owned).length >= 2 },
             { id: 'rich', title: 'Богач', desc: 'Накопите 1 000 000 ₽', reward: 100000, icon: '💰', check: (s) => s.balance >= 1000000 },
             { id: 'racer', title: 'Гонщик', desc: 'Выиграйте 10 гонок', reward: 50000, icon: '🏁', check: (s) => s.stats.wins >= 10 },
@@ -873,6 +811,18 @@
                 state.lastTick = now; updateBalance(); saveState();
             }
         }
+        // Возвращает HTML подсветки днища (по ширине авто) + цвет кузова
+        function carGlowHtml(car) {
+            const glowColor = car.neon || car.color || 'transparent';
+            if (glowColor === 'transparent' || !glowColor) return '';
+            return `<div class="car-glow-under" style="background:${glowColor}; box-shadow: 0 0 30px 8px ${glowColor};"></div>`;
+        }
+        // Применяем цвет кузова к картинке через CSS-фильтр (мягкое тонирование)
+        function carImageStyle(car) {
+            if (!car.color) return '';
+            // используем drop-shadow + hue для визуального оттенка
+            return `filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)) drop-shadow(0 0 14px ${car.color});`;
+        }
 
         function renderGarage() {
             const container = document.getElementById('car-list');
@@ -893,12 +843,11 @@
                 const card = document.createElement('div');
                 card.className = `car-card rarity-${car.rarity}`;
                 let imageHtml = car.image 
-                    ? `<div class="car-image-container"><img src="${car.image}" class="car-image" alt="${car.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div></div>`
-                    : `<div class="car-image-container"><div class="car-placeholder">${car.emoji}</div></div>`;
+                    ? `<img src="${car.image}" class="car-image" alt="${car.name}" style="${carImageStyle(car)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div>`
+                    : `<div class="car-placeholder">${car.emoji}</div>`;
                 let plateMiniHtml = car.plate ? `<div class="car-plate-mini ${car.plate.country.toLowerCase()}">${car.plate.main} ${car.plate.region || ''}</div>` : '';
-                let neonHtml = car.neon ? `<div class="car-neon" style="background: ${car.neon}; box-shadow: 0 0 20px ${car.neon};"></div>` : '';
                 let actionHtml = `<span class="car-owned-tag">✅ В гараже</span><div class="btn-row"><button class="btn-action btn-info info-btn" data-id="${car.id}">Инфо</button><button class="btn-action btn-custom custom-btn" data-id="${car.id}">🎨</button><button class="btn-action btn-sell sell-btn" data-id="${car.id}">Продать</button></div>`;
-                card.innerHTML = `<div class="car-top"><span class="car-badge">${RARITIES[car.rarity].label}</span></div><div style="position:relative;">${imageHtml}${neonHtml}${plateMiniHtml}</div><div class="car-name">${car.name}</div><div class="car-income">+${INCOME_RATES[car.rarity].toLocaleString('ru-RU')} ₽/сек</div>${actionHtml}`;
+                card.innerHTML = `<div class="car-top"><span class="car-badge">${RARITIES[car.rarity].label}</span></div><div class="car-image-container">${carGlowHtml(car)}${imageHtml}${plateMiniHtml}</div><div class="car-name">${car.name}</div><div class="car-income">+${INCOME_RATES[car.rarity].toLocaleString('ru-RU')} ₽/сек</div>${actionHtml}`;
                 container.appendChild(card);
             });
             
@@ -939,9 +888,9 @@
                 const card = document.createElement('div');
                 card.className = `car-card rarity-${car.rarity}`;
                 let imageHtml = car.image 
-                    ? `<div class="car-image-container"><img src="${car.image}" class="car-image" alt="${car.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div></div>`
-                    : `<div class="car-image-container"><div class="car-placeholder">${car.emoji}</div></div>`;
-                card.innerHTML = `<div class="car-top"><span class="car-badge">${RARITIES[car.rarity].label}</span></div>${imageHtml}<div class="car-name">${car.name}</div><div class="car-price">${car.price.toLocaleString('ru-RU')} ₽</div><div class="btn-row"><button class="btn-action btn-info info-btn" data-id="${car.id}">Инфо</button><button class="btn-action btn-buy buy-btn" data-id="${car.id}">Купить</button></div>`;
+                    ? `<img src="${car.image}" class="car-image" alt="${car.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div>`
+                    : `<div class="car-placeholder">${car.emoji}</div>`;
+                card.innerHTML = `<div class="car-top"><span class="car-badge">${RARITIES[car.rarity].label}</span></div><div class="car-image-container">${imageHtml}</div><div class="car-name">${car.name}</div><div class="car-price">${car.price.toLocaleString('ru-RU')} ₽</div><div class="btn-row"><button class="btn-action btn-info info-btn" data-id="${car.id}">Инфо</button><button class="btn-action btn-buy buy-btn" data-id="${car.id}">Купить</button></div>`;
                 container.appendChild(card);
             });
             
@@ -988,15 +937,17 @@
             const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
             let colorSwatches = COLORS.map(c => `<div class="color-swatch ${car.color === c.hex ? 'selected' : ''}" style="background:${c.hex}" data-hex="${c.hex}"></div>`).join('');
             let neonSwatches = NEONS.map(n => `<div class="neon-swatch ${car.neon === n.color ? 'selected' : ''}" style="background:${n.color === 'transparent' ? 'rgba(255,255,255,0.1)' : n.color}; color:${n.color === 'transparent' ? '#fff' : '#000'}" data-color="${n.color}">${n.name}</div>`).join('');
-            overlay.innerHTML = `<div class="modal-content"><div class="modal-title">Кастомизация</div><div class="modal-desc">${car.name}</div><h3 style="margin-bottom:8px; font-size:14px;">🎨 Цвет кузова (1 000 ₽)</h3><div class="color-grid" id="color-grid">${colorSwatches}</div><h3 style="margin-bottom:8px; font-size:14px;">💡 Неон (2 000 ₽)</h3><div class="neon-grid" id="neon-grid">${neonSwatches}</div><button class="modal-close">Закрыть</button></div>`;
+            // Превью авто с текущей подсветкой
+            let preview = `<div class="car-image-container" style="height:110px;">${carGlowHtml(car)}${car.image ? `<img src="${car.image}" class="car-image" style="${carImageStyle(car)}" onerror="this.style.display='none'">` : `<div class="car-placeholder">${car.emoji}</div>`}</div>`;
+            overlay.innerHTML = `<div class="modal-content"><div class="modal-title">Кастомизация</div><div class="modal-desc">${car.name}</div>${preview}<h3 style="margin-bottom:8px; font-size:14px;">🎨 Цвет кузова (1 000 ₽)</h3><div class="color-grid" id="color-grid">${colorSwatches}</div><h3 style="margin-bottom:8px; font-size:14px;">💡 Подсветка днища (2 000 ₽)</h3><div class="neon-grid" id="neon-grid">${neonSwatches}</div><button class="modal-close">Закрыть</button></div>`;
             document.body.appendChild(overlay);
             overlay.querySelectorAll('.color-swatch').forEach(el => el.addEventListener('click', () => {
                 if (state.balance < 1000) return alert('Недостаточно средств!');
-                state.balance -= 1000; car.color = el.dataset.hex; saveState(); updateBalance(); renderGarage(); overlay.remove();
+                state.balance -= 1000; car.color = el.dataset.hex; saveState(); updateBalance(); renderGarage(); overlay.remove(); showCustomization(car);
             }));
             overlay.querySelectorAll('.neon-swatch').forEach(el => el.addEventListener('click', () => {
                 if (state.balance < 2000) return alert('Недостаточно средств!');
-                state.balance -= 2000; car.neon = el.dataset.color === 'transparent' ? null : el.dataset.color; saveState(); updateBalance(); renderGarage(); overlay.remove();
+                state.balance -= 2000; car.neon = el.dataset.color === 'transparent' ? null : el.dataset.color; saveState(); updateBalance(); renderGarage(); overlay.remove(); showCustomization(car);
             }));
             overlay.querySelector('.modal-close').addEventListener('click', () => overlay.remove());
             overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
@@ -1039,7 +990,7 @@
             const lettersRU = 'АВЕКМНОРСТУХ'; const lettersEN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             const ri = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
             const rc = (s) => s[Math.floor(Math.random() * s.length)];
-            const rd = (len) => Array.from({ length: len }, () => ri(0, 9)).join('');
+                        const rd = (len) => Array.from({ length: len }, () => ri(0, 9)).join('');
             switch (country) {
                 case 'RU': return { country: 'RU', main: `${rc(lettersRU)}${rd(3)}${rc(lettersRU)}${rc(lettersRU)}`, region: ri(1, 99).toString().padStart(2, '0') };
                 case 'KZ': return { country: 'KZ', main: `${rd(3)} ${rc(lettersEN)}${rc(lettersEN)}`, region: ri(1, 20).toString().padStart(2, '0') };
@@ -1127,10 +1078,7 @@
                 }, 4000);
             }, 100);
         }
-
-        // --- ГОНКИ (НОВАЯ СИСТЕМА) ---
-        function setupRace() {
-        // --- ГОНКИ (НОВАЯ СИСТЕМА ПО РЕФЕРЕНСУ) ---
+        // --- ГОНКИ (исправленная единая система) ---
         let raceState = 'idle';
         let currentOpponent = null;
         let raceStartTime = 0;
@@ -1142,34 +1090,34 @@
         let playerSpeedKmh = 0;
         let enemySpeedKmh = 0;
         let startReactionTime = 0;
-        let playerReactionPenalty = 0;
+        let playerReactionPenalty = 1;
         let trafficLightTimer = null;
 
-        const DISTANCE = 402; 
-        const PLAYER_MAX_SPEED = 261; 
+        const DISTANCE = 402;
+        const PLAYER_MAX_SPEED = 261;
         const ENEMY_MAX_SPEED = 211;
 
         function setupRace() {
             document.getElementById('race-next-btn').addEventListener('click', backToOpponents);
             document.getElementById('gas-btn').onclick = handleGasPress;
+            renderRaceOpponents();
+        }
+
+        function getMyBestCar() {
+            const owned = state.cars.filter(c => c.owned);
+            if (!owned.length) return state.cars[0];
+            return owned.reduce((best, c) => (c.power > best.power ? c : best), owned[0]);
         }
 
         function renderRaceOpponents() {
-            const myCar = state.cars.find(c => c.owned) || state.cars[0];
+            const myCar = getMyBestCar();
             const myCarCard = document.getElementById('race-my-car-card');
-            
             let myCarImg = myCar.image ? `<img src="${myCar.image}" onerror="this.style.display='none'">` : `<div style="font-size:40px">${myCar.emoji}</div>`;
-            myCarCard.innerHTML = `
-                ${myCarImg}
-                <div class="info">
-                    <div class="name">${myCar.name}</div>
-                    <div class="power">${myCar.power} л.с.</div>
-                </div>
-            `;
+            myCarCard.innerHTML = `${myCarImg}<div class="info"><div class="name">${myCar.name}</div><div class="power">${myCar.power} л.с.</div></div>`;
 
             const list = document.getElementById('race-opponents-list');
             list.innerHTML = '';
-            
+
             const opponentsData = [
                 { name: 'DriftKing', car: 'Aurus Senat', power: 530, win: 15000, bet: 0, diff: 'Тренировка', chance: 100 },
                 { name: 'Ghost', car: 'Mercedes-AMG G63', power: 584, win: 400000, bet: 120000, diff: 'Лёгкий', chance: 100 },
@@ -1180,11 +1128,9 @@
             opponentsData.forEach((opp) => {
                 const card = document.createElement('div');
                 card.className = 'race-opponent-card';
-                
                 let diffClass = 'tag-easy';
                 if (opp.diff === 'Средний') diffClass = 'tag-medium';
                 if (opp.diff === 'Сложный') diffClass = 'tag-hard';
-                
                 card.innerHTML = `
                     <div style="font-size:40px">🚘</div>
                     <div class="race-opponent-info">
@@ -1198,9 +1144,7 @@
                     <div class="race-opponent-prize">
                         <div class="prize-win">+${opp.win.toLocaleString('ru-RU')} ₽</div>
                         <div class="prize-bet">${opp.bet === 0 ? 'без взноса' : `взнос ${opp.bet.toLocaleString('ru-RU')} ₽`}</div>
-                    </div>
-                `;
-                
+                    </div>`;
                 card.onclick = () => startRace(opp, myCar);
                 list.appendChild(card);
             });
@@ -1208,34 +1152,23 @@
 
         function startRace(opp, myCar) {
             if (opp.bet > 0 && state.balance < opp.bet) return alert('Недостаточно средств для взноса!');
-            
-            if (opp.bet > 0) {
-                state.balance -= opp.bet;
-                updateBalance();
-            }
-            
+            if (opp.bet > 0) { state.balance -= opp.bet; updateBalance(); }
             currentOpponent = opp;
-            
+
             document.getElementById('race-opponents-screen').style.display = 'none';
             document.getElementById('race-result-screen').style.display = 'none';
             document.getElementById('race-active-screen').style.display = 'block';
 
             raceState = 'waiting_green';
-            playerProgress = 0;
-            enemyProgress = 0;
-            playerFinishTime = 0;
-            enemyFinishTime = 0;
-            playerSpeedKmh = 0;
-            enemySpeedKmh = 0;
-            startReactionTime = 0;
-            playerReactionPenalty = 0;
-            
+            playerProgress = 0; enemyProgress = 0; playerFinishTime = 0; enemyFinishTime = 0;
+            playerSpeedKmh = 0; enemySpeedKmh = 0; startReactionTime = 0; playerReactionPenalty = 1;
+
             document.getElementById('race-player-img').innerHTML = myCar.image ? `<img src="${myCar.image}">` : `<div style="font-size:40px">${myCar.emoji}</div>`;
             document.getElementById('race-player-power').textContent = `${myCar.power} л.с.`;
             document.getElementById('race-enemy-img').innerHTML = `<div style="font-size:40px">🚘</div>`;
             document.getElementById('race-enemy-name').textContent = opp.name;
             document.getElementById('race-enemy-power').textContent = `${opp.power} л.с.`;
-            
+
             document.getElementById('player-bar').style.width = '0%';
             document.getElementById('enemy-bar').style.width = '0%';
             document.getElementById('race-speed').textContent = '0';
@@ -1243,16 +1176,16 @@
             document.getElementById('race-time').textContent = '0,000';
             document.getElementById('race-gap').textContent = '—';
             document.getElementById('race-gap').style.color = 'var(--text-muted)';
-            
+
             const lights = document.getElementById('race-traffic-lights').children;
-            for(let l of lights) l.className = 'light';
-            
+            for (let l of lights) l.className = 'light';
+
             const gasBtn = document.getElementById('gas-btn');
             gasBtn.disabled = true;
             gasBtn.style.background = '#1e1e2a';
             gasBtn.style.color = '#555';
             document.getElementById('race-hint').textContent = 'Жми «Газ», когда загорится зелёный';
-            
+
             let lightIndex = 0;
             clearInterval(trafficLightTimer);
             trafficLightTimer = setInterval(() => {
@@ -1268,36 +1201,21 @@
                     raceState = 'ready';
                     startReactionTime = Date.now();
                 }
-            }, 500); 
+            }, 500);
         }
 
         function handleGasPress() {
             if (raceState === 'waiting_green') {
                 document.getElementById('race-hint').textContent = 'Фальстарт!';
                 document.getElementById('gas-btn').disabled = true;
-                setTimeout(() => {
-                    alert('Фальстарт! Вы нажали газ до зеленого сигнала.');
-                    backToOpponents();
-                }, 1000);
+                setTimeout(() => { alert('Фальстарт! Вы нажали газ до зеленого сигнала.'); backToOpponents(); }, 1000);
                 return;
             }
-            
             if (raceState === 'ready') {
                 const reaction = Date.now() - startReactionTime;
-                if (reaction < 100) {
-                    document.getElementById('race-hint').textContent = 'Идеальный старт! +4% мощности';
-                    playerReactionPenalty = 1.04;
-                    document.getElementById('race-start-info').textContent = `Идеальный старт · ${reaction} мс`;
-                } else if (reaction < 500) {
-                    document.getElementById('race-hint').textContent = `Нормальный старт · ${reaction} мс`;
-                    playerReactionPenalty = 1.0;
-                    document.getElementById('race-start-info').textContent = `Нормальный старт · ${reaction} мс`;
-                } else {
-                    document.getElementById('race-hint').textContent = 'Плохой старт...';
-                    playerReactionPenalty = 0.9;
-                    document.getElementById('race-start-info').textContent = `Плохой старт · ${reaction} мс`;
-                }
-                
+                if (reaction < 100) { document.getElementById('race-hint').textContent = 'Идеальный старт! +4% мощности'; playerReactionPenalty = 1.04; document.getElementById('race-start-info').textContent = `Идеальный старт · ${reaction} мс`; }
+                else if (reaction < 500) { document.getElementById('race-hint').textContent = `Нормальный старт · ${reaction} мс`; playerReactionPenalty = 1.0; document.getElementById('race-start-info').textContent = `Нормальный старт · ${reaction} мс`; }
+                else { document.getElementById('race-hint').textContent = 'Плохой старт...'; playerReactionPenalty = 0.9; document.getElementById('race-start-info').textContent = `Плохой старт · ${reaction} мс`; }
                 document.getElementById('gas-btn').disabled = true;
                 raceState = 'racing';
                 raceStartTime = Date.now();
@@ -1307,95 +1225,67 @@
 
         function raceLoop() {
             if (raceState !== 'racing') return;
-            
             const now = Date.now();
-            const elapsed = (now - raceStartTime) / 1000; 
-            
+            const elapsed = (now - raceStartTime) / 1000;
             document.getElementById('race-time').textContent = elapsed.toFixed(3).replace('.', ',');
-            
+
             if (playerProgress < DISTANCE) {
-                const accel = (PLAYER_MAX_SPEED / 5) * playerReactionPenalty; 
+                const accel = (PLAYER_MAX_SPEED / 5) * playerReactionPenalty;
                 playerSpeedKmh = Math.min(PLAYER_MAX_SPEED * playerReactionPenalty, playerSpeedKmh + accel * 0.016);
-                playerProgress += (playerSpeedKmh / 3.6) * 0.016; 
-                if (playerProgress >= DISTANCE) {
-                    playerProgress = DISTANCE;
-                    playerFinishTime = elapsed;
-                }
+                playerProgress += (playerSpeedKmh / 3.6) * 0.016;
+                if (playerProgress >= DISTANCE) { playerProgress = DISTANCE; playerFinishTime = elapsed; }
             }
-            
             if (enemyProgress < DISTANCE) {
                 const enemyAccel = ENEMY_MAX_SPEED / 5;
                 enemySpeedKmh = Math.min(ENEMY_MAX_SPEED, enemySpeedKmh + enemyAccel * 0.016);
                 enemyProgress += (enemySpeedKmh / 3.6) * 0.016;
-                if (enemyProgress >= DISTANCE) {
-                    enemyProgress = DISTANCE;
-                    enemyFinishTime = elapsed;
-                }
+                if (enemyProgress >= DISTANCE) { enemyProgress = DISTANCE; enemyFinishTime = elapsed; }
             }
 
             document.getElementById('player-bar').style.width = `${(playerProgress / DISTANCE) * 100}%`;
             document.getElementById('enemy-bar').style.width = `${(enemyProgress / DISTANCE) * 100}%`;
-            
             document.getElementById('race-speed').textContent = Math.round(playerSpeedKmh);
             let gear = 'N';
-            if (playerSpeedKmh > 0) gear = Math.min(6, Math.floor(playerSpeedKmh / (PLAYER_MAX_SPEED/6)) + 1);
+            if (playerSpeedKmh > 0) gear = Math.min(6, Math.floor(playerSpeedKmh / (PLAYER_MAX_SPEED / 6)) + 1);
             document.getElementById('race-gear').textContent = gear;
             document.getElementById('race-speed-fill').style.width = `${(playerSpeedKmh / PLAYER_MAX_SPEED) * 100}%`;
-            
+
             const gap = playerProgress - enemyProgress;
-            if (Math.abs(gap) < 1) {
-                document.getElementById('race-gap').textContent = '—';
-            } else {
-                document.getElementById('race-gap').textContent = `${gap > 0 ? '+' : ''}${(gap/10).toFixed(2)}`;
+            if (Math.abs(gap) < 1) { document.getElementById('race-gap').textContent = '—'; }
+            else {
+                document.getElementById('race-gap').textContent = `${gap > 0 ? '+' : ''}${(gap / 10).toFixed(2)}`;
                 document.getElementById('race-gap').style.color = gap > 0 ? 'var(--success)' : 'var(--danger)';
             }
 
-            if (playerFinishTime > 0 && enemyFinishTime > 0) {
-                raceState = 'finished';
-                showRaceResult();
-                return;
-            }
-            
+            if (playerFinishTime > 0 && enemyFinishTime > 0) { raceState = 'finished'; showRaceResult(); return; }
             requestAnimationFrame(raceLoop);
         }
 
         function showRaceResult() {
             const diff = enemyFinishTime - playerFinishTime;
             const isWin = playerFinishTime < enemyFinishTime || enemyFinishTime === 0;
-            
             document.getElementById('race-active-screen').style.display = 'none';
             document.getElementById('race-result-screen').style.display = 'block';
-            
             const titleEl = document.getElementById('race-result-title');
             const diffEl = document.getElementById('race-result-diff');
             const prizeEl = document.getElementById('race-result-prize');
-            
+
             if (isWin) {
-                titleEl.textContent = 'Победа!';
-                titleEl.style.color = 'var(--success)';
+                titleEl.textContent = 'Победа!'; titleEl.style.color = 'var(--success)';
                 diffEl.textContent = `быстрее на ${Math.abs(diff).toFixed(3).replace('.', ',')} с`;
-                prizeEl.textContent = `+${currentOpponent.win.toLocaleString('ru-RU')} ₽`;
-                prizeEl.style.color = 'var(--success)';
-                
-                state.balance += currentOpponent.win;
-                state.stats.wins++;
-                state.stats.races++;
+                prizeEl.textContent = `+${currentOpponent.win.toLocaleString('ru-RU')} ₽`; prizeEl.style.color = 'var(--success)';
+                state.balance += currentOpponent.win; state.stats.wins++; state.stats.races++;
             } else {
-                titleEl.textContent = 'Поражение';
-                titleEl.style.color = 'var(--danger)';
+                titleEl.textContent = 'Поражение'; titleEl.style.color = 'var(--danger)';
                 diffEl.textContent = `медленнее на ${Math.abs(diff).toFixed(3).replace('.', ',')} с`;
-                prizeEl.textContent = `-${currentOpponent.bet.toLocaleString('ru-RU')} ₽`;
-                prizeEl.style.color = 'var(--danger)';
+                prizeEl.textContent = `-${currentOpponent.bet.toLocaleString('ru-RU')} ₽`; prizeEl.style.color = 'var(--danger)';
                 state.stats.races++;
             }
-            
             document.getElementById('result-player-time').innerHTML = `${playerFinishTime.toFixed(3).replace('.', ',')} с<br><span style="font-size:12px; color:var(--text-muted);">${Math.round(PLAYER_MAX_SPEED)} км/ч</span>`;
             document.getElementById('result-enemy-time').innerHTML = `${enemyFinishTime.toFixed(3).replace('.', ',')} с<br><span style="font-size:12px; color:var(--text-muted);">${Math.round(ENEMY_MAX_SPEED)} км/ч</span>`;
             document.getElementById('result-enemy-name').textContent = currentOpponent.name;
             document.getElementById('result-enemy-subname').textContent = currentOpponent.car;
-            
-            updateBalance();
-            saveState();
+            updateBalance(); saveState();
         }
 
         function backToOpponents() {
@@ -1405,188 +1295,6 @@
             document.getElementById('race-result-screen').style.display = 'none';
             document.getElementById('race-opponents-screen').style.display = 'block';
             renderRaceOpponents();
-        }
-
-            function generateOpponents() {
-                const owned = state.cars.filter(c => c.owned);
-                if (!owned.length) return [];
-                const myCar = state.cars.find(c => c.id === carSelect.value) || owned[0];
-                const opponents = [];
-                for (let i = 0; i < 5; i++) {
-                    const randomCar = state.cars[Math.floor(Math.random() * state.cars.length)];
-                    const playerPower = (myCar.power || 100) + (myCar.tuning.engine||0)*20 + (myCar.tuning.turbo||0)*30;
-                    const enemyTuning = Math.floor(Math.random() * 15);
-                    const enemyPower = (randomCar.power || 100) + enemyTuning * 10;
-                    const playerAccel = myCar.acceleration || 10;
-                    const enemyAccel = randomCar.acceleration || 10;
-                    const powerRatio = playerPower / (playerPower + enemyPower);
-                    const accelRatio = enemyAccel / (playerAccel + enemyAccel);
-                    let winChance = (powerRatio * 0.6 + accelRatio * 0.4) * 100;
-                    winChance = Math.max(5, Math.min(95, Math.round(winChance)));
-                    const multiplier = (100 / winChance).toFixed(2);
-                    opponents.push({ id: 'opp_' + i + '_' + Date.now(), car: randomCar, winChance: winChance, multiplier: parseFloat(multiplier), name: 'Соперник ' + (i + 1) });
-                }
-                opponents.sort((a, b) => b.winChance - a.winChance);
-                return opponents;
-            }
-
-            function renderOpponents() {
-                const opponents = generateOpponents();
-                opponentListEl.innerHTML = '';
-                if (!opponents.length) { opponentListEl.innerHTML = '<p style="color:var(--text-muted);font-size:12px;">Купите машину, чтобы участвовать в гонках.</p>'; return; }
-                opponents.forEach(opp => {
-                    const card = document.createElement('div');
-                    card.className = 'opponent-card' + (state.selectedOpponent && state.selectedOpponent.id === opp.id ? ' selected' : '');
-                    card.innerHTML = `<div class="opponent-info"><div class="opponent-name">${opp.name}</div><div class="opponent-car">${opp.car.emoji} ${opp.car.name}</div></div><div class="opponent-chance"><div class="chance-val" style="color: ${opp.winChance > 50 ? 'var(--success)' : opp.winChance > 25 ? 'var(--c-legendary)' : 'var(--danger)'}">${opp.winChance}%</div><div class="mult-val">x${opp.multiplier}</div></div>`;
-                    card.addEventListener('click', () => {
-                        state.selectedOpponent = opp;
-                        document.querySelectorAll('.opponent-card').forEach(c => c.classList.remove('selected'));
-                        card.classList.add('selected');
-                        updateSelectedInfo();
-                    });
-                    opponentListEl.appendChild(card);
-                });
-                if (!state.selectedOpponent || !opponents.find(o => o.id === state.selectedOpponent.id)) {
-                    state.selectedOpponent = opponents[0];
-                    opponentListEl.querySelector('.opponent-card')?.classList.add('selected');
-                }
-                updateSelectedInfo();
-            }
-
-            function updateSelectedInfo() {
-                if (state.selectedOpponent) {
-                    selectedInfoEl.classList.add('active');
-                    selectedInfoEl.innerHTML = `Выбран: <b>${state.selectedOpponent.name}</b> (${state.selectedOpponent.car.name}) · Шанс победы: <b>${state.selectedOpponent.winChance}%</b> · Коэф. выигрыша: <b style="color:var(--success)">x${state.selectedOpponent.multiplier}</b>`;
-                } else selectedInfoEl.classList.remove('active');
-            }
-
-            function updateCarSelect() {
-                const owned = state.cars.filter(c => c.owned); carSelect.innerHTML = '';
-                owned.forEach(car => { const opt = document.createElement('option'); opt.value = car.id; opt.textContent = car.name; carSelect.appendChild(opt); });
-                updateRaceInfo(); renderOpponents();
-            }
-
-            function updateRaceInfo() {
-                const car = state.cars.find(c => c.id === carSelect.value); if (!car) return;
-                playerNameEl.textContent = car.name;
-                setCarVisual(playerVisualEl, playerPlateUnderEl, car);
-                statsPreview.innerHTML = `<span>⚙️ ${car.tuning.engine||0}/5</span><span>🔧 ${car.tuning.suspension||0}/5</span><span>🛑 ${car.tuning.brakes||0}/5</span><span>🌀 ${car.tuning.turbo||0}/5</span><span>🛞 ${car.tuning.tires||0}/5</span>`;
-            }
-
-            carSelect.addEventListener('change', () => { updateRaceInfo(); renderOpponents(); });
-
-            startBtn.addEventListener('click', () => {
-                if (raceState !== 'idle') return;
-                const bet = parseInt(betInput.value);
-                if (isNaN(bet) || bet < 1000 || bet > 100000) return alert('Ставка от 1000 до 100000 ₽');
-                if (state.balance < bet) return alert('Недостаточно средств!');
-                const car = state.cars.find(c => c.id === carSelect.value); if (!car) return;
-                if (!state.selectedOpponent) return alert('Выберите соперника!');
-                state.balance -= bet; state.stats.races++; updateBalance(); saveState();
-                currentOpponent = state.selectedOpponent;
-                resultEl.textContent = '';
-                playerDistance = 0; enemyDistance = 0; playerFinishTime = 0; enemyFinishTime = 0;
-                playerProgressEl.style.width = '0%'; enemyProgressEl.style.width = '0%';
-                timerEl.textContent = '0.00 с';
-                gasBtn.style.display = 'none';
-                enemyNameEl.textContent = currentOpponent.car.name;
-                setCarVisual(enemyVisualEl, enemyPlateUnderEl, currentOpponent.car);
-                const baseSpeed = 100;
-                const playerPower = (car.power || 100) + (car.tuning.engine||0)*20 + (car.tuning.turbo||0)*30;
-                const enemyPower = (currentOpponent.car.power || 100) + Math.floor(Math.random() * 50);
-                playerSpeed = baseSpeed + playerPower / 5;
-                enemySpeed = baseSpeed + enemyPower / 5;
-                startCountdown();
-            });
-
-            function startCountdown() {
-                raceState = 'countdown';
-                startBtn.disabled = true;
-                let count = 3;
-                countdownEl.style.display = 'block';
-                countdownEl.textContent = count;
-                countdownEl.classList.remove('go');
-                const countInterval = setInterval(() => {
-                    count--;
-                    if (count > 0) {
-                        countdownEl.textContent = count;
-                        countdownEl.style.animation = 'none';
-                        setTimeout(() => countdownEl.style.animation = 'countdownPulse 1s ease-in-out', 10);
-                    } else {
-                        clearInterval(countInterval);
-                        countdownEl.textContent = '🟢';
-                        countdownEl.classList.add('go');
-                        raceState = 'ready';
-                        gasBtn.style.display = 'block';
-                        gasPressed = false;
-                        setTimeout(() => {
-                            if (raceState === 'ready' && !gasPressed) {
-                                countdownEl.style.display = 'none';
-                                startRaceAnimation();
-                            }
-                        }, 3000);
-                    }
-                }, 1000);
-            }
-
-            gasBtn.addEventListener('click', () => {
-                if (raceState !== 'ready') return;
-                gasPressed = true;
-                countdownEl.style.display = 'none';
-                gasBtn.style.display = 'none';
-                startRaceAnimation();
-            });
-
-            function startRaceAnimation() {
-                raceState = 'racing';
-                startTime = Date.now();
-                raceInterval = setInterval(() => {
-                    const elapsed = (Date.now() - startTime) / 1000;
-                    if (gasPressed) {
-                        playerDistance += playerSpeed * 0.05;
-                        if (playerDistance >= TRACK_LENGTH) playerDistance = TRACK_LENGTH;
-                        playerProgressEl.style.width = (playerDistance / TRACK_LENGTH * 100) + '%';
-                        if (playerDistance >= TRACK_LENGTH && playerFinishTime === 0) playerFinishTime = elapsed;
-                    }
-                    if (enemyDistance < TRACK_LENGTH) {
-                        enemyDistance += enemySpeed * 0.05;
-                        if (enemyDistance >= TRACK_LENGTH) enemyDistance = TRACK_LENGTH;
-                        enemyProgressEl.style.width = (enemyDistance / TRACK_LENGTH * 100) + '%';
-                        if (enemyDistance >= TRACK_LENGTH && enemyFinishTime === 0) enemyFinishTime = elapsed;
-                    }
-                    timerEl.textContent = elapsed.toFixed(2) + ' с';
-                    if (playerFinishTime > 0 && enemyFinishTime > 0) {
-                        clearInterval(raceInterval);
-                        finishRace();
-                    }
-                }, 50);
-            }
-
-            function finishRace() {
-                raceState = 'finished';
-                const bet = parseInt(betInput.value);
-                const opp = currentOpponent;
-                if (playerFinishTime > 0 && (enemyFinishTime === 0 || playerFinishTime < enemyFinishTime)) {
-                    const winAmount = Math.floor(bet * opp.multiplier);
-                    state.balance += winAmount; state.stats.wins++; addXP(25);
-                    resultEl.innerHTML = `<span style="color:var(--success)">🏆 Победа! +${winAmount} ₽ (${playerFinishTime.toFixed(2)} с)</span>`;
-                } else {
-                    resultEl.innerHTML = `<span style="color:var(--danger)">💀 Поражение! -${bet} ₽ (${enemyFinishTime.toFixed(2)} с у соперника)</span>`;
-                }
-                updateBalance(); saveState();
-                setTimeout(() => {
-                    raceState = 'idle'; startBtn.disabled = false;
-                    countdownEl.style.display = 'none'; gasBtn.style.display = 'none';
-                    playerProgressEl.style.width = '0%'; enemyProgressEl.style.width = '0%';
-                    timerEl.textContent = '0.00 с';
-                    renderOpponents();
-                }, 3000);
-            }
-
-            updateCarSelect();
-            document.querySelector('[data-tab="earn"]').addEventListener('click', () => {
-                if (raceState === 'idle') { updateCarSelect(); renderOpponents(); }
-            });
         }
 
         function setupRoulette() {
@@ -1611,7 +1319,7 @@
                     center.textContent = `x${resultMult}`;
                     if (resultMult === 0) resultEl.innerHTML = `<span style="color:var(--danger)">💀 Проигрыш! -${bet} ₽</span>`;
                     else if (resultMult === 1) { state.balance += bet; resultEl.innerHTML = `<span style="color:var(--text-muted)">↩️ Возврат: ${bet} ₽</span>`; }
-                    else { state.balance += Math.floor(bet * resultMult); if (resultMult > state.stats.maxRoulette) state.stats.maxRoulette = resultMult; resultEl.innerHTML = `<span style="color:var(--success)">🎉 Выигрыш x${resultMult}! +${Math.floor(bet*resultMult)} ₽</span>`; }
+                    else { state.balance += Math.floor(bet * resultMult); if (resultMult > state.stats.maxRoulette) state.stats.maxRoulette = resultMult; resultEl.innerHTML = `<span style="color:var(--success)">🎉 Выигрыш x${resultMult}! +${Math.floor(bet * resultMult)} ₽</span>`; }
                     updateBalance(); saveState(); isSpinning = false;
                 }, 3100);
             });
@@ -1619,7 +1327,7 @@
 
         function setupTournament() {
             document.getElementById('join-tournament-btn').addEventListener('click', () => {
-                if (Date.now() - state.lastTournament < 24*60*60*1000) return alert('Вы уже участвовали сегодня!');
+                if (Date.now() - state.lastTournament < 24 * 60 * 60 * 1000) return alert('Вы уже участвовали сегодня!');
                 if (state.balance < 50000) return alert('Недостаточно средств! Нужно 50 000 ₽.');
                 state.balance -= 50000; updateBalance(); saveState();
                 const power = state.cars.filter(c => c.owned).reduce((sum, c) => sum + Object.values(c.tuning).reduce((a, b) => a + b, 0), 0);
@@ -1634,7 +1342,6 @@
                 }, 1500);
             });
         }
-
         function renderBusiness() {
             const container = document.getElementById('business-list'); container.innerHTML = '';
             state.businesses.forEach(b => {
@@ -1656,12 +1363,12 @@
             const ownedCars = state.cars.filter(c => c.owned);
             let myAuctions = state.auctions.filter(a => a.listedBy === 'user');
             let otherAuctions = state.auctions.filter(a => a.listedBy !== 'user');
-            
+
             if (otherAuctions.length < 3) {
                 for (let i = 0; i < 3 - otherAuctions.length; i++) {
                     const randomCar = state.cars[Math.floor(Math.random() * state.cars.length)];
                     const markup = 0.7 + Math.random() * 0.3;
-                    state.auctions.push({ id: 'bot_' + Date.now() + i, carId: randomCar.id, price: Math.floor(randomCar.price * markup), expiresAt: Date.now() + 24*60*60*1000, listedBy: 'bot' });
+                    state.auctions.push({ id: 'bot_' + Date.now() + i, carId: randomCar.id, price: Math.floor(randomCar.price * markup), expiresAt: Date.now() + 24 * 60 * 60 * 1000, listedBy: 'bot' });
                 }
                 saveState();
                 otherAuctions = state.auctions.filter(a => a.listedBy !== 'user');
@@ -1670,8 +1377,7 @@
             container.innerHTML = '<h3 style="margin:16px 0 8px; font-size:16px;">📤 Ваши лоты</h3>';
             if (myAuctions.length === 0) container.innerHTML += '<p style="color:var(--text-muted);font-size:12px;margin-bottom:16px;">У вас нет активных лотов.</p>';
             myAuctions.forEach(a => {
-                const car = state.cars.find(c => c.id === a.carId);
-                if (!car) return;
+                const car = state.cars.find(c => c.id === a.carId); if (!car) return;
                 const card = document.createElement('div'); card.className = 'auction-card';
                 card.innerHTML = `${car.image ? `<img src="${car.image}" style="width:100%;height:80px;object-fit:contain;margin-bottom:8px;" onerror="this.style.display='none'">` : ''}<div class="auction-header"><span style="font-weight:700;">${car.name}</span><span class="auction-price">${a.price.toLocaleString('ru-RU')} ₽</span></div><div class="auction-desc">Продавец: Вы</div><button class="btn-list-auction" style="width:100%;padding:8px;border:none;border-radius:8px;cursor:pointer;" data-id="${a.id}">Снять с продажи</button>`;
                 container.appendChild(card);
@@ -1680,8 +1386,7 @@
             container.innerHTML += '<h3 style="margin:16px 0 8px; font-size:16px;">📥 Лоты других игроков</h3>';
             if (otherAuctions.length === 0) container.innerHTML += '<p style="color:var(--text-muted);font-size:12px;">Пока нет лотов.</p>';
             otherAuctions.forEach(a => {
-                const car = state.cars.find(c => c.id === a.carId);
-                if (!car) return;
+                const car = state.cars.find(c => c.id === a.carId); if (!car) return;
                 const card = document.createElement('div'); card.className = 'auction-card';
                 card.innerHTML = `${car.image ? `<img src="${car.image}" style="width:100%;height:80px;object-fit:contain;margin-bottom:8px;" onerror="this.style.display='none'">` : ''}<div class="auction-header"><span style="font-weight:700;">${car.name}</span><span class="auction-price">${a.price.toLocaleString('ru-RU')} ₽</span></div><div class="auction-desc">Продавец: ${a.listedBy === 'bot' ? 'Бот' : 'Игрок'}</div><button class="btn-buy-auction" style="width:100%;padding:8px;border:none;border-radius:8px;cursor:pointer;" data-id="${a.id}">Купить</button>`;
                 container.appendChild(card);
@@ -1701,12 +1406,12 @@
                     const carId = e.target.dataset.id;
                     const car = state.cars.find(c => c.id === carId);
                     if (!car) return;
-                    const priceStr = prompt(`Введите цену (от 1 ₽ до 999 999 999 ₽):`, Math.floor(car.price*1.5));
+                    const priceStr = prompt(`Введите цену (от 1 ₽ до 999 999 999 ₽):`, Math.floor(car.price * 1.5));
                     if (!priceStr) return overlay.remove();
                     const price = parseInt(priceStr);
                     if (isNaN(price) || price < 1 || price > 999999999) return alert('Некорректная цена!');
                     car.owned = false;
-                    state.auctions.push({ id: 'user_' + Date.now(), carId, price, expiresAt: Date.now() + 24*60*60*1000, listedBy: 'user' });
+                    state.auctions.push({ id: 'user_' + Date.now(), carId, price, expiresAt: Date.now() + 24 * 60 * 60 * 1000, listedBy: 'user' });
                     saveState(); renderGarage(); renderAuction(); overlay.remove();
                 }));
                 overlay.querySelector('#cancel-auction').addEventListener('click', () => overlay.remove());
@@ -1718,114 +1423,7 @@
                 const auction = state.auctions.find(a => a.id === auctionId);
                 if (auction) {
                     const car = state.cars.find(c => c.id === auction.carId);
-                    if (car) car.owned = true;
-                    state.auctions = state.auctions.filter(a => a.id !== auctionId);
-                    saveState(); renderGarage(); renderAuction();
-                }
-            }));
-            container.querySelectorAll('.btn-buy-auction[data-id]').forEach(btn => btn.addEventListener('click', (e) => {
-                const auctionId = e.target.dataset.id;
-                const auction = state.auctions.find(a => a.id === auctionId);
-                if (auction && state.balance >= auction.price) {
-                    const car = state.cars.find(c => c.id === auction.carId);
-                    if (car) car.owned = true;
-                    state.balance -= auction.price;
-                    state.auctions = state.auctions.filter(a => a.id !== auctionId);
-                    saveState(); updateBalance(); renderGarage(); renderAuction();
-                    if (tg) tg.HapticFeedback.notificationOccurred('success');
-                } else alert('Недостаточно средств!');
-            }));
-        }
-
-        function renderProfile() {
-            document.getElementById('profile-name').textContent = document.getElementById('user-name').textContent;
-            document.getElementById('stat-cars').textContent = state.cars.filter(c => c.owned).length;
-            document.getElementById('stat-races').textContent = state.stats.races;
-            document.getElementById('stat-wins').textContent = state.stats.wins;
-            document.getElementById('stat-cases').textContent = state.stats.casesOpened;
-            updateLevel();
-        }
-
-        function refreshTasks() {
-            const now = Date.now(); const cooldown = 24 * 60 * 60 * 1000;
-            if (now - state.lastTaskRefresh >= cooldown || !state.tasks.length) {
-                state.tasks = TASKS_TEMPLATE.map(t => ({ ...t, progress: 0, claimed: false }));
-                state.lastTaskRefresh = now; saveState();
-            }
-            renderTasks();
-        }
-
-        function renderTasks() {
-            const container = document.getElementById('tasks-list'); container.innerHTML = '';
-            if (!state.tasks.length) { container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;">Задания обновятся завтра.</p>'; return; }
-            state.tasks.forEach(task => {
-                let currentProgress = 0;
-                if (task.type === 'races') currentProgress = state.stats.wins;
-                else if (task.type === 'cases') currentProgress = state.stats.casesOpened;
-                else if (task.type === 'tuning') currentProgress = state.stats.tuningDone;
-                const progress = Math.min(currentProgress, task.target);
-                const isComplete = progress >= task.target && !task.claimed;
-                const card = document.createElement('div'); card.className = 'task-card';
-                card.innerHTML = `<div class="task-info"><div class="task-title">${task.title}</div><div class="task-progress">${progress} / ${task.target}</div><div class="task-reward">+${task.reward} ₽</div></div><button class="btn-claim" ${!isComplete ? 'disabled' : ''} data-id="${task.id}">${task.claimed ? '✅' : 'Забрать'}</button>`;
-                container.appendChild(card);
-            });
-            container.querySelectorAll('.btn-claim').forEach(btn => btn.addEventListener('click', (e) => {
-                const task = state.tasks.find(t => t.id === e.target.dataset.id);
-                if (task && !task.claimed) {
-                    let currentProgress = task.type === 'races' ? state.stats.wins : task.type === 'cases' ? state.stats.casesOpened : state.stats.tuningDone;
-                    if (currentProgress >= task.target) { task.claimed = true; state.balance += task.reward; saveState(); updateBalance(); renderTasks(); }
-                }
-            }));
-        }
-
-        function renderAchievements() {
-            const container = document.getElementById('achievements-list'); container.innerHTML = '';
-            ACHIEVEMENTS.forEach(ach => {
-                const unlocked = state.unlockedAchievements.includes(ach.id);
-                const card = document.createElement('div'); card.className = 'ach-card';
-                card.innerHTML = `<div class="ach-icon">${ach.icon}</div><div class="ach-info"><div class="ach-title">${ach.title}</div><div class="ach-desc">${ach.desc} · +${ach.reward} ₽</div></div><div class="ach-status">${unlocked ? '✅' : '🔒'}</div>`;
-                container.appendChild(card);
-            });
-        }
-
-        function checkAchievements() {
-            ACHIEVEMENTS.forEach(ach => {
-                if (!state.unlockedAchievements.includes(ach.id) && ach.check(state)) {
-                    state.unlockedAchievements.push(ach.id); state.balance += ach.reward; saveState(); updateBalance();
-                    if (tg) tg.HapticFeedback.notificationOccurred('success');
-                    alert(`🏆 Достижение: ${ach.title}!\nНаграда: ${ach.reward} ₽`);
-                }
-            });
-        }
-
-              function setupBonus() {
-            const btn = document.getElementById('bonus-btn');
-            const cooldown = 24 * 60 * 60 * 1000;
-            const check = () => {
-                const now = Date.now();
-                if (now - state.lastBonus < cooldown) {
-                    btn.disabled = true;
-                    btn.textContent = `⏳ ${Math.ceil((cooldown - (now - state.lastBonus)) / 3600000)} ч.`;
-                } else {
-                    btn.disabled = false;
-                    btn.innerHTML = '🎁 Бонус <span style="opacity:0.8;font-size:12px">+1000 ₽</span>';
-                }
-            };
-            btn.addEventListener('click', () => {
-                if (Date.now() - state.lastBonus >= cooldown) {
-                    state.balance += 1000;
-                    state.lastBonus = Date.now();
-                    addXP(10);
-                    saveState();
-                    updateBalance();
-                    check();
-                }
-            });
-            check();
-            setInterval(check, 60000);
-        }
-
-        // --- НАВИГАЦИЯ ---
+                            // --- НАВИГАЦИЯ ---
         function setupUI() {
             const nav = document.querySelectorAll('.nav-btn'); const tabs = document.querySelectorAll('.tab-content');
             nav.forEach(btn => btn.addEventListener('click', () => {
@@ -1839,7 +1437,7 @@
                 if (id === 'business') renderBusiness();
                 if (id === 'auction') renderAuction();
                 if (id === 'profile') { renderProfile(); refreshTasks(); renderAchievements(); }
-               if (id === 'earn') { setupRace(); renderRaceOpponents(); setupRoulette(); setupTournament(); }
+                if (id === 'earn') { setupRace(); setupRoulette(); setupTournament(); }
             }));
 
             const filterContainer = document.getElementById('rarity-filters');
