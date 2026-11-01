@@ -7,44 +7,24 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #08080e;
-            --panel-bg: rgba(16, 16, 26, 0.85);
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --text: #ffffff;
-            --text-muted: #8a8a9e;
-            --border: rgba(255, 255, 255, 0.08);
-            --success: #00ff88;
-            --danger: #ef4444;
-            --c-common: #9ca3af;
-            --c-rare: #3b82f6;
-            --c-epic: #a855f7;
-            --c-mythic: #ef4444;
-            --c-legendary: #fbbf24;
-            --c-special: #ff00ff;
+            --bg: #08080e; --panel-bg: rgba(16, 16, 26, 0.85); --card-bg: rgba(255, 255, 255, 0.03);
+            --text: #ffffff; --text-muted: #8a8a9e; --border: rgba(255, 255, 255, 0.08);
+            --success: #00ff88; --danger: #ef4444; --accent: #00e5ff;
+            --c-common: #9ca3af; --c-rare: #3b82f6; --c-epic: #a855f7;
+            --c-mythic: #ef4444; --c-legendary: #fbbf24; --c-special: #ff00ff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body {
-            background: var(--bg); color: var(--text); height: 100vh; overflow: hidden;
+        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden;
             background-image: radial-gradient(circle at 10% 10%, rgba(168,85,247,0.08), transparent 40%),
-                              radial-gradient(circle at 90% 90%, rgba(59,130,246,0.08), transparent 40%);
-        }
+                              radial-gradient(circle at 90% 90%, rgba(59,130,246,0.08), transparent 40%); }
         #app { display: flex; flex-direction: column; height: 100vh; max-width: 480px; margin: 0 auto; position: relative; }
-        
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 20px; background: var(--panel-bg); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border); z-index: 10;
-        }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px;
+            background: var(--panel-bg); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); z-index: 10; }
         .user-info { display: flex; align-items: center; gap: 8px; }
         .user-name { font-weight: 700; font-size: 14px; }
         .level-badge { background: #ff00aa; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-        
-        .balance {
-            background: linear-gradient(135deg, #6d28d9, #3b82f6); padding: 8px 18px;
-            border-radius: 30px; font-weight: 700; font-size: 15px;
-            box-shadow: 0 4px 15px rgba(109,40,217,0.4);
-        }
-        
+        .balance { background: linear-gradient(135deg, #6d28d9, #3b82f6); padding: 8px 18px; border-radius: 30px;
+            font-weight: 700; font-size: 15px; box-shadow: 0 4px 15px rgba(109,40,217,0.4); }
         main { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 120px; }
         main::-webkit-scrollbar { width: 0; }
         .tab-content { display: none; animation: slideUp 0.3s ease; }
@@ -53,7 +33,6 @@
         h2 { margin-bottom: 16px; font-size: 26px; font-weight: 800; }
         h2 span { background: linear-gradient(135deg, #fff, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* ПРОФИЛЬ */
         .profile-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 16px; }
         .avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #6d28d9, #3b82f6); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
         .xp-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 12px 0; overflow: hidden; }
@@ -62,7 +41,6 @@
         .stat-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; font-size: 12px; }
         .stat-item b { display: block; font-size: 18px; color: #3b82f6; margin-top: 4px; }
 
-        /* ФИЛЬТРЫ */
         .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 8px; scrollbar-width: none; }
         .filter-scroll::-webkit-scrollbar { display: none; }
         .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; }
@@ -74,7 +52,6 @@
         .filter-btn[data-r="legendary"].active { background: var(--c-legendary); border-color: var(--c-legendary); color: #000; }
         .filter-btn[data-r="special"].active { background: linear-gradient(90deg, #ff00ff, #00ffff); border-color: transparent; color: #000; }
 
-        /* МАШИНЫ */
         .car-grid { display: grid; gap: 12px; }
         .car-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; position: relative; transition: transform 0.2s; overflow: hidden; }
         .car-card:active { transform: scale(0.98); }
@@ -85,7 +62,6 @@
         .car-card.rarity-legendary { border-color: rgba(251,191,36,0.6); box-shadow: inset 0 0 20px rgba(251,191,36,0.15); }
         .car-card.rarity-special { border: 2px solid transparent; background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box, linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff) border-box; animation: rainbowGlow 3s linear infinite; }
         @keyframes rainbowGlow { 0% { box-shadow: 0 0 10px rgba(255,0,0,0.3); } 50% { box-shadow: 0 0 10px rgba(0,0,255,0.3); } 100% { box-shadow: 0 0 10px rgba(255,0,0,0.3); } }
-        
         .car-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
         .car-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 3px 8px; border-radius: 6px; color: #fff; }
         .rarity-common .car-badge { background: var(--c-common); color: #000; }
@@ -94,18 +70,14 @@
         .rarity-mythic .car-badge { background: var(--c-mythic); }
         .rarity-legendary .car-badge { background: var(--c-legendary); color: #000; }
         .rarity-special .car-badge { background: linear-gradient(90deg, #ff00ff, #00ffff); color: #000; }
-        
         .car-image-container { height: 110px; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; position: relative; }
         .car-image { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)); }
         .car-placeholder { font-size: 60px; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.5)); }
-        
         .car-plate-mini { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); font-family: 'Arial Narrow', sans-serif; font-weight: 700; font-size: 8px; padding: 2px 4px; border-radius: 2px; border: 1px solid #000; white-space: nowrap; z-index: 2; }
         .car-plate-mini.ru { background: #fff; color: #000; border-left: 12px solid #0033aa; }
         .car-plate-mini.kz { background: #fff; color: #000; border-left: 12px solid #0072bc; }
         .car-plate-mini.by { background: #fff; color: #000; border-left: 12px solid #c8102e; }
-        
         .car-neon { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 60px; height: 6px; border-radius: 50%; filter: blur(4px); opacity: 0.8; }
-
         .car-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
         .car-price { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
         .car-income { font-size: 12px; color: var(--success); font-weight: 600; margin-bottom: 10px; }
@@ -115,7 +87,6 @@
         .rarity-mythic .car-price { color: var(--c-mythic); }
         .rarity-legendary .car-price { color: var(--c-legendary); }
         .rarity-special .car-price { background: linear-gradient(90deg, #ff00ff, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
         .btn-row { display: flex; gap: 8px; margin-top: 8px; }
         .btn-action { flex: 1; padding: 10px; border: none; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; transition: opacity 0.2s; }
         .btn-action:active { opacity: 0.7; }
@@ -123,15 +94,12 @@
         .btn-sell { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
         .btn-info { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--border); }
         .btn-custom { background: rgba(168,85,247,0.2); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
-        
         .car-owned-tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--success); background: rgba(0,255,136,0.1); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(0,255,136,0.2); }
 
-        /* СТАТИСТИКА В ГАРАЖЕ */
         .garage-stats { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-around; font-size: 12px; }
         .garage-stat { text-align: center; }
         .garage-stat b { display: block; font-size: 16px; color: #3b82f6; margin-top: 4px; }
 
-        /* МОДАЛКИ */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 100; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content { background: #151522; border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 90%; max-width: 380px; animation: popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); max-height: 85vh; overflow-y: auto; }
@@ -139,14 +107,12 @@
         .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
         .modal-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4; }
         .modal-close { width: 100%; padding: 12px; margin-top: 20px; background: var(--card-bg); border: 1px solid var(--border); color: #fff; border-radius: 12px; font-weight: 700; cursor: pointer; }
-        
         .stat-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
         .stat-label { color: var(--text-muted); }
         .stat-value { font-weight: 700; }
         .stat-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 4px; overflow: hidden; }
         .stat-bar-fill { height: 100%; background: linear-gradient(90deg, #6d28d9, #3b82f6); }
 
-        /* КАСТОМИЗАЦИЯ */
         .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
         .color-swatch { width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .color-swatch:active { transform: scale(0.9); }
@@ -154,8 +120,7 @@
         .neon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
         .neon-swatch { padding: 12px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; font-size: 12px; font-weight: 700; text-align: center; }
         .neon-swatch.selected { border-color: #fff; box-shadow: 0 0 15px currentColor; }
-        
-        /* ЗАДАНИЯ */
+
         .task-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .task-info { display: flex; flex-direction: column; gap: 4px; }
         .task-title { font-weight: 700; font-size: 14px; }
@@ -164,7 +129,6 @@
         .btn-claim { background: var(--success); color: #000; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
         .btn-claim:disabled { background: rgba(255,255,255,0.1); color: var(--text-muted); cursor: not-allowed; }
 
-        /* ДОСТИЖЕНИЯ */
         .ach-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
         .ach-icon { font-size: 32px; }
         .ach-info { flex: 1; }
@@ -172,7 +136,6 @@
         .ach-desc { font-size: 11px; color: var(--text-muted); }
         .ach-status { font-size: 20px; }
 
-        /* ТЮНИНГ */
         .tuning-select { width: 100%; padding: 14px; background: var(--card-bg); color: var(--text); border: 1px solid var(--border); border-radius: 14px; font-size: 15px; outline: none; font-weight: 600; margin-bottom: 12px; appearance: none; }
         .tuning-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .tuning-info { display: flex; flex-direction: column; gap: 4px; }
@@ -183,7 +146,6 @@
         .btn-tune { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #60a5fa; padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; }
         .btn-tune:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* НОМЕРА */
         .plate-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; }
         .plate-options { display: flex; gap: 8px; margin-bottom: 12px; }
         .country-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); padding: 10px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
@@ -217,33 +179,41 @@
         .btn-assign { background: var(--success); color: #000; }
         .btn-discard { background: rgba(255,255,255,0.1); color: #fff; }
 
-        /* ЗАРАБОТОК */
         .earn-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
         .earn-tab-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); padding: 10px; border-radius: 12px; font-weight: 700; font-size: 12px; cursor: pointer; min-width: 80px; }
         .earn-tab-btn.active { background: #6d28d9; color: #fff; border-color: #6d28d9; }
         .earn-panel { display: none; }
         .earn-panel.active { display: block; }
 
-        /* ГОНКИ */
+        /* НОВАЯ СИСТЕМА ГОНОК */
         .race-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; }
         .race-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-        .race-track { position: relative; height: 140px; background: #1a1a2e; border-radius: 12px; margin: 16px 0; overflow: hidden; border: 1px solid var(--border); }
-        .race-lane { position: absolute; left: 0; right: 0; height: 50%; display: flex; align-items: center; padding: 0 10px; }
-        .race-lane.top { top: 0; border-bottom: 2px dashed rgba(255,255,255,0.2); }
-        .race-lane.bottom { bottom: 0; }
-        .race-car-container { display: flex; flex-direction: column; align-items: center; position: relative; transition: left 2.5s cubic-bezier(0.25,0.1,0.25,1); left: 10px; }
-        .race-car { font-size: 36px; }
-        .race-car-plate { font-size: 7px; background: #fff; color: #000; padding: 1px 3px; border-radius: 2px; border: 1px solid #000; margin-top: -4px; white-space: nowrap; }
-        .race-finish { position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: repeating-linear-gradient(0deg, #fff 0, #fff 8px, #000 8px, #000 16px); }
-        .race-controls { display: flex; flex-direction: column; gap: 10px; }
-        .race-select { width: 100%; padding: 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; }
-        .race-stats-preview { display: flex; gap: 10px; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 10px; font-size: 11px; justify-content: space-around; }
-        .race-bet-row { display: flex; gap: 8px; }
-        .race-bet-row input { flex: 1; padding: 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; }
-        .race-bet-row button { padding: 12px 20px; background: linear-gradient(135deg, #6d28d9, #3b82f6); border: none; color: #fff; border-radius: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-        .race-result { text-align: center; font-weight: 700; font-size: 18px; margin-top: 12px; min-height: 24px; }
+        .race-track-new { position: relative; height: 240px; background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 12px; margin: 16px 0; overflow: hidden; border: 1px solid var(--border); }
+        .track-road { position: absolute; left: 0; right: 0; bottom: 0; height: 110px; background: #2a2a3e; border-top: 3px solid #444; }
+        .track-lane-line { position: absolute; left: 0; right: 0; bottom: 55px; height: 3px; background: repeating-linear-gradient(90deg, #777 0, #777 15px, transparent 15px, transparent 30px); }
+        .race-lane-new { position: absolute; left: 0; right: 0; display: flex; align-items: flex-end; padding: 0 20px; height: 50%; }
+        .race-lane-new.top { top: 0; justify-content: flex-start; }
+        .race-lane-new.bottom { bottom: 0; justify-content: flex-start; }
+        .race-car-static { display: flex; flex-direction: column; align-items: center; width: 100px; position: relative; }
+        .race-car-static .car-emoji-big { font-size: 56px; filter: drop-shadow(0 6px 6px rgba(0,0,0,0.6)); }
+        .race-car-static .car-img-big { width: 90px; height: 60px; object-fit: contain; filter: drop-shadow(0 6px 6px rgba(0,0,0,0.6)); }
+        .race-car-static .plate-under { margin-top: 2px; padding: 2px 6px; background: #fff; color: #000; font-family: 'Arial Narrow', sans-serif; font-weight: 700; font-size: 10px; border: 1px solid #000; border-radius: 2px; white-space: nowrap; }
+        .race-car-static .plate-under.ru { border-left: 12px solid #0033aa; }
+        .race-car-static .plate-under.kz { border-left: 12px solid #0072bc; }
+        .race-car-static .plate-under.by { border-left: 12px solid #c8102e; }
+        .race-progress-container { margin: 12px 0; display: flex; flex-direction: column; gap: 6px; }
+        .race-progress-row { display: flex; align-items: center; gap: 8px; }
+        .race-progress-bar { flex: 1; height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; overflow: hidden; position: relative; }
+        .race-progress-fill-player { height: 100%; background: linear-gradient(90deg, #3b82f6, #00f0ff); width: 0%; transition: width 0.1s linear; }
+        .race-progress-fill-enemy { height: 100%; background: linear-gradient(90deg, #ef4444, #ff00aa); width: 0%; transition: width 0.1s linear; }
+        .race-progress-label { font-size: 11px; color: var(--text-muted); font-weight: 700; min-width: 80px; }
+        .race-timer { text-align: center; font-size: 28px; font-weight: 800; color: var(--accent); margin: 8px 0; font-variant-numeric: tabular-nums; }
+        .race-countdown { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 110px; font-weight: 900; color: #fff; text-shadow: 0 0 30px var(--accent); z-index: 5; animation: countdownPulse 1s ease-in-out; }
+        @keyframes countdownPulse { 0% { transform: translate(-50%, -50%) scale(2); opacity: 0; } 30% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        .race-countdown.go { color: var(--success); text-shadow: 0 0 40px var(--success); }
+        .btn-gas { width: 100%; padding: 22px; font-size: 26px; font-weight: 900; background: linear-gradient(135deg, #00ff88, #00cc66); color: #000; border: none; border-radius: 20px; cursor: pointer; margin: 12px 0; box-shadow: 0 0 30px rgba(0,255,136,0.5); animation: gasPulse 1s infinite; }
+        @keyframes gasPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0,255,136,0.5); } 50% { transform: scale(1.02); box-shadow: 0 0 50px rgba(0,255,136,0.8); } }
 
-        /* ВЫБОР СОПЕРНИКА */
         .opponent-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; max-height: 300px; overflow-y: auto; }
         .opponent-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
         .opponent-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
@@ -257,7 +227,6 @@
         .selected-opponent-info { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; font-size: 12px; display: none; }
         .selected-opponent-info.active { display: block; }
 
-        /* РУЛЕТКА */
         .roulette-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; }
         .roulette-legend { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 16px; font-size: 11px; }
         .legend-item { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 12px; }
@@ -271,7 +240,6 @@
         .roulette-bet-row button { padding: 12px 20px; background: linear-gradient(135deg, #6d28d9, #3b82f6); border: none; color: #fff; border-radius: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
         .roulette-result { text-align: center; font-weight: 700; font-size: 16px; margin-top: 12px; min-height: 24px; }
 
-        /* БИЗНЕС */
         .biz-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .biz-icon { font-size: 40px; margin-right: 12px; }
         .biz-info { flex: 1; }
@@ -281,7 +249,6 @@
         .biz-buy { background: linear-gradient(135deg, #6d28d9, #3b82f6); border: none; color: #fff; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
         .biz-owned { font-size: 12px; color: var(--success); font-weight: 700; }
 
-        /* АУКЦИОН */
         .auction-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
         .auction-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .auction-price { font-size: 16px; font-weight: 800; color: var(--c-legendary); }
@@ -291,7 +258,6 @@
         .btn-list-auction { background: var(--c-epic); color: #fff; }
         .btn-buy-auction { background: var(--success); color: #000; }
 
-        /* КЕЙСЫ */
         .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .case-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 12px; text-align: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s; position: relative; overflow: hidden; }
         .case-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.2); }
@@ -305,16 +271,17 @@
         .case-strip { display: flex; height: 100%; align-items: center; transition: transform 0.1s linear; }
         .case-strip-item { min-width: 100px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--border); padding: 4px; }
         .case-strip-item .emoji { font-size: 36px; }
+        .case-strip-item img { width: 50px; height: 40px; object-fit: contain; }
         .case-strip-item .name { font-size: 9px; text-align: center; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
         .case-strip-center-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--c-legendary); transform: translateX(-50%); box-shadow: 0 0 10px var(--c-legendary); z-index: 2; }
         .case-result-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 101; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
         .case-result-content { text-align: center; padding: 20px; animation: popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
         .case-result-icon { font-size: 100px; margin-bottom: 12px; }
+        .case-result-icon img { width: 200px; height: 120px; object-fit: contain; }
         .case-result-name { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
         .case-result-rarity { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
         .case-close-btn { padding: 14px 40px; background: linear-gradient(135deg, #6d28d9, #3b82f6); border: none; color: #fff; border-radius: 30px; font-weight: 700; font-size: 16px; cursor: pointer; }
 
-        /* НАВИГАЦИЯ */
         .bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; display: flex; background: var(--panel-bg); backdrop-filter: blur(20px); border-top: 1px solid var(--border); padding: 10px; padding-bottom: max(10px, env(safe-area-inset-bottom)); z-index: 20; overflow-x: auto; scrollbar-width: none; }
         .bottom-nav::-webkit-scrollbar { display: none; }
         .nav-btn { flex: 1 0 60px; background: none; border: none; color: var(--text-muted); font-size: 10px; font-weight: 700; padding: 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -322,11 +289,9 @@
         .nav-btn.active { color: #fff; }
         .nav-btn.active .icon { transform: translateY(-2px); filter: drop-shadow(0 0 8px rgba(59,130,246,0.8)); }
 
-        /* БОНУС */
         .bonus-btn { position: absolute; bottom: 90px; right: 16px; background: linear-gradient(135deg, #6d28d9, #ff00aa); border: none; color: white; padding: 12px 18px; border-radius: 30px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 6px 20px rgba(109,40,217,0.5); z-index: 15; display: flex; align-items: center; gap: 6px; }
         .bonus-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
-        /* Ошибка */
         #error-box { position: fixed; bottom: 0; left: 0; right: 0; background: #ef4444; color: white; padding: 10px; font-size: 12px; z-index: 9999; display: none; }
     </style>
 </head>
@@ -340,7 +305,6 @@
             <div class="balance"><span id="balance-amount">0</span> ₽</div>
         </header>
         <main>
-            <!-- ГАРАЖ -->
             <div id="tab-garage" class="tab-content active">
                 <h2><span>Гараж</span></h2>
                 <div class="garage-stats" id="garage-stats">
@@ -351,21 +315,18 @@
                 <div id="car-list" class="car-grid"></div>
             </div>
 
-            <!-- АВТОСАЛОН -->
             <div id="tab-shop" class="tab-content">
                 <h2><span>Автосалон</span></h2>
                 <div class="filter-scroll" id="rarity-filters-shop"></div>
                 <div id="shop-list" class="car-grid"></div>
             </div>
 
-            <!-- ТЮНИНГ -->
             <div id="tab-tuning" class="tab-content">
                 <h2><span>Тюнинг</span></h2>
                 <div id="tuning-car-selector"></div>
                 <div id="tuning-options"></div>
             </div>
 
-            <!-- НОМЕРА -->
             <div id="tab-plates" class="tab-content">
                 <h2><span>Номера</span></h2>
                 <div class="plate-box">
@@ -385,13 +346,11 @@
                 </div>
             </div>
 
-            <!-- КЕЙСЫ -->
             <div id="tab-cases" class="tab-content">
                 <h2><span>Кейсы</span></h2>
                 <div class="case-grid" id="case-list"></div>
             </div>
 
-            <!-- ЗАРАБОТОК -->
             <div id="tab-earn" class="tab-content">
                 <h2><span>Заработок</span></h2>
                 <div class="earn-tabs">
@@ -401,19 +360,49 @@
                 </div>
                 <div id="earn-race" class="earn-panel active">
                     <div class="race-box">
-                        <div class="race-info"><span>Ваша машина: <b id="player-name-display">-</b></span><span>Соперник: <b id="enemy-name-display">-</b></span></div>
-                        <div class="race-track">
-                            <div class="race-lane top"><div class="race-car-container" id="player-car-container"><span class="race-car" id="player-car">🚗</span><span class="race-car-plate" id="player-plate" style="display:none;">X000XX</span></div></div>
-                            <div class="race-lane bottom"><div class="race-car-container" id="enemy-car-container"><span class="race-car" id="enemy-car">🚙</span><span class="race-car-plate" id="enemy-plate" style="display:none;">X000XX</span></div></div>
-                            <div class="race-finish"></div>
+                        <div class="race-info">
+                            <span>Ваша машина: <b id="player-name-display">-</b></span>
+                            <span>Соперник: <b id="enemy-name-display">-</b></span>
                         </div>
+                        <div class="race-track-new" id="race-track">
+                            <div class="track-road"></div>
+                            <div class="track-lane-line"></div>
+                            <div class="race-lane-new top" id="player-lane">
+                                <div class="race-car-static" id="player-car-static">
+                                    <div class="car-emoji-big" id="player-car-visual">🚗</div>
+                                    <div class="plate-under" id="player-plate-under" style="display:none;"></div>
+                                </div>
+                            </div>
+                            <div class="race-lane-new bottom" id="enemy-lane">
+                                <div class="race-car-static" id="enemy-car-static">
+                                    <div class="car-emoji-big" id="enemy-car-visual">🚙</div>
+                                    <div class="plate-under" id="enemy-plate-under" style="display:none;"></div>
+                                </div>
+                            </div>
+                            <div class="race-countdown" id="race-countdown" style="display:none;">3</div>
+                        </div>
+                        <div class="race-progress-container">
+                            <div class="race-progress-row">
+                                <span class="race-progress-label">Вы:</span>
+                                <div class="race-progress-bar"><div class="race-progress-fill-player" id="player-progress"></div></div>
+                            </div>
+                            <div class="race-progress-row">
+                                <span class="race-progress-label">Соперник:</span>
+                                <div class="race-progress-bar"><div class="race-progress-fill-enemy" id="enemy-progress"></div></div>
+                            </div>
+                        </div>
+                        <div class="race-timer" id="race-timer">0.00 с</div>
                         <div class="race-controls">
                             <select class="race-select" id="race-car-select"></select>
                             <div class="race-stats-preview" id="race-stats-preview"></div>
                             <h4 style="font-size:13px; margin:8px 0 4px;">Выберите соперника:</h4>
                             <div class="opponent-list" id="opponent-list"></div>
                             <div class="selected-opponent-info" id="selected-opponent-info"></div>
-                            <div class="race-bet-row"><input type="number" id="race-bet" placeholder="Ставка (1000-100000)" min="1000" max="100000" value="5000"><button id="start-race-btn">🏁 Старт</button></div>
+                            <div class="race-bet-row">
+                                <input type="number" id="race-bet" placeholder="Ставка (1000-100000)" min="1000" max="100000" value="5000">
+                                <button id="start-race-btn">🏁 Начать гонку</button>
+                            </div>
+                            <button class="btn-gas" id="gas-btn" style="display:none;">🏎️ ГАЗ!</button>
                             <div class="race-result" id="race-result"></div>
                         </div>
                     </div>
@@ -447,21 +436,18 @@
                 </div>
             </div>
 
-            <!-- БИЗНЕС -->
             <div id="tab-business" class="tab-content">
                 <h2><span>Бизнес</span></h2>
                 <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Покупайте недвижимость, чтобы получать пассивный доход!</p>
                 <div id="business-list"></div>
             </div>
 
-            <!-- АУКЦИОН -->
             <div id="tab-auction" class="tab-content">
                 <h2><span>Аукцион</span></h2>
                 <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Выставляйте свои машины на продажу или покупайте чужие!</p>
                 <div id="auction-list"></div>
             </div>
 
-            <!-- ПРОФИЛЬ -->
             <div id="tab-profile" class="tab-content">
                 <h2><span>Профиль</span></h2>
                 <div class="profile-card">
@@ -496,9 +482,7 @@
         </nav>
     </div>
     <div id="error-box"></div>
-
     <script>
-        // Защита от ошибок
         window.addEventListener('error', function(e) {
             const box = document.getElementById('error-box');
             box.style.display = 'block';
@@ -512,9 +496,7 @@
         const RARITIES = { common: { label: 'Обычная' }, rare: { label: 'Редкая' }, epic: { label: 'Эпическая' }, mythic: { label: 'Мифическая' }, legendary: { label: 'Легендарная' }, special: { label: 'Специальная' } };
         const INCOME_RATES = { common: 400, rare: 1200, epic: 3200, mythic: 8000, legendary: 20000, special: 60000 };
 
-        // Расширенный список машин (61 штука) с реальными характеристиками
         const CAR_TEMPLATE = [
-            // ОБЫЧНЫЕ (12)
             { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'common', price: 5000, emoji: '🚗', desc: 'Классика советского автопрома. Заднеприводный седан, выпускавшийся с 1982 по 2012 год. Простая конструкция, доступные запчасти и отличная ремонтопригодность сделали её легендой.', power: 70, speed: 160, acceleration: 17.5, weight: 1030, drive: 'Задний', fuel: 9.5, image: 'https://i.postimg.cc/CMQ4Rxrx/lada-2107-19-no-bg-preview-(carve-photos)-(1).png' },
             { id: 'logan', name: 'Renault Logan', rarity: 'common', price: 8000, emoji: '🚙', desc: 'Бюджетный седан, разработанный для развивающихся рынков. Славится своей надежностью и простотой обслуживания. Первое поколение выпускалось с 2004 года.', power: 82, speed: 170, acceleration: 12.5, weight: 1065, drive: 'Передний', fuel: 7.0, image: 'https://i.postimg.cc/x1tDBYXK/logan2-(1)-edited-free-(carve-photos).png' },
             { id: 'granta', name: 'Lada Granta', rarity: 'common', price: 10000, emoji: '🚗', desc: 'Современный бюджетный автомобиль АвтоВАЗа, пришедший на смену «Калине». Выпускается с 2011 года. Отличается низкой ценой и доступным обслуживанием.', power: 87, speed: 175, acceleration: 11.8, weight: 1080, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/YCXHLPZ2/lada-granta-png.png' },
@@ -528,64 +510,59 @@
             { id: 'jetta', name: 'VW Jetta', rarity: 'common', price: 26000, emoji: '🚗', desc: 'Классический немецкий седан, известный своим качеством сборки и надежностью. Шестое поколение выпускается с 2010 года.', power: 150, speed: 200, acceleration: 8.9, weight: 1350, drive: 'Передний', fuel: 6.5 },
             { id: 'corolla', name: 'Toyota Corolla', rarity: 'common', price: 28000, emoji: '🚗', desc: 'Самый продаваемый автомобиль в истории. Славится своей надежностью и экономичностью. Двенадцатое поколение выпускается с 2018 года.', power: 140, speed: 195, acceleration: 10.5, weight: 1300, drive: 'Передний', fuel: 5.5 },
 
-            // РЕДКИЕ (12)
-            { id: 'vesta', name: 'Lada Vesta', rarity: 'rare', price: 30000, emoji: '🚗', desc: 'Флагман АвтоВАЗа, выпускающийся с 2015 года. Современный дизайн, богатая комплектация и хорошая динамика. Один из самых продаваемых автомобилей в России.', power: 122, speed: 200, acceleration: 11.0, weight: 1230, drive: 'Передний', fuel: 6.9 },
-            { id: 'camry', name: 'Toyota Camry', rarity: 'rare', price: 35000, emoji: '🚘', desc: 'Бизнес-седан, ставший символом комфорта и надежности. Восьмое поколение выпускается с 2017 года. Отличная шумоизоляция и плавность хода.', power: 200, speed: 220, acceleration: 8.5, weight: 1550, drive: 'Передний', fuel: 7.5 },
-            { id: 'octavia', name: 'Skoda Octavia', rarity: 'rare', price: 40000, emoji: '🚗', desc: 'Чешский лифтбек с немецкими корнями. Огромный багажник, комфортный салон и отличная управляемость. Четвертое поколение выпускается с 2019 года.', power: 180, speed: 215, acceleration: 8.0, weight: 1350, drive: 'Передний', fuel: 6.2 },
-            { id: 'mazda6', name: 'Mazda 6', rarity: 'rare', price: 45000, emoji: '🚘', desc: 'Японский седан с выразительным дизайном и отличной управляемостью. Технология SkyActiv обеспечивает высокую экономичность и динамику. Третье поколение с 2012 года.', power: 194, speed: 220, acceleration: 7.8, weight: 1450, drive: 'Передний', fuel: 6.5 },
-            { id: 'accord', name: 'Honda Accord', rarity: 'rare', price: 50000, emoji: '🚘', desc: 'Надежный японский седан с богатой историей. Десятое поколение отличается стильным дизайном, просторным салоном и передовыми технологиями.', power: 192, speed: 225, acceleration: 7.5, weight: 1480, drive: 'Передний', fuel: 6.8 },
-            { id: 'passat', name: 'VW Passat', rarity: 'rare', price: 55000, emoji: '🚗', desc: 'Классика немецкого автопрома. Солидный и практичный седан, популярный среди бизнесменов и семей. Восьмое поколение выпускается с 2014 года.', power: 190, speed: 220, acceleration: 7.9, weight: 1450, drive: 'Передний', fuel: 6.0 },
-            { id: 'kia_k5', name: 'Kia K5', rarity: 'rare', price: 60000, emoji: '🚘', desc: 'Спортивный седан с ярким дизайном. Новое поколение K5 (Optima) выпускается с 2020 года. Отличается агрессивной внешностью и современными технологиями.', power: 194, speed: 230, acceleration: 7.6, weight: 1470, drive: 'Передний', fuel: 6.5 },
-            { id: 'superb', name: 'Skoda Superb', rarity: 'rare', price: 65000, emoji: '🚗', desc: 'Флагман Skoda, предлагающий просторный салон и огромный багажник. Комфорт на уровне бизнес-класса. Третье поколение выпускается с 2015 года.', power: 220, speed: 235, acceleration: 6.9, weight: 1550, drive: 'Передний', fuel: 6.8 },
-            { id: 'lancer', name: 'Mitsubishi Lancer', rarity: 'rare', price: 68000, emoji: '🚗', desc: 'Японский седан с характером. Десятое поколение (Lancer X) выпускалось с 2007 по 2017 год. Узнаваемый дизайн и надежная конструкция.', power: 150, speed: 210, acceleration: 9.0, weight: 1330, drive: 'Передний', fuel: 6.9 },
-            { id: 'impreza', name: 'Subaru Impreza', rarity: 'rare', price: 72000, emoji: '🚗', desc: 'Полноприводный японский седан, известный своей надежностью и управляемостью. Оппозитный двигатель и симметричный полный привод. Пятое поколение с 2016 года.', power: 152, speed: 215, acceleration: 9.8, weight: 1420, drive: 'Полный', fuel: 7.5 },
-            { id: 'mondeo', name: 'Ford Mondeo', rarity: 'rare', price: 75000, emoji: '🚘', desc: 'Американский бизнес-седан, популярный в Европе. Пятое поколение выпускается с 2014 года. Просторный салон, комфортная подвеска и богатая комплектация.', power: 240, speed: 230, acceleration: 7.9, weight: 1550, drive: 'Передний', fuel: 7.5 },
-            { id: 'insignia', name: 'Opel Insignia', rarity: 'rare', price: 78000, emoji: '🚗', desc: 'Немецкий седан с элегантным дизайном. Второе поколение (Insignia B) выпускается с 2017 года. Отличается комфортом и современными технологиями.', power: 230, speed: 225, acceleration: 7.6, weight: 1500, drive: 'Передний', fuel: 7.2 },
+            { id: 'vesta', name: 'Lada Vesta', rarity: 'rare', price: 30000, emoji: '🚗', desc: 'Флагман АвтоВАЗа, выпускающийся с 2015 года. Современный дизайн, богатая комплектация и хорошая динамика.', power: 122, speed: 200, acceleration: 11.0, weight: 1230, drive: 'Передний', fuel: 6.9 },
+            { id: 'camry', name: 'Toyota Camry', rarity: 'rare', price: 35000, emoji: '🚘', desc: 'Бизнес-седан, ставший символом комфорта и надежности. Восьмое поколение выпускается с 2017 года.', power: 200, speed: 220, acceleration: 8.5, weight: 1550, drive: 'Передний', fuel: 7.5 },
+            { id: 'octavia', name: 'Skoda Octavia', rarity: 'rare', price: 40000, emoji: '🚗', desc: 'Чешский лифтбек с немецкими корнями. Огромный багажник и отличная управляемость. Четвертое поколение выпускается с 2019 года.', power: 180, speed: 215, acceleration: 8.0, weight: 1350, drive: 'Передний', fuel: 6.2 },
+            { id: 'mazda6', name: 'Mazda 6', rarity: 'rare', price: 45000, emoji: '🚘', desc: 'Японский седан с выразительным дизайном. Технология SkyActiv обеспечивает высокую экономичность. Третье поколение с 2012 года.', power: 194, speed: 220, acceleration: 7.8, weight: 1450, drive: 'Передний', fuel: 6.5 },
+            { id: 'accord', name: 'Honda Accord', rarity: 'rare', price: 50000, emoji: '🚘', desc: 'Надежный японский седан с богатой историей. Десятое поколение с передовыми технологиями.', power: 192, speed: 225, acceleration: 7.5, weight: 1480, drive: 'Передний', fuel: 6.8 },
+            { id: 'passat', name: 'VW Passat', rarity: 'rare', price: 55000, emoji: '🚗', desc: 'Классика немецкого автопрома. Восьмое поколение выпускается с 2014 года.', power: 190, speed: 220, acceleration: 7.9, weight: 1450, drive: 'Передний', fuel: 6.0 },
+            { id: 'kia_k5', name: 'Kia K5', rarity: 'rare', price: 60000, emoji: '🚘', desc: 'Спортивный седан с ярким дизайном. Новое поколение выпускается с 2020 года.', power: 194, speed: 230, acceleration: 7.6, weight: 1470, drive: 'Передний', fuel: 6.5 },
+            { id: 'superb', name: 'Skoda Superb', rarity: 'rare', price: 65000, emoji: '🚗', desc: 'Флагман Skoda. Комфорт на уровне бизнес-класса. Третье поколение с 2015 года.', power: 220, speed: 235, acceleration: 6.9, weight: 1550, drive: 'Передний', fuel: 6.8 },
+            { id: 'lancer', name: 'Mitsubishi Lancer', rarity: 'rare', price: 68000, emoji: '🚗', desc: 'Японский седан с характером. Десятое поколение выпускалось с 2007 по 2017 год.', power: 150, speed: 210, acceleration: 9.0, weight: 1330, drive: 'Передний', fuel: 6.9 },
+            { id: 'impreza', name: 'Subaru Impreza', rarity: 'rare', price: 72000, emoji: '🚗', desc: 'Полноприводный японский седан с оппозитным двигателем. Пятое поколение с 2016 года.', power: 152, speed: 215, acceleration: 9.8, weight: 1420, drive: 'Полный', fuel: 7.5 },
+            { id: 'mondeo', name: 'Ford Mondeo', rarity: 'rare', price: 75000, emoji: '🚘', desc: 'Американский бизнес-седан, популярный в Европе. Пятое поколение с 2014 года.', power: 240, speed: 230, acceleration: 7.9, weight: 1550, drive: 'Передний', fuel: 7.5 },
+            { id: 'insignia', name: 'Opel Insignia', rarity: 'rare', price: 78000, emoji: '🚗', desc: 'Немецкий седан с элегантным дизайном. Второе поколение с 2017 года.', power: 230, speed: 225, acceleration: 7.6, weight: 1500, drive: 'Передний', fuel: 7.2 },
 
-            // ЭПИЧЕСКИЕ (10)
-            { id: 'bmw3', name: 'BMW 3 Series', rarity: 'epic', price: 80000, emoji: '🏎️', desc: 'Эталон спортивных седанов. Седьмое поколение (G20) выпускается с 2018 года. Задний привод, идеальная развесовка и отличная управляемость.', power: 258, speed: 250, acceleration: 5.8, weight: 1545, drive: 'Задний', fuel: 7.0 },
-            { id: 'audi_a4', name: 'Audi A4', rarity: 'epic', price: 85000, emoji: '🚘', desc: 'Немецкий премиум-седан с передовыми технологиями. Пятое поколение выпускается с 2015 года. Виртуальная приборная панель и фирменный полный привод quattro.', power: 249, speed: 250, acceleration: 6.0, weight: 1500, drive: 'Полный', fuel: 7.5 },
-            { id: 'merc_c', name: 'Mercedes C-Class', rarity: 'epic', price: 90000, emoji: '🚘', desc: 'Роскошь и комфорт в компактном классе. Пятое поколение (W205) выпускалось с 2014 по 2021 год. Отличная шумоизоляция и богатая комплектация.', power: 255, speed: 250, acceleration: 5.9, weight: 1550, drive: 'Задний', fuel: 7.2 },
-            { id: 'supra', name: 'Toyota Supra', rarity: 'epic', price: 95000, emoji: '🏎️', desc: 'Легендарный японский спорткар, вернувшийся на рынок в 2019 году. Совместная разработка с BMW. Задний привод, турбированный двигатель и отличная динамика.', power: 340, speed: 285, acceleration: 4.3, weight: 1500, drive: 'Задний', fuel: 8.2 },
-            { id: 'bmw_x5', name: 'BMW X5', rarity: 'epic', price: 100000, emoji: '🚙', desc: 'Премиальный немецкий кроссовер. Четвертое поколение (G05) выпускается с 2018 года. Полный привод, пневмоподвеска и мощный двигатель.', power: 340, speed: 243, acceleration: 5.5, weight: 2130, drive: 'Полный', fuel: 9.0 },
-            { id: 'audi_q7', name: 'Audi Q7', rarity: 'epic', price: 105000, emoji: '🚙', desc: 'Семейный премиум-кроссовер с полным приводом. Второе поколение выпускается с 2015 года. Просторный салон, семь мест и передовые технологии.', power: 340, speed: 250, acceleration: 5.9, weight: 2200, drive: 'Полный', fuel: 9.5 },
-            { id: 'merc_e', name: 'Mercedes E-Class', rarity: 'epic', price: 110000, emoji: '🚘', desc: 'Бизнес-класс с максимальным комфортом. Пятое поколение (W213) выпускается с 2016 года. Пневмоподвеска, роскошный салон и передовые системы безопасности.', power: 333, speed: 250, acceleration: 5.4, weight: 1800, drive: 'Задний', fuel: 7.8 },
-            { id: 'charger', name: 'Dodge Charger', rarity: 'epic', price: 115000, emoji: '🏎️', desc: 'Американский маслкар с агрессивным дизайном. Современное поколение выпускается с 2011 года. Мощный V8, задний привод и неповторимый рев двигателя.', power: 370, speed: 270, acceleration: 5.2, weight: 1950, drive: 'Задний', fuel: 12.0 },
-            { id: 'wrangler', name: 'Jeep Wrangler', rarity: 'epic', price: 120000, emoji: '🚙', desc: 'Легендарный американский внедорожник. Четвертое поколение (JL) выпускается с 2018 года. Рамная конструкция, полный привод и непревзойденная проходимость.', power: 285, speed: 180, acceleration: 7.8, weight: 2100, drive: 'Полный', fuel: 11.5 },
-            { id: 'land_rover', name: 'Land Rover Discovery', rarity: 'epic', price: 125000, emoji: '🚙', desc: 'Британский премиум-внедорожник. Пятое поколение выпускается с 2017 года. Полный привод, пневмоподвеска и отличная проходимость.', power: 300, speed: 210, acceleration: 7.3, weight: 2300, drive: 'Полный', fuel: 9.8 },
+            { id: 'bmw3', name: 'BMW 3 Series', rarity: 'epic', price: 80000, emoji: '🏎️', desc: 'Эталон спортивных седанов. Седьмое поколение (G20) с 2018 года.', power: 258, speed: 250, acceleration: 5.8, weight: 1545, drive: 'Задний', fuel: 7.0 },
+            { id: 'audi_a4', name: 'Audi A4', rarity: 'epic', price: 85000, emoji: '🚘', desc: 'Немецкий премиум-седан. Пятое поколение с 2015 года, полный привод quattro.', power: 249, speed: 250, acceleration: 6.0, weight: 1500, drive: 'Полный', fuel: 7.5 },
+            { id: 'merc_c', name: 'Mercedes C-Class', rarity: 'epic', price: 90000, emoji: '🚘', desc: 'Роскошь и комфорт в компактном классе. Пятое поколение (W205).', power: 255, speed: 250, acceleration: 5.9, weight: 1550, drive: 'Задний', fuel: 7.2 },
+            { id: 'supra', name: 'Toyota Supra', rarity: 'epic', price: 95000, emoji: '🏎️', desc: 'Легендарный японский спорткар, вернувшийся в 2019 году. Совместная разработка с BMW.', power: 340, speed: 285, acceleration: 4.3, weight: 1500, drive: 'Задний', fuel: 8.2 },
+            { id: 'bmw_x5', name: 'BMW X5', rarity: 'epic', price: 100000, emoji: '🚙', desc: 'Премиальный немецкий кроссовер. Четвертое поколение (G05) с 2018 года.', power: 340, speed: 243, acceleration: 5.5, weight: 2130, drive: 'Полный', fuel: 9.0 },
+            { id: 'audi_q7', name: 'Audi Q7', rarity: 'epic', price: 105000, emoji: '🚙', desc: 'Семейный премиум-кроссовер с полным приводом. Второе поколение с 2015 года.', power: 340, speed: 250, acceleration: 5.9, weight: 2200, drive: 'Полный', fuel: 9.5 },
+            { id: 'merc_e', name: 'Mercedes E-Class', rarity: 'epic', price: 110000, emoji: '🚘', desc: 'Бизнес-класс с максимальным комфортом. Пятое поколение (W213) с 2016 года.', power: 333, speed: 250, acceleration: 5.4, weight: 1800, drive: 'Задний', fuel: 7.8 },
+            { id: 'charger', name: 'Dodge Charger', rarity: 'epic', price: 115000, emoji: '🏎️', desc: 'Американский маслкар с агрессивным дизайном. Современное поколение с 2011 года.', power: 370, speed: 270, acceleration: 5.2, weight: 1950, drive: 'Задний', fuel: 12.0 },
+            { id: 'wrangler', name: 'Jeep Wrangler', rarity: 'epic', price: 120000, emoji: '🚙', desc: 'Легендарный американский внедорожник. Четвертое поколение (JL) с 2018 года.', power: 285, speed: 180, acceleration: 7.8, weight: 2100, drive: 'Полный', fuel: 11.5 },
+            { id: 'land_rover', name: 'Land Rover Discovery', rarity: 'epic', price: 125000, emoji: '🚙', desc: 'Британский премиум-внедорожник. Пятое поколение с 2017 года.', power: 300, speed: 210, acceleration: 7.3, weight: 2300, drive: 'Полный', fuel: 9.8 },
 
-            // МИФИЧЕСКИЕ (10)
-            { id: 'bmw_m5', name: 'BMW M5', rarity: 'mythic', price: 150000, emoji: '🏎️', desc: 'Суперседан с убийственной мощностью. Шестое поколение (F90) выпускается с 2017 года. Полный привод M xDrive, 600 л.с. и разгон до 100 за 3.4 секунды.', power: 600, speed: 305, acceleration: 3.4, weight: 1930, drive: 'Полный', fuel: 10.5 },
-            { id: 'audi_rs7', name: 'Audi RS7', rarity: 'mythic', price: 170000, emoji: '🏎️', desc: 'Спортбек с характером. Второе поколение выпускается с 2019 года. 600 л.с., полный привод quattro и разгон как у суперкара.', power: 600, speed: 305, acceleration: 3.6, weight: 2065, drive: 'Полный', fuel: 11.0 },
-            { id: 'merc_amg', name: 'Mercedes AMG GT', rarity: 'mythic', price: 200000, emoji: '🏎️', desc: 'Немецкий суперкар с длинным капотом. Выпускается с 2014 года. Задний привод, твин-турбо V8 и потрясающий звук выхлопа.', power: 530, speed: 318, acceleration: 3.8, weight: 1645, drive: 'Задний', fuel: 12.5 },
-            { id: 'porsche911', name: 'Porsche 911', rarity: 'mythic', price: 230000, emoji: '🏎️', desc: 'Икона стиля и скорости. Восьмое поколение (992) выпускается с 2019 года. Оппозитный двигатель, идеальная управляемость и непревзойденная динамика.', power: 450, speed: 320, acceleration: 3.7, weight: 1500, drive: 'Задний', fuel: 9.8 },
-            { id: 'nissan_gtr', name: 'Nissan GT-R', rarity: 'mythic', price: 250000, emoji: '🏎️', desc: 'Godzilla. Японский монстр, убивающий суперкары. Выпускается с 2007 года. Полный привод, твин-турбо V6 и разгон до 100 за 2.9 секунды.', power: 570, speed: 315, acceleration: 2.9, weight: 1750, drive: 'Полный', fuel: 12.0 },
-            { id: 'merc_g', name: 'Mercedes G-Class', rarity: 'mythic', price: 280000, emoji: '🚙', desc: 'Легендарный Гелендваген. Выпускается с 1979 года. Рамная конструкция, полный привод и статус иконы стиля. Второе поколение (W463) с 2018 года.', power: 585, speed: 240, acceleration: 4.5, weight: 2500, drive: 'Полный', fuel: 13.5 },
-            { id: 'corvette', name: 'Corvette C8', rarity: 'mythic', price: 300000, emoji: '🏎️', desc: 'Американский суперкар с двигателем посередине. Восьмое поколение выпускается с 2020 года. 495 л.с., задний привод и разгон до 100 за 3.0 секунды.', power: 495, speed: 312, acceleration: 3.0, weight: 1650, drive: 'Задний', fuel: 11.5 },
-            { id: 'aston', name: 'Aston Martin Vantage', rarity: 'mythic', price: 320000, emoji: '🏎️', desc: 'Британская элегантность и мощность. Второе поколение выпускается с 2018 года. Твин-турбо V8 от Mercedes, задний привод и стильный дизайн.', power: 510, speed: 315, acceleration: 3.6, weight: 1685, drive: 'Задний', fuel: 10.8 },
-            { id: 'bentley', name: 'Bentley Continental', rarity: 'mythic', price: 340000, emoji: '🚘', desc: 'Роскошь и мощность. Третье поколение GT выпускается с 2018 года. W12, полный привод и интерьер ручной сборки.', power: 635, speed: 330, acceleration: 3.8, weight: 2270, drive: 'Полный', fuel: 14.0 },
-            { id: 'rr_ghost', name: 'Rolls-Royce Ghost', rarity: 'mythic', price: 360000, emoji: '🚘', desc: 'Символ статуса и роскоши. Второе поколение выпускается с 2020 года. Идеальная плавность хода, тишина в салоне и эксклюзивные материалы отделки.', power: 571, speed: 250, acceleration: 4.8, weight: 2550, drive: 'Полный', fuel: 15.0 },
+            { id: 'bmw_m5', name: 'BMW M5', rarity: 'mythic', price: 150000, emoji: '🏎️', desc: 'Суперседан с убийственной мощностью. Шестое поколение (F90) с 2017 года.', power: 600, speed: 305, acceleration: 3.4, weight: 1930, drive: 'Полный', fuel: 10.5 },
+            { id: 'audi_rs7', name: 'Audi RS7', rarity: 'mythic', price: 170000, emoji: '🏎️', desc: 'Спортбек с характером. Второе поколение с 2019 года. 600 л.с.', power: 600, speed: 305, acceleration: 3.6, weight: 2065, drive: 'Полный', fuel: 11.0 },
+            { id: 'merc_amg', name: 'Mercedes AMG GT', rarity: 'mythic', price: 200000, emoji: '🏎️', desc: 'Немецкий суперкар с длинным капотом. Задний привод, твин-турбо V8.', power: 530, speed: 318, acceleration: 3.8, weight: 1645, drive: 'Задний', fuel: 12.5 },
+            { id: 'porsche911', name: 'Porsche 911', rarity: 'mythic', price: 230000, emoji: '🏎️', desc: 'Икона стиля и скорости. Восьмое поколение (992) с 2019 года.', power: 450, speed: 320, acceleration: 3.7, weight: 1500, drive: 'Задний', fuel: 9.8 },
+            { id: 'nissan_gtr', name: 'Nissan GT-R', rarity: 'mythic', price: 250000, emoji: '🏎️', desc: 'Godzilla. Японский монстр. Полный привод, твин-турбо V6.', power: 570, speed: 315, acceleration: 2.9, weight: 1750, drive: 'Полный', fuel: 12.0 },
+            { id: 'merc_g', name: 'Mercedes G-Class', rarity: 'mythic', price: 280000, emoji: '🚙', desc: 'Легендарный Гелендваген. Второе поколение (W463) с 2018 года.', power: 585, speed: 240, acceleration: 4.5, weight: 2500, drive: 'Полный', fuel: 13.5 },
+            { id: 'corvette', name: 'Corvette C8', rarity: 'mythic', price: 300000, emoji: '🏎️', desc: 'Американский суперкар с двигателем посередине. Восьмое поколение с 2020 года.', power: 495, speed: 312, acceleration: 3.0, weight: 1650, drive: 'Задний', fuel: 11.5 },
+            { id: 'aston', name: 'Aston Martin Vantage', rarity: 'mythic', price: 320000, emoji: '🏎️', desc: 'Британская элегантность и мощность. Второе поколение с 2018 года.', power: 510, speed: 315, acceleration: 3.6, weight: 1685, drive: 'Задний', fuel: 10.8 },
+            { id: 'bentley', name: 'Bentley Continental', rarity: 'mythic', price: 340000, emoji: '🚘', desc: 'Роскошь и мощность. Третье поколение GT с 2018 года.', power: 635, speed: 330, acceleration: 3.8, weight: 2270, drive: 'Полный', fuel: 14.0 },
+            { id: 'rr_ghost', name: 'Rolls-Royce Ghost', rarity: 'mythic', price: 360000, emoji: '🚘', desc: 'Символ статуса и роскоши. Второе поколение с 2020 года.', power: 571, speed: 250, acceleration: 4.8, weight: 2550, drive: 'Полный', fuel: 15.0 },
 
-            // ЛЕГЕНДАРНЫЕ (10)
-            { id: 'ferrari_f8', name: 'Ferrari F8', rarity: 'legendary', price: 400000, emoji: '🏎️', desc: 'Итальянская страсть и скорость. Выпускается с 2019 года. Твин-турбо V8, 720 л.с. и разгон до 100 за 2.9 секунды. Наследник легендарной 488.', power: 720, speed: 340, acceleration: 2.9, weight: 1330, drive: 'Задний', fuel: 13.5 },
-            { id: 'lamborghini_huracan', name: 'Lamborghini Huracan', rarity: 'legendary', price: 450000, emoji: '🏎️', desc: 'Агрессивный итальянский суперкар. Выпускается с 2014 года. Атмосферный V10, 640 л.с. и потрясающий звук двигателя.', power: 640, speed: 325, acceleration: 2.9, weight: 1422, drive: 'Полный', fuel: 13.0 },
-            { id: 'mclaren_720', name: 'McLaren 720S', rarity: 'legendary', price: 500000, emoji: '🏎️', desc: 'Британский шедевр инженерии. Выпускается с 2017 года. Углепластиковый монокок, 720 л.с. и невероятная динамика.', power: 720, speed: 341, acceleration: 2.9, weight: 1283, drive: 'Задний', fuel: 12.5 },
-            { id: 'bugatti_chiron', name: 'Bugatti Chiron', rarity: 'legendary', price: 800000, emoji: '🏎️', desc: 'Гиперкар, способный развивать 1500 л.с. Выпускается с 2016 года. W16, четыре турбины и максимальная скорость 420 км/ч.', power: 1500, speed: 420, acceleration: 2.4, weight: 1995, drive: 'Полный', fuel: 22.0 },
-            { id: 'lamborghini_aventador', name: 'Lamborghini Aventador', rarity: 'legendary', price: 900000, emoji: '🏎️', desc: 'Флагман Lamborghini. Выпускается с 2011 года. Атмосферный V12, 780 л.с. и двери-ножницы. Ураган на колесах.', power: 780, speed: 350, acceleration: 2.8, weight: 1575, drive: 'Полный', fuel: 16.0 },
-            { id: 'koenigsegg', name: 'Koenigsegg Jesko', rarity: 'legendary', price: 1000000, emoji: '🏎️', desc: 'Шведский гиперкар. Выпускается с 2019 года. 1600 л.с., максимальная скорость 480 км/ч и революционная аэродинамика.', power: 1600, speed: 480, acceleration: 2.5, weight: 1420, drive: 'Задний', fuel: 18.0 },
-            { id: 'pagani', name: 'Pagani Huayra', rarity: 'legendary', price: 1100000, emoji: '🏎️', desc: 'Итальянский гиперкар ручной сборки. Выпускается с 2011 года. Твин-турбо V12 от AMG, 730 л.с. и уникальный дизайн.', power: 730, speed: 383, acceleration: 2.8, weight: 1350, drive: 'Задний', fuel: 14.0 },
-            { id: 'aston_valkyrie', name: 'Aston Martin Valkyrie', rarity: 'legendary', price: 1200000, emoji: '🏎️', desc: 'Болид Формулы-1 для дорог. Выпускается с 2021 года. 1160 л.с., гибридная силовая установка и экстремальная аэродинамика.', power: 1160, speed: 402, acceleration: 2.5, weight: 1030, drive: 'Задний', fuel: 15.0 },
-            { id: 'rr_sweptail', name: 'Rolls-Royce Sweptail', rarity: 'legendary', price: 1300000, emoji: '🚘', desc: 'Эксклюзивный автомобиль за $12.8 млн. Выпущен в единственном экземпляре в 2017 году. Ручная сборка и уникальный дизайн.', power: 453, speed: 250, acceleration: 5.5, weight: 2600, drive: 'Задний', fuel: 16.0 },
-            { id: 'rimac', name: 'Rimac Nevera', rarity: 'legendary', price: 1400000, emoji: '🏎️', desc: 'Электрический гиперкар. Выпускается с 2021 года. 1914 л.с., разгон до 100 за 1.85 секунды и максимальная скорость 412 км/ч.', power: 1914, speed: 412, acceleration: 1.85, weight: 2150, drive: 'Полный', fuel: 0 },
+            { id: 'ferrari_f8', name: 'Ferrari F8', rarity: 'legendary', price: 400000, emoji: '🏎️', desc: 'Итальянская страсть и скорость. Твин-турбо V8, 720 л.с.', power: 720, speed: 340, acceleration: 2.9, weight: 1330, drive: 'Задний', fuel: 13.5 },
+            { id: 'lamborghini_huracan', name: 'Lamborghini Huracan', rarity: 'legendary', price: 450000, emoji: '🏎️', desc: 'Агрессивный итальянский суперкар. Атмосферный V10.', power: 640, speed: 325, acceleration: 2.9, weight: 1422, drive: 'Полный', fuel: 13.0 },
+            { id: 'mclaren_720', name: 'McLaren 720S', rarity: 'legendary', price: 500000, emoji: '🏎️', desc: 'Британский шедевр инженерии. Углепластиковый монокок, 720 л.с.', power: 720, speed: 341, acceleration: 2.9, weight: 1283, drive: 'Задний', fuel: 12.5 },
+            { id: 'bugatti_chiron', name: 'Bugatti Chiron', rarity: 'legendary', price: 800000, emoji: '🏎️', desc: 'Гиперкар, 1500 л.с. W16, четыре турбины, 420 км/ч.', power: 1500, speed: 420, acceleration: 2.4, weight: 1995, drive: 'Полный', fuel: 22.0 },
+            { id: 'lamborghini_aventador', name: 'Lamborghini Aventador', rarity: 'legendary', price: 900000, emoji: '🏎️', desc: 'Флагман Lamborghini. V12, 780 л.с. Ураган на колесах.', power: 780, speed: 350, acceleration: 2.8, weight: 1575, drive: 'Полный', fuel: 16.0 },
+            { id: 'koenigsegg', name: 'Koenigsegg Jesko', rarity: 'legendary', price: 1000000, emoji: '🏎️', desc: 'Шведский гиперкар. 1600 л.с., 480 км/ч.', power: 1600, speed: 480, acceleration: 2.5, weight: 1420, drive: 'Задний', fuel: 18.0 },
+            { id: 'pagani', name: 'Pagani Huayra', rarity: 'legendary', price: 1100000, emoji: '🏎️', desc: 'Итальянский гиперкар ручной сборки. Твин-турбо V12 от AMG.', power: 730, speed: 383, acceleration: 2.8, weight: 1350, drive: 'Задний', fuel: 14.0 },
+            { id: 'aston_valkyrie', name: 'Aston Martin Valkyrie', rarity: 'legendary', price: 1200000, emoji: '🏎️', desc: 'Болид Формулы-1 для дорог. 1160 л.с., гибрид.', power: 1160, speed: 402, acceleration: 2.5, weight: 1030, drive: 'Задний', fuel: 15.0 },
+            { id: 'rr_sweptail', name: 'Rolls-Royce Sweptail', rarity: 'legendary', price: 1300000, emoji: '🚘', desc: 'Эксклюзивный автомобиль за $12.8 млн. Один в мире.', power: 453, speed: 250, acceleration: 5.5, weight: 2600, drive: 'Задний', fuel: 16.0 },
+            { id: 'rimac', name: 'Rimac Nevera', rarity: 'legendary', price: 1400000, emoji: '🏎️', desc: 'Электрический гиперкар. 1914 л.с., 1.85 с до 100 км/ч.', power: 1914, speed: 412, acceleration: 1.85, weight: 2150, drive: 'Полный', fuel: 0 },
 
-            // СПЕЦИАЛЬНЫЕ (7)
-            { id: 'cybertruck', name: 'Tesla Cybertruck', rarity: 'special', price: 1500000, emoji: '🛻', desc: 'Электрический пикап будущего. Выпускается с 2023 года. Нержавеющая сталь, футуристичный дизайн и мощность 845 л.с.', power: 845, speed: 210, acceleration: 2.9, weight: 3000, drive: 'Полный', fuel: 0 },
-            { id: 'model_s', name: 'Tesla Model S Plaid', rarity: 'special', price: 1600000, emoji: '🚘', desc: 'Самый быстрый седан в мире. Выпускается с 2021 года. 1020 л.с., разгон до 100 за 2.1 секунды и запас хода 600 км.', power: 1020, speed: 322, acceleration: 2.1, weight: 2200, drive: 'Полный', fuel: 0 },
-            { id: 'lunar_rover', name: 'Lunar Rover', rarity: 'special', price: 2000000, emoji: '🛸', desc: 'Космический ровер. Использовался в миссиях Apollo. Электрический привод, специальные шины и возможность передвигаться по Луне.', power: 100, speed: 50, acceleration: 20.0, weight: 210, drive: 'Полный', fuel: 0 },
-            { id: 'batmobile', name: 'Batmobile', rarity: 'special', price: 3000000, emoji: '🦇', desc: 'Транспорт Темного рыцаря. Пуленепробиваемый, с ракетными двигателями и вооружением. Мечта любого фаната DC.', power: 1500, speed: 350, acceleration: 2.0, weight: 2500, drive: 'Полный', fuel: 20.0 },
-            { id: 'delorean', name: 'DeLorean Time Machine', rarity: 'special', price: 3500000, emoji: '⏳', desc: 'Машина времени из «Назад в будущее». Легендарный DeLorean DMC-12 с потоковым накопителем. Требуется 1.21 гигаватт!', power: 300, speed: 240, acceleration: 8.0, weight: 1230, drive: 'Задний', fuel: 12.0 },
-            { id: 'tank', name: 'Т-90 Танк', rarity: 'special', price: 5000000, emoji: '🚜', desc: 'Боевая машина. Бронированный танк с пушкой 125 мм. Никто не остановит!', power: 1000, speed: 60, acceleration: 15.0, weight: 46000, drive: 'Полный', fuel: 300 },
-            { id: 'ufo', name: 'НЛО', rarity: 'special', price: 10000000, emoji: '👽', desc: 'Неопознанный летающий объект. Инопланетные технологии, антигравитация и скорость света. Никто не знает, откуда он взялся.', power: 9999, speed: 999, acceleration: 0.5, weight: 1000, drive: 'Полный', fuel: 0 }
+            { id: 'cybertruck', name: 'Tesla Cybertruck', rarity: 'special', price: 1500000, emoji: '🛻', desc: 'Электрический пикап будущего. Нержавеющая сталь, 845 л.с.', power: 845, speed: 210, acceleration: 2.9, weight: 3000, drive: 'Полный', fuel: 0 },
+            { id: 'model_s', name: 'Tesla Model S Plaid', rarity: 'special', price: 1600000, emoji: '🚘', desc: 'Самый быстрый седан в мире. 1020 л.с., 2.1 с.', power: 1020, speed: 322, acceleration: 2.1, weight: 2200, drive: 'Полный', fuel: 0 },
+            { id: 'lunar_rover', name: 'Lunar Rover', rarity: 'special', price: 2000000, emoji: '🛸', desc: 'Космический ровер. Использовался в миссиях Apollo.', power: 100, speed: 50, acceleration: 20.0, weight: 210, drive: 'Полный', fuel: 0 },
+            { id: 'batmobile', name: 'Batmobile', rarity: 'special', price: 3000000, emoji: '🦇', desc: 'Транспорт Темного рыцаря. Пуленепробиваемый, 1500 л.с.', power: 1500, speed: 350, acceleration: 2.0, weight: 2500, drive: 'Полный', fuel: 20.0 },
+            { id: 'delorean', name: 'DeLorean Time Machine', rarity: 'special', price: 3500000, emoji: '⏳', desc: 'Машина времени из «Назад в будущее». Требуется 1.21 гигаватт!', power: 300, speed: 240, acceleration: 8.0, weight: 1230, drive: 'Задний', fuel: 12.0 },
+            { id: 'tank', name: 'Т-90 Танк', rarity: 'special', price: 5000000, emoji: '🚜', desc: 'Боевая машина. Бронированный танк с пушкой 125 мм.', power: 1000, speed: 60, acceleration: 15.0, weight: 46000, drive: 'Полный', fuel: 300 },
+            { id: 'ufo', name: 'НЛО', rarity: 'special', price: 10000000, emoji: '👽', desc: 'Неопознанный летающий объект. Инопланетные технологии.', power: 9999, speed: 999, acceleration: 0.5, weight: 1000, drive: 'Полный', fuel: 0 }
         ];
 
         const CASES = [
@@ -617,6 +594,7 @@
             { id: 'rich', title: 'Богач', desc: 'Накопите 1 000 000 ₽', reward: 100000, icon: '💰', check: (s) => s.balance >= 1000000 },
             { id: 'racer', title: 'Гонщик', desc: 'Выиграйте 10 гонок', reward: 50000, icon: '🏁', check: (s) => s.stats.wins >= 10 },
             { id: 'collector', title: 'Коллекционер', desc: 'Соберите 10 машин', reward: 100000, icon: '🏆', check: (s) => s.cars.filter(c => c.owned).length >= 10 },
+            { id: 'tuner', title: 'Тюнер
             { id: 'tuner', title: 'Тюнер', desc: 'Прокачайте любую машину до 10 уровня', reward: 30000, icon: '🔧', check: (s) => s.cars.some(c => (c.tuning.engine||0)+(c.tuning.suspension||0)+(c.tuning.brakes||0) >= 10) },
             { id: 'lucky', title: 'Везунчик', desc: 'Выиграйте x10 в рулетке', reward: 200000, icon: '🎰', check: (s) => s.stats.maxRoulette >= 10 },
             { id: 'case_opener', title: 'Открывашка', desc: 'Откройте 10 кейсов', reward: 50000, icon: '🎁', check: (s) => s.stats.casesOpened >= 10 },
@@ -644,31 +622,19 @@
         ];
 
         let state = {
-            balance: 50000,
-            level: 1,
-            xp: 0,
+            balance: 50000, level: 1, xp: 0,
             cars: JSON.parse(JSON.stringify(CAR_TEMPLATE)).map((c, i) => ({
-                ...c,
-                owned: i === 3,
+                ...c, owned: i === 3,
                 tuning: { engine: 0, suspension: 0, brakes: 0, turbo: 0, tires: 0 },
-                plate: null,
-                color: null,
-                neon: null
+                plate: null, color: null, neon: null
             })),
-            lastBonus: 0,
-            selectedCountry: 'RU',
-            currentFilter: 'all',
-            currentFilterShop: 'all',
-            lastTick: Date.now(),
-            pendingPlate: null,
+            lastBonus: 0, selectedCountry: 'RU',
+            currentFilter: 'all', currentFilterShop: 'all',
+            lastTick: Date.now(), pendingPlate: null,
             stats: { races: 0, wins: 0, casesOpened: 0, maxRoulette: 0, tuningDone: 0 },
-            tasks: [],
-            lastTaskRefresh: 0,
-            unlockedAchievements: [],
+            tasks: [], lastTaskRefresh: 0, unlockedAchievements: [],
             businesses: BUSINESSES.map(b => ({ ...b, owned: false })),
-            auctions: [],
-            lastTournament: 0,
-            selectedOpponent: null
+            auctions: [], lastTournament: 0, selectedOpponent: null
         };
 
         function loadState() {
@@ -679,7 +645,10 @@
                     if (parsed.cars && Array.isArray(parsed.cars)) {
                         parsed.cars.forEach(savedCar => {
                             const index = state.cars.findIndex(c => c.id === savedCar.id);
-                            if (index !== -1) state.cars[index] = { ...state.cars[index], ...savedCar };
+                            if (index !== -1) {
+                                const { image, desc, power, speed, acceleration, weight, drive, fuel, ...progress } = savedCar;
+                                state.cars[index] = { ...state.cars[index], ...progress };
+                            }
                         });
                     }
                     if (parsed.businesses) state.businesses = parsed.businesses;
@@ -712,20 +681,15 @@
             state.xp += amount;
             const xpMax = state.level * 100;
             if (state.xp >= xpMax) {
-                state.xp -= xpMax;
-                state.level++;
+                state.xp -= xpMax; state.level++;
                 if (tg) tg.HapticFeedback.notificationOccurred('success');
                 alert(`🎉 Уровень повышен! Теперь вы ${state.level} уровня!`);
             }
             updateLevel(); saveState();
         }
 
-        function getCarIncome() {
-            return state.cars.filter(c => c.owned).reduce((sum, c) => sum + (INCOME_RATES[c.rarity] || 0), 0);
-        }
-        function getBusinessIncome() {
-            return state.businesses.filter(b => b.owned).reduce((sum, b) => sum + b.income, 0);
-        }
+        function getCarIncome() { return state.cars.filter(c => c.owned).reduce((sum, c) => sum + (INCOME_RATES[c.rarity] || 0), 0); }
+        function getBusinessIncome() { return state.businesses.filter(b => b.owned).reduce((sum, b) => sum + b.income, 0); }
         function getTotalIncomePerSec() { return getCarIncome() + getBusinessIncome(); }
         
         function tickIncome() {
@@ -733,13 +697,10 @@
             const elapsedSec = Math.floor((now - state.lastTick) / 1000);
             if (elapsedSec > 0) {
                 state.balance += getTotalIncomePerSec() * elapsedSec;
-                state.lastTick = now;
-                updateBalance();
-                saveState();
+                state.lastTick = now; updateBalance(); saveState();
             }
         }
 
-        // --- ГАРАЖ ---
         function renderGarage() {
             const container = document.getElementById('car-list');
             container.innerHTML = '';
@@ -759,8 +720,8 @@
                 const card = document.createElement('div');
                 card.className = `car-card rarity-${car.rarity}`;
                 let imageHtml = car.image 
-                ? `<div class="car-image-container"><img src="${car.image}" class="car-image" alt="${car.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div></div>`
-                : `<div class="car-image-container"><div class="car-placeholder">${car.emoji}</div></div>`;
+                    ? `<div class="car-image-container"><img src="${car.image}" class="car-image" alt="${car.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div></div>`
+                    : `<div class="car-image-container"><div class="car-placeholder">${car.emoji}</div></div>`;
                 let plateMiniHtml = car.plate ? `<div class="car-plate-mini ${car.plate.country.toLowerCase()}">${car.plate.main} ${car.plate.region || ''}</div>` : '';
                 let neonHtml = car.neon ? `<div class="car-neon" style="background: ${car.neon}; box-shadow: 0 0 20px ${car.neon};"></div>` : '';
                 let actionHtml = `<span class="car-owned-tag">✅ В гараже</span><div class="btn-row"><button class="btn-action btn-info info-btn" data-id="${car.id}">Инфо</button><button class="btn-action btn-custom custom-btn" data-id="${car.id}">🎨</button><button class="btn-action btn-sell sell-btn" data-id="${car.id}">Продать</button></div>`;
@@ -789,7 +750,6 @@
             }));
         }
 
-        // --- АВТОСАЛОН (ИСПРАВЛЕНО: теперь с картинками) ---
         function renderShop() {
             const container = document.getElementById('shop-list');
             container.innerHTML = '';
@@ -869,7 +829,6 @@
             overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
         }
 
-        // --- ТЮНИНГ ---
         function renderTuningSelector() {
             const container = document.getElementById('tuning-car-selector'); container.innerHTML = '';
             const owned = state.cars.filter(c => c.owned);
@@ -903,7 +862,6 @@
             }));
         }
 
-        // --- НОМЕРА ---
         function generatePlate(country) {
             const lettersRU = 'АВЕКМНОРСТУХ'; const lettersEN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             const ri = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -977,7 +935,7 @@
             const stripItems = [];
             for (let i = 0; i < 50; i++) { if (i === 45) stripItems.push(winCar); else { const randomRarity = Object.keys(caseItem.chances).find(r => caseItem.chances[r] > 0); const randomPool = state.cars.filter(c => c.rarity === randomRarity); stripItems.push(randomPool[Math.floor(Math.random() * randomPool.length)]); } }
             const overlay = document.createElement('div'); overlay.className = 'case-overlay';
-            let stripHtml = ''; stripItems.forEach(car => { stripHtml += `<div class="case-strip-item"><div class="emoji">${car.emoji}</div><div class="name" style="color: var(--c-${car.rarity})">${car.name}</div></div>`; });
+            let stripHtml = ''; stripItems.forEach(car => { stripHtml += `<div class="case-strip-item">${car.image ? `<img src="${car.image}" onerror="this.parentElement.innerHTML='<div class=emoji>${car.emoji}</div>'">` : `<div class="emoji">${car.emoji}</div>`}<div class="name" style="color: var(--c-${car.rarity})">${car.name}</div></div>`; });
             overlay.innerHTML = `<div class="case-strip-container"><div class="case-strip-center-line"></div><div class="case-strip" id="case-strip">${stripHtml}</div></div>`;
             document.body.appendChild(overlay);
             setTimeout(() => {
@@ -990,36 +948,67 @@
                     else { winCar.owned = true; resultText = 'Добавлено в гараж!'; addXP(30); }
                     saveState(); updateBalance(); renderGarage();
                     const resultOverlay = document.createElement('div'); resultOverlay.className = 'case-result-overlay';
-                    resultOverlay.innerHTML = `<div class="case-result-content"><div class="case-result-icon">${winCar.emoji}</div><div class="case-result-name" style="color: var(--c-${winCar.rarity})">${winCar.name}</div><div class="case-result-rarity" style="color: var(--c-${winCar.rarity})">${RARITIES[winCar.rarity].label}</div><p style="color: var(--text-muted); margin-bottom: 20px;">${resultText}</p><button class="case-close-btn">Забрать</button></div>`;
+                    resultOverlay.innerHTML = `<div class="case-result-content"><div class="case-result-icon">${winCar.image ? `<img src="${winCar.image}">` : winCar.emoji}</div><div class="case-result-name" style="color: var(--c-${winCar.rarity})">${winCar.name}</div><div class="case-result-rarity" style="color: var(--c-${winCar.rarity})">${RARITIES[winCar.rarity].label}</div><p style="color: var(--text-muted); margin-bottom: 20px;">${resultText}</p><button class="case-close-btn">Забрать</button></div>`;
                     document.body.appendChild(resultOverlay);
                     resultOverlay.querySelector('.case-close-btn').addEventListener('click', () => { resultOverlay.remove(); overlay.remove(); });
                 }, 4000);
             }, 100);
         }
 
-        // --- ГОНКИ (С ВЫБОРОМ СОПЕРНИКА) ---
+        // --- ГОНКИ (НОВАЯ СИСТЕМА) ---
         function setupRace() {
-            const carSelect = document.getElementById('race-car-select'); const startBtn = document.getElementById('start-race-btn');
-            const playerCarContainer = document.getElementById('player-car-container'); const enemyCarContainer = document.getElementById('enemy-car-container');
-            const playerCarEl = document.getElementById('player-car'); const enemyCarEl = document.getElementById('enemy-car');
-            const playerPlateEl = document.getElementById('player-plate'); const enemyPlateEl = document.getElementById('enemy-plate');
-            const resultEl = document.getElementById('race-result'); const betInput = document.getElementById('race-bet');
-            const playerNameEl = document.getElementById('player-name-display'); const enemyNameEl = document.getElementById('enemy-name-display');
-            const statsPreview = document.getElementById('race-stats-preview'); let isRacing = false;
-            const opponentListEl = document.getElementById('opponent-list'); const selectedInfoEl = document.getElementById('selected-opponent-info');
+            const carSelect = document.getElementById('race-car-select');
+            const startBtn = document.getElementById('start-race-btn');
+            const gasBtn = document.getElementById('gas-btn');
+            const resultEl = document.getElementById('race-result');
+            const betInput = document.getElementById('race-bet');
+            const playerNameEl = document.getElementById('player-name-display');
+            const enemyNameEl = document.getElementById('enemy-name-display');
+            const statsPreview = document.getElementById('race-stats-preview');
+            const opponentListEl = document.getElementById('opponent-list');
+            const selectedInfoEl = document.getElementById('selected-opponent-info');
+            const countdownEl = document.getElementById('race-countdown');
+            const playerVisualEl = document.getElementById('player-car-visual');
+            const enemyVisualEl = document.getElementById('enemy-car-visual');
+            const playerPlateUnderEl = document.getElementById('player-plate-under');
+            const enemyPlateUnderEl = document.getElementById('enemy-plate-under');
+            const playerProgressEl = document.getElementById('player-progress');
+            const enemyProgressEl = document.getElementById('enemy-progress');
+            const timerEl = document.getElementById('race-timer');
+
+            let raceState = 'idle';
+            let startTime = 0, playerDistance = 0, enemyDistance = 0;
+            let playerFinishTime = 0, enemyFinishTime = 0;
+            let gasPressed = false, raceInterval = null;
+            let currentOpponent = null, playerSpeed = 0, enemySpeed = 0;
+            const TRACK_LENGTH = 1000;
+
+            function setCarVisual(el, plateEl, car) {
+                if (car.image) {
+                    el.innerHTML = `<img src="${car.image}" class="car-img-big" onerror="this.parentElement.innerHTML='<div class=car-emoji-big>${car.emoji}</div>'">`;
+                } else {
+                    el.innerHTML = `<div class="car-emoji-big">${car.emoji}</div>`;
+                }
+                if (car.plate) {
+                    plateEl.style.display = 'block';
+                    plateEl.className = `plate-under ${car.plate.country.toLowerCase()}`;
+                    plateEl.textContent = car.plate.main + (car.plate.region ? ' ' + car.plate.region : '');
+                } else {
+                    plateEl.style.display = 'none';
+                }
+            }
 
             function generateOpponents() {
                 const owned = state.cars.filter(c => c.owned);
                 if (!owned.length) return [];
-                const playerCar = state.cars.find(c => c.id === carSelect.value) || owned[0];
+                const myCar = state.cars.find(c => c.id === carSelect.value) || owned[0];
                 const opponents = [];
-                const allCars = state.cars;
                 for (let i = 0; i < 5; i++) {
-                    const randomCar = allCars[Math.floor(Math.random() * allCars.length)];
-                    const playerPower = (playerCar.power || 100) + (playerCar.tuning.engine||0)*20 + (playerCar.tuning.turbo||0)*30;
+                    const randomCar = state.cars[Math.floor(Math.random() * state.cars.length)];
+                    const playerPower = (myCar.power || 100) + (myCar.tuning.engine||0)*20 + (myCar.tuning.turbo||0)*30;
                     const enemyTuning = Math.floor(Math.random() * 15);
                     const enemyPower = (randomCar.power || 100) + enemyTuning * 10;
-                    const playerAccel = playerCar.acceleration || 10;
+                    const playerAccel = myCar.acceleration || 10;
                     const enemyAccel = randomCar.acceleration || 10;
                     const powerRatio = playerPower / (playerPower + enemyPower);
                     const accelRatio = enemyAccel / (playerAccel + enemyAccel);
@@ -1036,7 +1025,7 @@
                 const opponents = generateOpponents();
                 opponentListEl.innerHTML = '';
                 if (!opponents.length) { opponentListEl.innerHTML = '<p style="color:var(--text-muted);font-size:12px;">Купите машину, чтобы участвовать в гонках.</p>'; return; }
-                opponents.forEach((opp, idx) => {
+                opponents.forEach(opp => {
                     const card = document.createElement('div');
                     card.className = 'opponent-card' + (state.selectedOpponent && state.selectedOpponent.id === opp.id ? ' selected' : '');
                     card.innerHTML = `<div class="opponent-info"><div class="opponent-name">${opp.name}</div><div class="opponent-car">${opp.car.emoji} ${opp.car.name}</div></div><div class="opponent-chance"><div class="chance-val" style="color: ${opp.winChance > 50 ? 'var(--success)' : opp.winChance > 25 ? 'var(--c-legendary)' : 'var(--danger)'}">${opp.winChance}%</div><div class="mult-val">x${opp.multiplier}</div></div>`;
@@ -1070,48 +1059,127 @@
 
             function updateRaceInfo() {
                 const car = state.cars.find(c => c.id === carSelect.value); if (!car) return;
-                playerNameEl.textContent = car.name; playerCarEl.textContent = car.emoji;
-                if (car.plate) { playerPlateEl.style.display = 'inline-block'; playerPlateEl.textContent = car.plate.main + ' ' + (car.plate.region || ''); } else playerPlateEl.style.display = 'none';
+                playerNameEl.textContent = car.name;
+                setCarVisual(playerVisualEl, playerPlateUnderEl, car);
                 statsPreview.innerHTML = `<span>⚙️ ${car.tuning.engine||0}/5</span><span>🔧 ${car.tuning.suspension||0}/5</span><span>🛑 ${car.tuning.brakes||0}/5</span><span>🌀 ${car.tuning.turbo||0}/5</span><span>🛞 ${car.tuning.tires||0}/5</span>`;
             }
 
             carSelect.addEventListener('change', () => { updateRaceInfo(); renderOpponents(); });
 
             startBtn.addEventListener('click', () => {
-                if (isRacing) return;
+                if (raceState !== 'idle') return;
                 const bet = parseInt(betInput.value);
                 if (isNaN(bet) || bet < 1000 || bet > 100000) return alert('Ставка от 1000 до 100000 ₽');
                 if (state.balance < bet) return alert('Недостаточно средств!');
                 const car = state.cars.find(c => c.id === carSelect.value); if (!car) return;
                 if (!state.selectedOpponent) return alert('Выберите соперника!');
                 state.balance -= bet; state.stats.races++; updateBalance(); saveState();
-                isRacing = true; resultEl.textContent = '';
-                playerCarContainer.style.left = '10px'; enemyCarContainer.style.left = '10px';
-                const opp = state.selectedOpponent;
-                enemyNameEl.textContent = opp.car.name; enemyCarEl.textContent = opp.car.emoji;
-                if (Math.random() > 0.5) { enemyPlateEl.style.display = 'inline-block'; const fake = generatePlate('RU'); enemyPlateEl.textContent = fake.main + ' ' + fake.region; } else enemyPlateEl.style.display = 'none';
-                const playerWins = Math.random() * 100 < opp.winChance;
-                const trackWidth = document.querySelector('.race-track').offsetWidth - 80;
-                playerCarContainer.style.transition = 'left 2.5s cubic-bezier(0.25,0.1,0.25,1)';
-                enemyCarContainer.style.transition = 'left 2.5s cubic-bezier(0.25,0.1,0.25,1)';
-                playerCarContainer.style.left = (playerWins ? trackWidth : trackWidth * 0.7) + 'px';
-                enemyCarContainer.style.left = (playerWins ? trackWidth * 0.7 : trackWidth) + 'px';
-                setTimeout(() => {
-                    if (playerWins) {
-                        const winAmount = Math.floor(bet * opp.multiplier);
-                        state.balance += winAmount; state.stats.wins++; addXP(25);
-                        resultEl.innerHTML = `<span style="color:var(--success)">🏆 Победа! Вы выиграли ${winAmount} ₽ (x${opp.multiplier})</span>`;
-                    } else resultEl.innerHTML = `<span style="color:var(--danger)">💀 Поражение! Вы потеряли ${bet} ₽</span>`;
-                    updateBalance(); saveState(); isRacing = false;
-                    playerCarContainer.style.transition = ''; enemyCarContainer.style.transition = '';
-                    renderOpponents();
-                }, 2600);
+                currentOpponent = state.selectedOpponent;
+                resultEl.textContent = '';
+                playerDistance = 0; enemyDistance = 0; playerFinishTime = 0; enemyFinishTime = 0;
+                playerProgressEl.style.width = '0%'; enemyProgressEl.style.width = '0%';
+                timerEl.textContent = '0.00 с';
+                gasBtn.style.display = 'none';
+                enemyNameEl.textContent = currentOpponent.car.name;
+                setCarVisual(enemyVisualEl, enemyPlateUnderEl, currentOpponent.car);
+                const baseSpeed = 100;
+                const playerPower = (car.power || 100) + (car.tuning.engine||0)*20 + (car.tuning.turbo||0)*30;
+                const enemyPower = (currentOpponent.car.power || 100) + Math.floor(Math.random() * 50);
+                playerSpeed = baseSpeed + playerPower / 5;
+                enemySpeed = baseSpeed + enemyPower / 5;
+                startCountdown();
             });
+
+            function startCountdown() {
+                raceState = 'countdown';
+                startBtn.disabled = true;
+                let count = 3;
+                countdownEl.style.display = 'block';
+                countdownEl.textContent = count;
+                countdownEl.classList.remove('go');
+                const countInterval = setInterval(() => {
+                    count--;
+                    if (count > 0) {
+                        countdownEl.textContent = count;
+                        countdownEl.style.animation = 'none';
+                        setTimeout(() => countdownEl.style.animation = 'countdownPulse 1s ease-in-out', 10);
+                    } else {
+                        clearInterval(countInterval);
+                        countdownEl.textContent = '🟢';
+                        countdownEl.classList.add('go');
+                        raceState = 'ready';
+                        gasBtn.style.display = 'block';
+                        gasPressed = false;
+                        setTimeout(() => {
+                            if (raceState === 'ready' && !gasPressed) {
+                                countdownEl.style.display = 'none';
+                                startRaceAnimation();
+                            }
+                        }, 3000);
+                    }
+                }, 1000);
+            }
+
+            gasBtn.addEventListener('click', () => {
+                if (raceState !== 'ready') return;
+                gasPressed = true;
+                countdownEl.style.display = 'none';
+                gasBtn.style.display = 'none';
+                startRaceAnimation();
+            });
+
+            function startRaceAnimation() {
+                raceState = 'racing';
+                startTime = Date.now();
+                raceInterval = setInterval(() => {
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    if (gasPressed) {
+                        playerDistance += playerSpeed * 0.05;
+                        if (playerDistance >= TRACK_LENGTH) playerDistance = TRACK_LENGTH;
+                        playerProgressEl.style.width = (playerDistance / TRACK_LENGTH * 100) + '%';
+                        if (playerDistance >= TRACK_LENGTH && playerFinishTime === 0) playerFinishTime = elapsed;
+                    }
+                    if (enemyDistance < TRACK_LENGTH) {
+                        enemyDistance += enemySpeed * 0.05;
+                        if (enemyDistance >= TRACK_LENGTH) enemyDistance = TRACK_LENGTH;
+                        enemyProgressEl.style.width = (enemyDistance / TRACK_LENGTH * 100) + '%';
+                        if (enemyDistance >= TRACK_LENGTH && enemyFinishTime === 0) enemyFinishTime = elapsed;
+                    }
+                    timerEl.textContent = elapsed.toFixed(2) + ' с';
+                    if (playerFinishTime > 0 && enemyFinishTime > 0) {
+                        clearInterval(raceInterval);
+                        finishRace();
+                    }
+                }, 50);
+            }
+
+            function finishRace() {
+                raceState = 'finished';
+                const bet = parseInt(betInput.value);
+                const opp = currentOpponent;
+                if (playerFinishTime > 0 && (enemyFinishTime === 0 || playerFinishTime < enemyFinishTime)) {
+                    const winAmount = Math.floor(bet * opp.multiplier);
+                    state.balance += winAmount; state.stats.wins++; addXP(25);
+                    resultEl.innerHTML = `<span style="color:var(--success)">🏆 Победа! +${winAmount} ₽ (${playerFinishTime.toFixed(2)} с)</span>`;
+                } else {
+                    resultEl.innerHTML = `<span style="color:var(--danger)">💀 Поражение! -${bet} ₽ (${enemyFinishTime.toFixed(2)} с у соперника)</span>`;
+                }
+                updateBalance(); saveState();
+                setTimeout(() => {
+                    raceState = 'idle'; startBtn.disabled = false;
+                    countdownEl.style.display = 'none'; gasBtn.style.display = 'none';
+                    playerProgressEl.style.width = '0%'; enemyProgressEl.style.width = '0%';
+                    timerEl.textContent = '0.00 с';
+                    renderOpponents();
+                }, 3000);
+            }
+
             updateCarSelect();
-            document.querySelector('[data-tab="earn"]').addEventListener('click', () => { updateCarSelect(); renderOpponents(); });
+            document.querySelector('[data-tab="earn"]').addEventListener('click', () => {
+                if (raceState === 'idle') { updateCarSelect(); renderOpponents(); }
+            });
         }
 
-        // --- РУЛЕТКА ---
         function setupRoulette() {
             const wheel = document.getElementById('roulette-wheel'); const center = wheel.querySelector('.roulette-center');
             const spinBtn = document.getElementById('spin-roulette-btn'); const betInput = document.getElementById('roulette-bet');
@@ -1140,7 +1208,6 @@
             });
         }
 
-        // --- ТУРНИР ---
         function setupTournament() {
             document.getElementById('join-tournament-btn').addEventListener('click', () => {
                 if (Date.now() - state.lastTournament < 24*60*60*1000) return alert('Вы уже участвовали сегодня!');
@@ -1159,7 +1226,6 @@
             });
         }
 
-        // --- БИЗНЕС ---
         function renderBusiness() {
             const container = document.getElementById('business-list'); container.innerHTML = '';
             state.businesses.forEach(b => {
@@ -1176,7 +1242,6 @@
             }));
         }
 
-        // --- АУКЦИОН ---
         function renderAuction() {
             const container = document.getElementById('auction-list'); container.innerHTML = '';
             const ownedCars = state.cars.filter(c => c.owned);
@@ -1199,7 +1264,7 @@
                 const car = state.cars.find(c => c.id === a.carId);
                 if (!car) return;
                 const card = document.createElement('div'); card.className = 'auction-card';
-                card.innerHTML = `<div class="auction-header"><span style="font-weight:700;">${car.name}</span><span class="auction-price">${a.price.toLocaleString('ru-RU')} ₽</span></div><div class="auction-desc">Продавец: Вы</div><button class="btn-list-auction" style="width:100%;padding:8px;border:none;border-radius:8px;cursor:pointer;" data-id="${a.id}">Снять с продажи</button>`;
+                card.innerHTML = `${car.image ? `<img src="${car.image}" style="width:100%;height:80px;object-fit:contain;margin-bottom:8px;" onerror="this.style.display='none'">` : ''}<div class="auction-header"><span style="font-weight:700;">${car.name}</span><span class="auction-price">${a.price.toLocaleString('ru-RU')} ₽</span></div><div class="auction-desc">Продавец: Вы</div><button class="btn-list-auction" style="width:100%;padding:8px;border:none;border-radius:8px;cursor:pointer;" data-id="${a.id}">Снять с продажи</button>`;
                 container.appendChild(card);
             });
 
@@ -1209,7 +1274,7 @@
                 const car = state.cars.find(c => c.id === a.carId);
                 if (!car) return;
                 const card = document.createElement('div'); card.className = 'auction-card';
-                card.innerHTML = `<div class="auction-header"><span style="font-weight:700;">${car.name}</span><span class="auction-price">${a.price.toLocaleString('ru-RU')} ₽</span></div><div class="auction-desc">Продавец: ${a.listedBy === 'bot' ? 'Бот' : 'Игрок'}</div><button class="btn-buy-auction" style="width:100%;padding:8px;border:none;border-radius:8px;cursor:pointer;" data-id="${a.id}">Купить</button>`;
+                card.innerHTML = `${car.image ? `<img src="${car.image}" style="width:100%;height:80px;object-fit:contain;margin-bottom:8px;" onerror="this.style.display='none'">` : ''}<div class="auction-header"><span style="font-weight:700;">${car.name}</span><span class="auction-price">${a.price.toLocaleString('ru-RU')} ₽</span></div><div class="auction-desc">Продавец: ${a.listedBy === 'bot' ? 'Бот' : 'Игрок'}</div><button class="btn-buy-auction" style="width:100%;padding:8px;border:none;border-radius:8px;cursor:pointer;" data-id="${a.id}">Купить</button>`;
                 container.appendChild(card);
             });
 
@@ -1227,7 +1292,7 @@
                     const carId = e.target.dataset.id;
                     const car = state.cars.find(c => c.id === carId);
                     if (!car) return;
-                    const priceStr = prompt(`Введите цену (любую, от 1 ₽ до 999 999 999 ₽):`, Math.floor(car.price*1.5));
+                    const priceStr = prompt(`Введите цену (от 1 ₽ до 999 999 999 ₽):`, Math.floor(car.price*1.5));
                     if (!priceStr) return overlay.remove();
                     const price = parseInt(priceStr);
                     if (isNaN(price) || price < 1 || price > 999999999) return alert('Некорректная цена!');
@@ -1263,7 +1328,6 @@
             }));
         }
 
-        // --- ПРОФИЛЬ ---
         function renderProfile() {
             document.getElementById('profile-name').textContent = document.getElementById('user-name').textContent;
             document.getElementById('stat-cars').textContent = state.cars.filter(c => c.owned).length;
@@ -1325,7 +1389,6 @@
             });
         }
 
-        // --- БОНУС ---
         function setupBonus() {
             const btn = document.getElementById('bonus-btn'); const cooldown = 24 * 60 * 60 * 1000;
             const check = () => {
@@ -1334,7 +1397,8 @@
                 else { btn.disabled = false; btn.innerHTML = '🎁 Бонус <span style="opacity:0.8;font-size:12px">+1000 ₽</span>'; }
             };
             btn.addEventListener('click', () => {
-                if (Date.now() - state.lastBonus >= cooldown) { state.balance += 1000; state.lastBonus = Date.now(); addXP(10); saveState(); updateBalance(); check(); }
+                if (Date.now() - state.lastBonus >= cooldown) { state.balance +=
+1000; state.lastBonus = Date.now(); addXP(10); saveState(); updateBalance(); check(); }
             });
             check(); setInterval(check, 60000);
         }
