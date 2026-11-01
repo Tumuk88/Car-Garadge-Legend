@@ -1,155 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Auto Garage Legend</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --bg: #08080e; --panel-bg: rgba(16, 16, 26, 0.85); --card-bg: rgba(255, 255, 255, 0.03);
-            --text: #ffffff; --text-muted: #8a8a9e; --border: rgba(255, 255, 255, 0.08);
-            --success: #00ff88; --danger: #ef4444; --accent: #00e5ff;
-            --c-common: #9ca3af; --c-rare: #3b82f6; --c-epic: #a855f7;
-            --c-mythic: #ef4444; --c-legendary: #fbbf24; --c-special: #ff00ff;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden;
-            background-image: radial-gradient(circle at 10% 10%, rgba(168,85,247,0.08), transparent 40%),
-                              radial-gradient(circle at 90% 90%, rgba(59,130,246,0.08), transparent 40%); }
-        #app { display: flex; flex-direction: column; height: 100vh; max-width: 480px; margin: 0 auto; position: relative; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px;
-            background: var(--panel-bg); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); z-index: 10; }
-        .user-info { display: flex; align-items: center; gap: 8px; }
-        .user-name { font-weight: 700; font-size: 14px; }
-        .level-badge { background: #ff00aa; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-        .balance { background: linear-gradient(135deg, #6d28d9, #3b82f6); padding: 8px 18px; border-radius: 30px;
-            font-weight: 700; font-size: 15px; box-shadow: 0 4px 15px rgba(109,40,217,0.4); }
-        main { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 120px; }
-        main::-webkit-scrollbar { width: 0; }
-        .tab-content { display: none; animation: slideUp 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        h2 { margin-bottom: 16px; font-size: 26px; font-weight: 800; }
-        h2 span { background: linear-gradient(135deg, #fff, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        .profile-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 16px; }
-        .avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #6d28d9, #3b82f6); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
-        .xp-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 12px 0; overflow: hidden; }
-        .xp-fill { height: 100%; background: linear-gradient(90deg, #6d28d9, #3b82f6); transition: width 0.3s; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
-        .stat-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; font-size: 12px; }
-        .stat-item b { display: block; font-size: 18px; color: #3b82f6; margin-top: 4px; }
-
-        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 8px; scrollbar-width: none; }
-        .filter-scroll::-webkit-scrollbar { display: none; }
-        .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; }
-        .filter-btn.active { color: #fff; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
-        .filter-btn[data-r="common"].active { background: var(--c-common); border-color: var(--c-common); color:#000; }
-        .filter-btn[data-r="rare"].active { background: var(--c-rare); border-color: var(--c-rare); }
-        .filter-btn[data-r="epic"].active { background: var(--c-epic); border-color: var(--c-epic); }
-        .filter-btn[data-r="mythic"].active { background: var(--c-mythic); border-color: var(--c-mythic); }
-        .filter-btn[data-r="legendary"].active { background: var(--c-legendary); border-color: var(--c-legendary); color: #000; }
-        .filter-btn[data-r="special"].active { background: linear-gradient(90deg, #ff00ff, #00ffff); border-color: transparent; color: #000; }
-
-        .car-grid { display: grid; gap: 12px; }
-        .car-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; position: relative; transition: transform 0.2s; overflow: hidden; }
-        .car-card:active { transform: scale(0.98); }
-        .car-card.rarity-common { border-color: rgba(156,163,175,0.4); }
-        .car-card.rarity-rare { border-color: rgba(59,130,246,0.6); box-shadow: inset 0 0 20px rgba(59,130,246,0.1); }
-        .car-card.rarity-epic { border-color: rgba(168,85,247,0.6); box-shadow: inset 0 0 20px rgba(168,85,247,0.15); }
-        .car-card.rarity-mythic { border-color: rgba(239,68,68,0.6); box-shadow: inset 0 0 20px rgba(239,68,68,0.15); }
-        .car-card.rarity-legendary { border-color: rgba(251,191,36,0.6); box-shadow: inset 0 0 20px rgba(251,191,36,0.15); }
-        .car-card.rarity-special { border: 2px solid transparent; background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box, linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff) border-box; animation: rainbowGlow 3s linear infinite; }
-        @keyframes rainbowGlow { 0% { box-shadow: 0 0 10px rgba(255,0,0,0.3); } 50% { box-shadow: 0 0 10px rgba(0,0,255,0.3); } 100% { box-shadow: 0 0 10px rgba(255,0,0,0.3); } }
-        .car-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .car-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 3px 8px; border-radius: 6px; color: #fff; }
-        .rarity-common .car-badge { background: var(--c-common); color: #000; }
-        .rarity-rare .car-badge { background: var(--c-rare); }
-        .rarity-epic .car-badge { background: var(--c-epic); }
-        .rarity-mythic .car-badge { background: var(--c-mythic); }
-        .rarity-legendary .car-badge { background: var(--c-legendary); color: #000; }
-        .rarity-special .car-badge { background: linear-gradient(90deg, #ff00ff, #00ffff); color: #000; }
-
-        /* Контейнер изображения авто — с подсветкой днища */
-        .car-image-container { height: 130px; width: 100%; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .car-image { max-width: 92%; max-height: 100%; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)); transition: filter 0.3s; }
-        .car-placeholder { font-size: 60px; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.5)); position: relative; z-index: 2; }
-        /* Цветная подложка-подсветка по всему днищу (по ширине авто) */
-        .car-glow-under { position: absolute; bottom: 6px; left: 8%; right: 8%; height: 26px; border-radius: 50%; filter: blur(14px); opacity: 0.9; z-index: 1; transition: background 0.3s; }
-        .car-plate-mini { position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); font-family: 'Arial Narrow', sans-serif; font-weight: 700; font-size: 8px; padding: 2px 4px; border-radius: 2px; border: 1px solid #000; white-space: nowrap; z-index: 3; }
-        .car-plate-mini.ru { background: #fff; color: #000; border-left: 12px solid #0033aa; }
-        .car-plate-mini.kz { background: #fff; color: #000; border-left: 12px solid #0072bc; }
-        .car-plate-mini.by { background: #fff; color: #000; border-left: 12px solid #c8102e; }
-
-        .car-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .car-price { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
-        .car-income { font-size: 12px; color: var(--success); font-weight: 600; margin-bottom: 10px; }
-        .rarity-common .car-price { color: var(--c-common); }
-        .rarity-rare .car-price { color: var(--c-rare); }
-        .rarity-epic .car-price { color: var(--c-epic); }
-        .rarity-mythic .car-price { color: var(--c-mythic); }
-        .rarity-legendary .car-price { color: var(--c-legendary); }
-        .rarity-special .car-price { background: linear-gradient(90deg, #ff00ff, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .btn-row { display: flex; gap: 8px; margin-top: 8px; }
-        .btn-action { flex: 1; padding: 10px; border: none; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; transition: opacity 0.2s; }
-        .btn-action:active { opacity: 0.7; }
-        .btn-buy { background: linear-gradient(135deg, #6d28d9, #3b82f6); color: #fff; }
-        .btn-sell { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-        .btn-info { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--border); }
-        .btn-custom { background: rgba(168,85,247,0.2); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
-        .car-owned-tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--success); background: rgba(0,255,136,0.1); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(0,255,136,0.2); }
-
-        .garage-stats { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-around; font-size: 12px; }
-        .garage-stat { text-align: center; }
-        .garage-stat b { display: block; font-size: 16px; color: #3b82f6; margin-top: 4px; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 100; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .modal-content { background: #151522; border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 90%; max-width: 380px; animation: popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); max-height: 85vh; overflow-y: auto; }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-        .modal-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4; }
-        .modal-close { width: 100%; padding: 12px; margin-top: 20px; background: var(--card-bg); border: 1px solid var(--border); color: #fff; border-radius: 12px; font-weight: 700; cursor: pointer; }
-        .stat-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
-        .stat-label { color: var(--text-muted); }
-        .stat-value { font-weight: 700; }
-        .stat-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 4px; overflow: hidden; }
-        .stat-bar-fill { height: 100%; background: linear-gradient(90deg, #6d28d9, #3b82f6); }
-
-        .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
-        .color-swatch { width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
-        .color-swatch:active { transform: scale(0.9); }
-        .color-swatch.selected { border-color: #fff; box-shadow: 0 0 10px #fff; }
-        .neon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
-        .neon-swatch { padding: 12px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; font-size: 12px; font-weight: 700; text-align: center; }
-        .neon-swatch.selected { border-color: #fff; box-shadow: 0 0 15px currentColor; }
-
-        .task-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .task-info { display: flex; flex-direction: column; gap: 4px; }
-        .task-title { font-weight: 700; font-size: 14px; }
-        .task-progress { font-size: 12px; color: var(--text-muted); }
-        .task-reward { font-size: 12px; color: var(--success); font-weight: 700; }
-        .btn-claim { background: var(--success); color: #000; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
-        .btn-claim:disabled { background: rgba(255,255,255,0.1); color: var(--text-muted); cursor: not-allowed; }
-
-        .ach-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
-        .ach-icon { font-size: 32px; }
-        .ach-info { flex: 1; }
-        .ach-title { font-weight: 700; font-size: 14px; }
-        .ach-desc { font-size: 11px; color: var(--text-muted); }
-        .ach-status { font-size: 20px; }
-
-        .tuning-select { width: 100%; padding: 14px; background: var(--card-bg); color: var(--text); border: 1px solid var(--border); border-radius: 14px; font-size: 15px; outline: none; font-weight: 600; margin-bottom: 12px; appearance: none; }
-        .tuning-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .tuning-info { display: flex; flex-direction: column; gap: 4px; }
-        .tuning-name { font-weight: 600; font-size: 14px; }
-        .tuning-level { font-size: 11px; color: var(--text-muted); }
-        .tuning-bar { width: 90px; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 6px; overflow: hidden; }
-        .tuning-bar-fill { height: 100%; background: linear-gradient(90deg, #6d28d9, #3b82f6); transition: width 0.3s; }
-        .btn-tune { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #60a5fa; padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; }
-        .btn-tune:disabled { opacity: 0.4; cursor: not-allowed; }
-
         .plate-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; }
         .plate-options { display: flex; gap: 8px; margin-bottom: 12px; }
         .country-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); padding: 10px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
@@ -190,7 +39,6 @@
         .earn-panel.active { display: block; }
 
         .race-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; }
-        .opponent-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; max-height: 300px; overflow-y: auto; }
 
         .roulette-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px; }
         .roulette-legend { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 16px; font-size: 11px; }
@@ -259,7 +107,6 @@
 
         #error-box { position: fixed; bottom: 0; left: 0; right: 0; background: #ef4444; color: white; padding: 10px; font-size: 12px; z-index: 9999; display: none; }
 
-        /* --- ГОНКИ --- */
         .race-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .race-header-left { display: flex; align-items: center; gap: 12px; }
         .race-level-badge { background: #333; color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid #ffaa00; }
@@ -602,79 +449,79 @@
 
         const RARITIES = { common: { label: 'Обычная' }, rare: { label: 'Редкая' }, epic: { label: 'Эпическая' }, mythic: { label: 'Мифическая' }, legendary: { label: 'Легендарная' }, special: { label: 'Специальная' } };
         const INCOME_RATES = { common: 400, rare: 1200, epic: 3200, mythic: 8000, legendary: 20000, special: 60000 };
-        const CAR_TEMPLATE = [
+
+                const CAR_TEMPLATE = [
             // ОБЫЧНЫЕ (12)
             { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'common', price: 5000, emoji: '🚗', desc: 'Классика советского автопрома. Заднеприводный седан, выпускавшийся с 1982 по 2012 год. Простая конструкция, доступные запчасти и отличная ремонтопригодность сделали её легендой.', power: 70, speed: 160, acceleration: 17.5, weight: 1030, drive: 'Задний', fuel: 9.5, image: 'https://i.postimg.cc/CMQ4Rxrx/lada-2107-19-no-bg-preview-(carve-photos)-(1).png' },
-            { id: 'logan', name: 'Renault Logan', rarity: 'common', price: 8000, emoji: '🚙', desc: 'Бюджетный седан, разработанный для развивающихся рынков. Славится своей надежностью и простотой обслуживания. Первое поколение выпускалось с 2004 года.', power: 82, speed: 170, acceleration: 12.5, weight: 1065, drive: 'Передний', fuel: 7.0, image: 'https://i.postimg.cc/x1tDBYXK/logan2-(1)-edited-free-(carve-photos).png' },
-            { id: 'granta', name: 'Lada Granta', rarity: 'common', price: 10000, emoji: '🚗', desc: 'Современный бюджетный автомобиль АвтоВАЗа, пришедший на смену «Калине». Выпускается с 2011 года. Отличается низкой ценой и доступным обслуживанием.', power: 87, speed: 175, acceleration: 11.8, weight: 1080, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/YCXHLPZ2/lada-granta-png.png' },
-            { id: 'duster', name: 'Renault Duster', rarity: 'common', price: 12000, emoji: '🚙', desc: 'Компактный кроссовер, ставший бестселлером в России благодаря доступной цене и хорошей проходимости. Первое поколение выпускается с 2010 года.', power: 115, speed: 180, acceleration: 10.5, weight: 1380, drive: 'Полный', fuel: 7.5, image: 'https://i.postimg.cc/wjSPCv6r/daster-no-bg-preview-(carve-photos).png' },
-            { id: 'rio', name: 'Kia Rio', rarity: 'common', price: 14000, emoji: '🚗', desc: 'Популярный корейский бюджетный седан, адаптированный для России. Хорошее соотношение цены и качества, надежный двигатель и богатая комплектация.', power: 123, speed: 190, acceleration: 10.2, weight: 1150, drive: 'Передний', fuel: 6.4, image: 'https://i.postimg.cc/bwbL2RhL/rio-(1)-no-bg-preview-(carve-photos).png' },
-            { id: 'solaris', name: 'Hyundai Solaris', rarity: 'common', price: 16000, emoji: '🚗', desc: 'Один из самых продаваемых автомобилей в России. Брат Kia Rio, отличается стильным дизайном и хорошей динамикой.', power: 123, speed: 190, acceleration: 10.2, weight: 1150, drive: 'Передний', fuel: 6.4, image: 'https://i.postimg.cc/c6Gtqw52/f2d0cdd0751b4e065ab9a00aa21056f3-(1)-no-bg-preview-(carve-photos).png' },
-            { id: 'focus', name: 'Ford Focus', rarity: 'common', price: 18000, emoji: '🚗', desc: 'Легендарный американский хэтчбек, популярный во всем мире. Отличная управляемость и комфорт. Третье поколение выпускалось с 2011 по 2018 год.', power: 125, speed: 195, acceleration: 10.0, weight: 1280, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/jqHNVdb6/focus.png' },
-            { id: 'polo', name: 'VW Polo', rarity: 'common', price: 20000, emoji: '🚗', desc: 'Компактный немецкий хэтчбек, сочетающий в себе качество, комфорт и экономичность. Популярен в Европе и России.', power: 110, speed: 190, acceleration: 10.5, weight: 1150, drive: 'Передний', fuel: 5.8, image: 'https://i.postimg.cc/QxVXQ001/polo-no-bg-preview-(carve-photos).png' },
-            { id: 'uaz', name: 'УАЗ Патриот', rarity: 'common', price: 22000, emoji: '🚙', desc: 'Русский внедорожник, созданный для бездорожья. Рамная конструкция, полный привод и высокий клиренс. Выпускается с 2005 года.', power: 150, speed: 150, acceleration: 14.5, weight: 2100, drive: 'Полный', fuel: 12.5, image: 'https://i.postimg.cc/7Yq8r8gG/uaz-patriot.png' },
-            { id: 'niva', name: 'Lada Niva', rarity: 'common', price: 24000, emoji: '🚙', desc: 'Легендарная Нива, выпускающаяся с 1977 года. Первый в мире компактный внедорожник с несущим кузовом. Отличная проходимость и ремонтопригодность.', power: 83, speed: 140, acceleration: 19.0, weight: 1210, drive: 'Полный', fuel: 9.8, image: 'https://i.postimg.cc/nrF8z1yY/lada-niva.png' },
-            { id: 'jetta', name: 'VW Jetta', rarity: 'common', price: 26000, emoji: '🚗', desc: 'Классический немецкий седан, известный своим качеством сборки и надежностью. Шестое поколение выпускается с 2010 года.', power: 150, speed: 200, acceleration: 8.9, weight: 1350, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/5tVv0sV5/vw-jetta.png' },
-            { id: 'corolla', name: 'Toyota Corolla', rarity: 'common', price: 28000, emoji: '🚗', desc: 'Самый продаваемый автомобиль в истории. Славится своей надежностью и экономичностью. Двенадцатое поколение выпускается с 2018 года.', power: 140, speed: 195, acceleration: 10.5, weight: 1300, drive: 'Передний', fuel: 5.5, image: 'https://i.postimg.cc/3JfK5v5c/toyota-corolla.png' },
+            { id: 'logan', name: 'Renault Logan', rarity: 'common', price: 8000, emoji: '🚙', desc: 'Бюджетный седан, разработанный для развивающихся рынков. Славится своей надежностью и простотой обслуживания.', power: 82, speed: 170, acceleration: 12.5, weight: 1065, drive: 'Передний', fuel: 7.0, image: 'https://i.postimg.cc/x1tDBYXK/logan2-(1)-edited-free-(carve-photos).png' },
+            { id: 'granta', name: 'Lada Granta', rarity: 'common', price: 10000, emoji: '🚗', desc: 'Современный бюджетный автомобиль АвтоВАЗа, пришедший на смену «Калине». Выпускается с 2011 года.', power: 87, speed: 175, acceleration: 11.8, weight: 1080, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/YCXHLPZ2/lada-granta-png.png' },
+            { id: 'duster', name: 'Renault Duster', rarity: 'common', price: 12000, emoji: '🚙', desc: 'Компактный кроссовер, ставший бестселлером в России благодаря доступной цене и хорошей проходимости.', power: 115, speed: 180, acceleration: 10.5, weight: 1380, drive: 'Полный', fuel: 7.5, image: 'https://i.postimg.cc/wjSPCv6r/daster-no-bg-preview-(carve-photos).png' },
+            { id: 'rio', name: 'Kia Rio', rarity: 'common', price: 14000, emoji: '🚗', desc: 'Популярный корейский бюджетный седан, адаптированный для России. Хорошее соотношение цены и качества.', power: 123, speed: 190, acceleration: 10.2, weight: 1150, drive: 'Передний', fuel: 6.4, image: 'https://i.postimg.cc/bwbL2RhL/rio-(1)-no-bg-preview-(carve-photos).png' },
+            { id: 'solaris', name: 'Hyundai Solaris', rarity: 'common', price: 16000, emoji: '🚗', desc: 'Один из самых продаваемых автомобилей в России. Брат Kia Rio, отличается стильным дизайном.', power: 123, speed: 190, acceleration: 10.2, weight: 1150, drive: 'Передний', fuel: 6.4, image: 'https://i.postimg.cc/c6Gtqw52/f2d0cdd0751b4e065ab9a00aa21056f3-(1)-no-bg-preview-(carve-photos).png' },
+            { id: 'focus', name: 'Ford Focus', rarity: 'common', price: 18000, emoji: '🚗', desc: 'Легендарный американский хэтчбек, популярный во всем мире. Отличная управляемость и комфорт.', power: 125, speed: 195, acceleration: 10.0, weight: 1280, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/jqHNVdb6/focus.png' },
+            { id: 'polo', name: 'VW Polo', rarity: 'common', price: 20000, emoji: '🚗', desc: 'Компактный немецкий хэтчбек, сочетающий качество, комфорт и экономичность.', power: 110, speed: 190, acceleration: 10.5, weight: 1150, drive: 'Передний', fuel: 5.8, image: 'https://i.postimg.cc/QxVXQ001/polo-no-bg-preview-(carve-photos).png' },
+            { id: 'uaz', name: 'УАЗ Патриот', rarity: 'common', price: 22000, emoji: '🚙', desc: 'Русский внедорожник, созданный для бездорожья. Рамная конструкция, полный привод и высокий клиренс.', power: 150, speed: 150, acceleration: 14.5, weight: 2100, drive: 'Полный', fuel: 12.5, image: 'https://i.postimg.cc/7Yq8r8gG/uaz-patriot.png' },
+            { id: 'niva', name: 'Lada Niva', rarity: 'common', price: 24000, emoji: '🚙', desc: 'Легендарная Нива, выпускающаяся с 1977 года. Первый в мире компактный внедорожник с несущим кузовом.', power: 83, speed: 140, acceleration: 19.0, weight: 1210, drive: 'Полный', fuel: 9.8, image: 'https://i.postimg.cc/nrF8z1yY/lada-niva.png' },
+            { id: 'jetta', name: 'VW Jetta', rarity: 'common', price: 26000, emoji: '🚗', desc: 'Классический немецкий седан, известный качеством сборки и надежностью.', power: 150, speed: 200, acceleration: 8.9, weight: 1350, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/5tVv0sV5/vw-jetta.png' },
+            { id: 'corolla', name: 'Toyota Corolla', rarity: 'common', price: 28000, emoji: '🚗', desc: 'Самый продаваемый автомобиль в истории. Славится надежностью и экономичностью.', power: 140, speed: 195, acceleration: 10.5, weight: 1300, drive: 'Передний', fuel: 5.5, image: 'https://i.postimg.cc/3JfK5v5c/toyota-corolla.png' },
 
             // РЕДКИЕ (12)
-            { id: 'vesta', name: 'Lada Vesta', rarity: 'rare', price: 30000, emoji: '🚗', desc: 'Флагман АвтоВАЗа, выпускающийся с 2015 года. Современный дизайн, богатая комплектация и хорошая динамика. Один из самых продаваемых автомобилей в России.', power: 122, speed: 200, acceleration: 11.0, weight: 1230, drive: 'Передний', fuel: 6.9, image: 'https://i.postimg.cc/9F5yq8r8/lada-vesta.png' },
-            { id: 'camry', name: 'Toyota Camry', rarity: 'rare', price: 35000, emoji: '🚘', desc: 'Бизнес-седан, ставший символом комфорта и надежности. Восьмое поколение выпускается с 2017 года. Отличная шумоизоляция и плавность хода.', power: 200, speed: 220, acceleration: 8.5, weight: 1550, drive: 'Передний', fuel: 7.5, image: 'https://i.postimg.cc/qM6yq8r8/toyota-camry.png' },
-            { id: 'octavia', name: 'Skoda Octavia', rarity: 'rare', price: 40000, emoji: '🚗', desc: 'Чешский лифтбек с немецкими корнями. Огромный багажник, комфортный салон и отличная управляемость. Четвертое поколение выпускается с 2019 года.', power: 180, speed: 215, acceleration: 8.0, weight: 1350, drive: 'Передний', fuel: 6.2, image: 'https://i.postimg.cc/rF6yq8r8/skoda-octavia.png' },
-            { id: 'mazda6', name: 'Mazda 6', rarity: 'rare', price: 45000, emoji: '🚘', desc: 'Японский седан с выразительным дизайном и отличной управляемостью. Технология SkyActiv обеспечивает высокую экономичность и динамику. Третье поколение с 2012 года.', power: 194, speed: 220, acceleration: 7.8, weight: 1450, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/zX6yq8r8/mazda-6.png' },
-            { id: 'accord', name: 'Honda Accord', rarity: 'rare', price: 50000, emoji: '🚘', desc: 'Надежный японский седан с богатой историей. Десятое поколение отличается стильным дизайном, просторным салоном и передовыми технологиями.', power: 192, speed: 225, acceleration: 7.5, weight: 1480, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/4N6yq8r8/honda-accord.png' },
-            { id: 'passat', name: 'VW Passat', rarity: 'rare', price: 55000, emoji: '🚗', desc: 'Классика немецкого автопрома. Солидный и практичный седан, популярный среди бизнесменов и семей. Восьмое поколение выпускается с 2014 года.', power: 190, speed: 220, acceleration: 7.9, weight: 1450, drive: 'Передний', fuel: 6.0, image: 'https://i.postimg.cc/8z6yq8r8/vw-passat.png' },
-            { id: 'kia_k5', name: 'Kia K5', rarity: 'rare', price: 60000, emoji: '🚘', desc: 'Спортивный седан с ярким дизайном. Новое поколение K5 (Optima) выпускается с 2020 года. Отличается агрессивной внешностью и современными технологиями.', power: 194, speed: 230, acceleration: 7.6, weight: 1470, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/tC6yq8r8/kia-k5.png' },
-            { id: 'superb', name: 'Skoda Superb', rarity: 'rare', price: 65000, emoji: '🚗', desc: 'Флагман Skoda, предлагающий просторный салон и огромный багажник. Комфорт на уровне бизнес-класса. Третье поколение выпускается с 2015 года.', power: 220, speed: 235, acceleration: 6.9, weight: 1550, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/1t6yq8r8/skoda-superb.png' },
-            { id: 'lancer', name: 'Mitsubishi Lancer', rarity: 'rare', price: 68000, emoji: '🚗', desc: 'Японский седан с характером. Десятое поколение (Lancer X) выпускалось с 2007 по 2017 год. Узнаваемый дизайн и надежная конструкция.', power: 150, speed: 210, acceleration: 9.0, weight: 1330, drive: 'Передний', fuel: 6.9, image: 'https://i.postimg.cc/2S6yq8r8/mitsubishi-lancer.png' },
-            { id: 'impreza', name: 'Subaru Impreza', rarity: 'rare', price: 72000, emoji: '🚗', desc: 'Полноприводный японский седан, известный своей надежностью и управляемостью. Оппозитный двигатель и симметричный полный привод. Пятое поколение с 2016 года.', power: 152, speed: 215, acceleration: 9.8, weight: 1420, drive: 'Полный', fuel: 7.5, image: 'https://i.postimg.cc/7L6yq8r8/subaru-impreza.png' },
-            { id: 'mondeo', name: 'Ford Mondeo', rarity: 'rare', price: 75000, emoji: '🚘', desc: 'Американский бизнес-седан, популярный в Европе. Пятое поколение выпускается с 2014 года. Просторный салон, комфортная подвеска и богатая комплектация.', power: 240, speed: 230, acceleration: 7.9, weight: 1550, drive: 'Передний', fuel: 7.5, image: 'https://i.postimg.cc/9M6yq8r8/ford-mondeo.png' },
-            { id: 'insignia', name: 'Opel Insignia', rarity: 'rare', price: 78000, emoji: '🚗', desc: 'Немецкий седан с элегантным дизайном. Второе поколение (Insignia B) выпускается с 2017 года. Отличается комфортом и современными технологиями.', power: 230, speed: 225, acceleration: 7.6, weight: 1500, drive: 'Передний', fuel: 7.2, image: 'https://i.postimg.cc/5N6yq8r8/opel-insignia.png' },
+            { id: 'vesta', name: 'Lada Vesta', rarity: 'rare', price: 30000, emoji: '🚗', desc: 'Флагман АвтоВАЗа, выпускающийся с 2015 года. Современный дизайн и хорошая динамика.', power: 122, speed: 200, acceleration: 11.0, weight: 1230, drive: 'Передний', fuel: 6.9, image: 'https://i.postimg.cc/9F5yq8r8/lada-vesta.png' },
+            { id: 'camry', name: 'Toyota Camry', rarity: 'rare', price: 35000, emoji: '🚘', desc: 'Бизнес-седан, ставший символом комфорта и надежности. Отличная шумоизоляция и плавность хода.', power: 200, speed: 220, acceleration: 8.5, weight: 1550, drive: 'Передний', fuel: 7.5, image: 'https://i.postimg.cc/qM6yq8r8/toyota-camry.png' },
+            { id: 'octavia', name: 'Skoda Octavia', rarity: 'rare', price: 40000, emoji: '🚗', desc: 'Чешский лифтбек с немецкими корнями. Огромный багажник и отличная управляемость.', power: 180, speed: 215, acceleration: 8.0, weight: 1350, drive: 'Передний', fuel: 6.2, image: 'https://i.postimg.cc/rF6yq8r8/skoda-octavia.png' },
+            { id: 'mazda6', name: 'Mazda 6', rarity: 'rare', price: 45000, emoji: '🚘', desc: 'Японский седан с выразительным дизайном. Технология SkyActiv обеспечивает экономичность и динамику.', power: 194, speed: 220, acceleration: 7.8, weight: 1450, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/zX6yq8r8/mazda-6.png' },
+            { id: 'accord', name: 'Honda Accord', rarity: 'rare', price: 50000, emoji: '🚘', desc: 'Надежный японский седан. Стильный дизайн, просторный салон и передовые технологии.', power: 192, speed: 225, acceleration: 7.5, weight: 1480, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/4N6yq8r8/honda-accord.png' },
+            { id: 'passat', name: 'VW Passat', rarity: 'rare', price: 55000, emoji: '🚗', desc: 'Классика немецкого автопрома. Солидный и практичный седан.', power: 190, speed: 220, acceleration: 7.9, weight: 1450, drive: 'Передний', fuel: 6.0, image: 'https://i.postimg.cc/8z6yq8r8/vw-passat.png' },
+            { id: 'kia_k5', name: 'Kia K5', rarity: 'rare', price: 60000, emoji: '🚘', desc: 'Спортивный седан с ярким дизайном. Агрессивная внешность и современные технологии.', power: 194, speed: 230, acceleration: 7.6, weight: 1470, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/tC6yq8r8/kia-k5.png' },
+            { id: 'superb', name: 'Skoda Superb', rarity: 'rare', price: 65000, emoji: '🚗', desc: 'Флагман Skoda: просторный салон и огромный багажник. Комфорт на уровне бизнес-класса.', power: 220, speed: 235, acceleration: 6.9, weight: 1550, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/1t6yq8r8/skoda-superb.png' },
+            { id: 'lancer', name: 'Mitsubishi Lancer', rarity: 'rare', price: 68000, emoji: '🚗', desc: 'Японский седан с характером. Узнаваемый дизайн и надежная конструкция.', power: 150, speed: 210, acceleration: 9.0, weight: 1330, drive: 'Передний', fuel: 6.9, image: 'https://i.postimg.cc/2S6yq8r8/mitsubishi-lancer.png' },
+            { id: 'impreza', name: 'Subaru Impreza', rarity: 'rare', price: 72000, emoji: '🚗', desc: 'Полноприводный японский седан. Оппозитный двигатель и симметричный полный привод.', power: 152, speed: 215, acceleration: 9.8, weight: 1420, drive: 'Полный', fuel: 7.5, image: 'https://i.postimg.cc/7L6yq8r8/subaru-impreza.png' },
+            { id: 'mondeo', name: 'Ford Mondeo', rarity: 'rare', price: 75000, emoji: '🚘', desc: 'Американский бизнес-седан, популярный в Европе. Просторный салон и комфортная подвеска.', power: 240, speed: 230, acceleration: 7.9, weight: 1550, drive: 'Передний', fuel: 7.5, image: 'https://i.postimg.cc/9M6yq8r8/ford-mondeo.png' },
+            { id: 'insignia', name: 'Opel Insignia', rarity: 'rare', price: 78000, emoji: '🚗', desc: 'Немецкий седан с элегантным дизайном. Отличается комфортом и современными технологиями.', power: 230, speed: 225, acceleration: 7.6, weight: 1500, drive: 'Передний', fuel: 7.2, image: 'https://i.postimg.cc/5N6yq8r8/opel-insignia.png' },
 
             // ЭПИЧЕСКИЕ (10)
-            { id: 'bmw3', name: 'BMW 3 Series', rarity: 'epic', price: 80000, emoji: '🏎️', desc: 'Эталон спортивных седанов. Седьмое поколение (G20) выпускается с 2018 года. Задний привод, идеальная развесовка и отличная управляемость.', power: 258, speed: 250, acceleration: 5.8, weight: 1545, drive: 'Задний', fuel: 7.0, image: 'https://i.postimg.cc/6Q6yq8r8/bmw-3-series.png' },
-            { id: 'audi_a4', name: 'Audi A4', rarity: 'epic', price: 85000, emoji: '🚘', desc: 'Немецкий премиум-седан с передовыми технологиями. Пятое поколение выпускается с 2015 года. Виртуальная приборная панель и фирменный полный привод quattro.', power: 249, speed: 250, acceleration: 6.0, weight: 1500, drive: 'Полный', fuel: 7.5, image: 'https://i.postimg.cc/8P6yq8r8/audi-a4.png' },
-            { id: 'merc_c', name: 'Mercedes C-Class', rarity: 'epic', price: 90000, emoji: '🚘', desc: 'Роскошь и комфорт в компактном классе. Пятое поколение (W205) выпускалось с 2014 по 2021 год. Отличная шумоизоляция и богатая комплектация.', power: 255, speed: 250, acceleration: 5.9, weight: 1550, drive: 'Задний', fuel: 7.2, image: 'https://i.postimg.cc/1R6yq8r8/mercedes-c-class.png' },
-            { id: 'supra', name: 'Toyota Supra', rarity: 'epic', price: 95000, emoji: '🏎️', desc: 'Легендарный японский спорткар, вернувшийся на рынок в 2019 году. Совместная разработка с BMW. Задний привод, турбированный двигатель и отличная динамика.', power: 340, speed: 285, acceleration: 4.3, weight: 1500, drive: 'Задний', fuel: 8.2, image: 'https://i.postimg.cc/2T6yq8r8/toyota-supra.png' },
-            { id: 'bmw_x5', name: 'BMW X5', rarity: 'epic', price: 100000, emoji: '🚙', desc: 'Премиальный немецкий кроссовер. Четвертое поколение (G05) выпускается с 2018 года. Полный привод, пневмоподвеска и мощный двигатель.', power: 340, speed: 243, acceleration: 5.5, weight: 2130, drive: 'Полный', fuel: 9.0, image: 'https://i.postimg.cc/3X6yq8r8/bmw-x5.png' },
-            { id: 'audi_q7', name: 'Audi Q7', rarity: 'epic', price: 105000, emoji: '🚙', desc: 'Семейный премиум-кроссовер с полным приводом. Второе поколение выпускается с 2015 года. Просторный салон, семь мест и передовые технологии.', power: 340, speed: 250, acceleration: 5.9, weight: 2200, drive: 'Полный', fuel: 9.5, image: 'https://i.postimg.cc/4Y6yq8r8/audi-q7.png' },
-            { id: 'merc_e', name: 'Mercedes E-Class', rarity: 'epic', price: 110000, emoji: '🚘', desc: 'Бизнес-класс с максимальным комфортом. Пятое поколение (W213) выпускается с 2016 года. Пневмоподвеска, роскошный салон и передовые системы безопасности.', power: 333, speed: 250, acceleration: 5.4, weight: 1800, drive: 'Задний', fuel: 7.8, image: 'https://i.postimg.cc/5Z6yq8r8/mercedes-e-class.png' },
-            { id: 'charger', name: 'Dodge Charger', rarity: 'epic', price: 115000, emoji: '🏎️', desc: 'Американский маслкар с агрессивным дизайном. Современное поколение выпускается с 2011 года. Мощный V8, задний привод и неповторимый рев двигателя.', power: 370, speed: 270, acceleration: 5.2, weight: 1950, drive: 'Задний', fuel: 12.0, image: 'https://i.postimg.cc/7A6yq8r8/dodge-charger.png' },
-            { id: 'wrangler', name: 'Jeep Wrangler', rarity: 'epic', price: 120000, emoji: '🚙', desc: 'Легендарный американский внедорожник. Четвертое поколение (JL) выпускается с 2018 года. Рамная конструкция, полный привод и непревзойденная проходимость.', power: 285, speed: 180, acceleration: 7.8, weight: 2100, drive: 'Полный', fuel: 11.5, image: 'https://i.postimg.cc/9B6yq8r8/jeep-wrangler.png' },
-            { id: 'land_rover', name: 'Land Rover Discovery', rarity: 'epic', price: 125000, emoji: '🚙', desc: 'Британский премиум-внедорожник. Пятое поколение выпускается с 2017 года. Полный привод, пневмоподвеска и отличная проходимость.', power: 300, speed: 210, acceleration: 7.3, weight: 2300, drive: 'Полный', fuel: 9.8, image: 'https://i.postimg.cc/5C6yq8r8/land-rover-discovery.png' },
-
-            // МИФИЧЕСКИЕ (10)
-            { id: 'bmw_m5', name: 'BMW M5', rarity: 'mythic', price: 150000, emoji: '🏎️', desc: 'Суперседан с убийственной мощностью. Шестое поколение (F90) выпускается с 2017 года. Полный привод M xDrive, 600 л.с. и разгон до 100 за 3.4 секунды.', power: 600, speed: 305, acceleration: 3.4, weight: 1930, drive: 'Полный', fuel: 10.5, image: 'https://i.postimg.cc/6D6yq8r8/bmw-m5.png' },
-            { id: 'audi_rs7', name: 'Audi RS7', rarity: 'mythic', price: 170000, emoji: '🏎️', desc: 'Спортбек с характером. Второе поколение выпускается с 2019 года. 600 л.с., полный привод quattro и разгон как у суперкара.', power: 600, speed: 305, acceleration: 3.6, weight: 2065, drive: 'Полный', fuel: 11.0, image: 'https://i.postimg.cc/8E6yq8r8/audi-rs7.png' },
-            { id: 'merc_amg', name: 'Mercedes AMG GT', rarity: 'mythic', price: 200000, emoji: '🏎️', desc: 'Немецкий суперкар с длинным капотом. Выпускается с 2014 года. Задний привод, твин-турбо V8 и потрясающий звук выхлопа.', power: 530, speed: 318, acceleration: 3.8, weight: 1645, drive: 'Задний', fuel: 12.5, image: 'https://i.postimg.cc/1F6yq8r8/mercedes-amg-gt.png' },
-            { id: 'porsche911', name: 'Porsche 911', rarity: 'mythic', price: 230000, emoji: '🏎️', desc: 'Икона стиля и скорости. Восьмое поколение (992) выпускается с 2019 года. Оппозитный двигатель, идеальная управляемость и непревзойденная динамика.', power: 450, speed: 320, acceleration: 3.7, weight: 1500, drive: 'Задний', fuel: 9.8, image: 'https://i.postimg.cc/2G6yq8r8/porsche-911.png' },
-            { id: 'nissan_gtr', name: 'Nissan GT-R', rarity: 'mythic', price: 250000, emoji: '🏎️', desc: 'Godzilla. Японский монстр, убивающий суперкары. Выпускается с 2007 года. Полный привод, твин-турбо V6 и разгон до 100 за 2.9 секунды.', power: 570, speed: 315, acceleration: 2.9, weight: 1750, drive: 'Полный', fuel: 12.0, image: 'https://i.postimg.cc/3H6yq8r8/nissan-gtr.png' },
-            { id: 'merc_g', name: 'Mercedes G-Class', rarity: 'mythic', price: 280000, emoji: '🚙', desc: 'Легендарный Гелендваген. Выпускается с 1979 года. Рамная конструкция, полный привод и статус иконы стиля. Второе поколение (W463) с 2018 года.', power: 585, speed: 240, acceleration: 4.5, weight: 2500, drive: 'Полный', fuel: 13.5, image: 'https://i.postimg.cc/4J6yq8r8/mercedes-g-class.png' },
-            { id: 'corvette', name: 'Corvette C8', rarity: 'mythic', price: 300000, emoji: '🏎️', desc: 'Американский суперкар с двигателем посередине. Восьмое поколение выпускается с 2020 года. 495 л.с., задний привод и разгон до 100 за 3.0 секунды.', power: 495, speed: 312, acceleration: 3.0, weight: 1650, drive: 'Задний', fuel: 11.5, image: 'https://i.postimg.cc/5K6yq8r8/corvette-c8.png' },
-            { id: 'aston', name: 'Aston Martin Vantage', rarity: 'mythic', price: 320000, emoji: '🏎️', desc: 'Британская элегантность и мощность. Второе поколение выпускается с 2018 года. Твин-турбо V8 от Mercedes, задний привод и стильный дизайн.', power: 510, speed: 315, acceleration: 3.6, weight: 1685, drive: 'Задний', fuel: 10.8, image: 'https://i.postimg.cc/7L6yq8r8/aston-martin-vantage.png' },
-            { id: 'bentley', name: 'Bentley Continental', rarity: 'mythic', price: 340000, emoji: '🚘', desc: 'Роскошь и мощность. Третье поколение GT выпускается с 2018 года. W12, полный привод и интерьер ручной сборки.', power: 635, speed: 330, acceleration: 3.8, weight: 2270, drive: 'Полный', fuel: 14.0, image: 'https://i.postimg.cc/9M6yq8r8/bentley-continental.png' },
-            { id: 'rr_ghost', name: 'Rolls-Royce Ghost', rarity: 'mythic', price: 360000, emoji: '🚘', desc: 'Символ статуса и роскоши. Второе поколение выпускается с 2020 года. Идеальная плавность хода, тишина в салоне и эксклюзивные материалы отделки.', power: 571, speed: 250, acceleration: 4.8, weight: 2550, drive: 'Полный', fuel: 15.0, image: 'https://i.postimg.cc/8N6yq8r8/rolls-royce-ghost.png' },
+            { id: 'bmw3', name: 'BMW 3 Series', rarity: 'epic', price: 80000, emoji: '🏎️', desc: 'Эталон спортивных седанов. Задний привод, идеальная развесовка и отличная управляемость.', power: 258, speed: 250, acceleration: 5.8, weight: 1545, drive: 'Задний', fuel: 7.0, image: 'https://i.postimg.cc/6Q6yq8r8/bmw-3-series.png' },
+            { id: 'audi_a4', name: 'Audi A4', rarity: 'epic', price: 85000, emoji: '🚘', desc: 'Немецкий премиум-седан с передовыми технологиями. Виртуальная приборная панель и quattro.', power: 249, speed: 250, acceleration: 6.0, weight: 1500, drive: 'Полный', fuel: 7.5, image: 'https://i.postimg.cc/8P6yq8r8/audi-a4.png' },
+            { id: 'merc_c', name: 'Mercedes C-Class', rarity: 'epic', price: 90000, emoji: '🚘', desc: 'Роскошь и комфорт в компактном классе. Отличная шумоизоляция и богатая комплектация.', power: 255, speed: 250, acceleration: 5.9, weight: 1550, drive: 'Задний', fuel: 7.2, image: 'https://i.postimg.cc/1R6yq8r8/mercedes-c-class.png' },
+            { id: 'supra', name: 'Toyota Supra', rarity: 'epic', price: 95000, emoji: '🏎️', desc: 'Легендарный японский спорткар, вернувшийся в 2019 году. Задний привод и отличная динамика.', power: 340, speed: 285, acceleration: 4.3, weight: 1500, drive: 'Задний', fuel: 8.2, image: 'https://i.postimg.cc/2T6yq8r8/toyota-supra.png' },
+            { id: 'bmw_x5', name: 'BMW X5', rarity: 'epic', price: 100000, emoji: '🚙', desc: 'Премиальный немецкий кроссовер. Полный привод, пневмоподвеска и мощный двигатель.', power: 340, speed: 243, acceleration: 5.5, weight: 2130, drive: 'Полный', fuel: 9.0, image: 'https://i.postimg.cc/3X6yq8r8/bmw-x5.png' },
+            { id: 'audi_q7', name: 'Audi Q7', rarity: 'epic', price: 105000, emoji: '🚙', desc: 'Семейный премиум-кроссовер с полным приводом. Просторный салон, семь мест.', power: 340, speed: 250, acceleration: 5.9, weight: 2200, drive: 'Полный', fuel: 9.5, image: 'https://i.postimg.cc/4Y6yq8r8/audi-q7.png' },
+            { id: 'merc_e', name: 'Mercedes E-Class', rarity: 'epic', price: 110000, emoji: '🚘', desc: 'Бизнес-класс с максимальным комфортом. Пневмоподвеска и передовые системы безопасности.', power: 333, speed: 250, acceleration: 5.4, weight: 1800, drive: 'Задний', fuel: 7.8, image: 'https://i.postimg.cc/5Z6yq8r8/mercedes-e-class.png' },
+            { id: 'charger', name: 'Dodge Charger', rarity: 'epic', price: 115000, emoji: '🏎️', desc: 'Американский маслкар с агрессивным дизайном. Мощный V8 и неповторимый рев двигателя.', power: 370, speed: 270, acceleration: 5.2, weight: 1950, drive: 'Задний', fuel: 12.0, image: 'https://i.postimg.cc/7A6yq8r8/dodge-charger.png' },
+            { id: 'wrangler', name: 'Jeep Wrangler', rarity: 'epic', price: 120000, emoji: '🚙', desc: 'Легендарный американский внедорожник. Рамная конструкция и непревзойденная проходимость.', power: 285, speed: 180, acceleration: 7.8, weight: 2100, drive: 'Полный', fuel: 11.5, image: 'https://i.postimg.cc/9B6yq8r8/jeep-wrangler.png' },
+            { id: 'land_rover', name: 'Land Rover Discovery', rarity: 'epic', price: 125000, emoji: '🚙', desc: 'Британский премиум-внедорожник. Полный привод, пневмоподвеска и отличная проходимость.', power: 300, speed: 210, acceleration: 7.3, weight: 2300, drive: 'Полный', fuel: 9.8, image: 'https://i.postimg.cc/5C6yq8r8/land-rover-discovery.png' },
+                        // МИФИЧЕСКИЕ (10)
+            { id: 'bmw_m5', name: 'BMW M5', rarity: 'mythic', price: 150000, emoji: '🏎️', desc: 'Суперседан с убийственной мощностью. Полный привод M xDrive, 600 л.с. и разгон до 100 за 3.4 с.', power: 600, speed: 305, acceleration: 3.4, weight: 1930, drive: 'Полный', fuel: 10.5, image: 'https://i.postimg.cc/6D6yq8r8/bmw-m5.png' },
+            { id: 'audi_rs7', name: 'Audi RS7', rarity: 'mythic', price: 170000, emoji: '🏎️', desc: 'Спортбек с характером. 600 л.с., полный привод quattro и разгон как у суперкара.', power: 600, speed: 305, acceleration: 3.6, weight: 2065, drive: 'Полный', fuel: 11.0, image: 'https://i.postimg.cc/8E6yq8r8/audi-rs7.png' },
+            { id: 'merc_amg', name: 'Mercedes AMG GT', rarity: 'mythic', price: 200000, emoji: '🏎️', desc: 'Немецкий суперкар с длинным капотом. Задний привод, твин-турбо V8 и потрясающий звук выхлопа.', power: 530, speed: 318, acceleration: 3.8, weight: 1645, drive: 'Задний', fuel: 12.5, image: 'https://i.postimg.cc/1F6yq8r8/mercedes-amg-gt.png' },
+            { id: 'porsche911', name: 'Porsche 911', rarity: 'mythic', price: 230000, emoji: '🏎️', desc: 'Икона стиля и скорости. Оппозитный двигатель, идеальная управляемость и непревзойденная динамика.', power: 450, speed: 320, acceleration: 3.7, weight: 1500, drive: 'Задний', fuel: 9.8, image: 'https://i.postimg.cc/2G6yq8r8/porsche-911.png' },
+            { id: 'nissan_gtr', name: 'Nissan GT-R', rarity: 'mythic', price: 250000, emoji: '🏎️', desc: 'Godzilla. Японский монстр. Полный привод, твин-турбо V6 и разгон до 100 за 2.9 с.', power: 570, speed: 315, acceleration: 2.9, weight: 1750, drive: 'Полный', fuel: 12.0, image: 'https://i.postimg.cc/3H6yq8r8/nissan-gtr.png' },
+            { id: 'merc_g', name: 'Mercedes G-Class', rarity: 'mythic', price: 280000, emoji: '🚙', desc: 'Легендарный Гелендваген. Рамная конструкция, полный привод и статус иконы стиля.', power: 585, speed: 240, acceleration: 4.5, weight: 2500, drive: 'Полный', fuel: 13.5, image: 'https://i.postimg.cc/4J6yq8r8/mercedes-g-class.png' },
+            { id: 'corvette', name: 'Corvette C8', rarity: 'mythic', price: 300000, emoji: '🏎️', desc: 'Американский суперкар с двигателем посередине. 495 л.с. и разгон до 100 за 3.0 с.', power: 495, speed: 312, acceleration: 3.0, weight: 1650, drive: 'Задний', fuel: 11.5, image: 'https://i.postimg.cc/5K6yq8r8/corvette-c8.png' },
+            { id: 'aston', name: 'Aston Martin Vantage', rarity: 'mythic', price: 320000, emoji: '🏎️', desc: 'Британская элегантность и мощность. Твин-турбо V8, задний привод и стильный дизайн.', power: 510, speed: 315, acceleration: 3.6, weight: 1685, drive: 'Задний', fuel: 10.8, image: 'https://i.postimg.cc/7L6yq8r8/aston-martin-vantage.png' },
+            { id: 'bentley', name: 'Bentley Continental', rarity: 'mythic', price: 340000, emoji: '🚘', desc: 'Роскошь и мощность. W12, полный привод и интерьер ручной сборки.', power: 635, speed: 330, acceleration: 3.8, weight: 2270, drive: 'Полный', fuel: 14.0, image: 'https://i.postimg.cc/9M6yq8r8/bentley-continental.png' },
+            { id: 'rr_ghost', name: 'Rolls-Royce Ghost', rarity: 'mythic', price: 360000, emoji: '🚘', desc: 'Символ статуса и роскоши. Идеальная плавность хода и эксклюзивные материалы отделки.', power: 571, speed: 250, acceleration: 4.8, weight: 2550, drive: 'Полный', fuel: 15.0, image: 'https://i.postimg.cc/8N6yq8r8/rolls-royce-ghost.png' },
 
             // ЛЕГЕНДАРНЫЕ (10)
-            { id: 'ferrari_f8', name: 'Ferrari F8', rarity: 'legendary', price: 400000, emoji: '🏎️', desc: 'Итальянская страсть и скорость. Выпускается с 2019 года. Твин-турбо V8, 720 л.с. и разгон до 100 за 2.9 секунды. Наследник легендарной 488.', power: 720, speed: 340, acceleration: 2.9, weight: 1330, drive: 'Задний', fuel: 13.5, image: 'https://i.postimg.cc/1P6yq8r8/ferrari-f8.png' },
-            { id: 'lamborghini_huracan', name: 'Lamborghini Huracan', rarity: 'legendary', price: 450000, emoji: '🏎️', desc: 'Агрессивный итальянский суперкар. Выпускается с 2014 года. Атмосферный V10, 640 л.с. и потрясающий звук двигателя.', power: 640, speed: 325, acceleration: 2.9, weight: 1422, drive: 'Полный', fuel: 13.0, image: 'https://i.postimg.cc/2Q6yq8r8/lamborghini-huracan.png' },
-            { id: 'mclaren_720', name: 'McLaren 720S', rarity: 'legendary', price: 500000, emoji: '🏎️', desc: 'Британский шедевр инженерии. Выпускается с 2017 года. Углепластиковый монокок, 720 л.с. и невероятная динамика.', power: 720, speed: 341, acceleration: 2.9, weight: 1283, drive: 'Задний', fuel: 12.5, image: 'https://i.postimg.cc/3R6yq8r8/mclaren-720s.png' },
-            { id: 'bugatti_chiron', name: 'Bugatti Chiron', rarity: 'legendary', price: 800000, emoji: '🏎️', desc: 'Гиперкар, способный развивать 1500 л.с. Выпускается с 2016 года. W16, четыре турбины и максимальная скорость 420 км/ч.', power: 1500, speed: 420, acceleration: 2.4, weight: 1995, drive: 'Полный', fuel: 22.0, image: 'https://i.postimg.cc/4S6yq8r8/bugatti-chiron.png' },
-            { id: 'lamborghini_aventador', name: 'Lamborghini Aventador', rarity: 'legendary', price: 900000, emoji: '🏎️', desc: 'Флагман Lamborghini. Выпускается с 2011 года. Атмосферный V12, 780 л.с. и двери-ножницы. Ураган на колесах.', power: 780, speed: 350, acceleration: 2.8, weight: 1575, drive: 'Полный', fuel: 16.0, image: 'https://i.postimg.cc/5T6yq8r8/lamborghini-aventador.png' },
-            { id: 'koenigsegg', name: 'Koenigsegg Jesko', rarity: 'legendary', price: 1000000, emoji: '🏎️', desc: 'Шведский гиперкар. Выпускается с 2019 года. 1600 л.с., максимальная скорость 480 км/ч и революционная аэродинамика.', power: 1600, speed: 480, acceleration: 2.5, weight: 1420, drive: 'Задний', fuel: 18.0, image: 'https://i.postimg.cc/6V6yq8r8/koenigsegg-jesko.png' },
-            { id: 'pagani', name: 'Pagani Huayra', rarity: 'legendary', price: 1100000, emoji: '🏎️', desc: 'Итальянский гиперкар ручной сборки. Выпускается с 2011 года. Твин-турбо V12 от AMG, 730 л.с. и уникальный дизайн.', power: 730, speed: 383, acceleration: 2.8, weight: 1350, drive: 'Задний', fuel: 14.0, image: 'https://i.postimg.cc/7W6yq8r8/pagani-huayra.png' },
-            { id: 'aston_valkyrie', name: 'Aston Martin Valkyrie', rarity: 'legendary', price: 1200000, emoji: '🏎️', desc: 'Болид Формулы-1 для дорог. Выпускается с 2021 года. 1160 л.с., гибридная силовая установка и экстремальная аэродинамика.', power: 1160, speed: 402, acceleration: 2.5, weight: 1030, drive: 'Задний', fuel: 15.0, image: 'https://i.postimg.cc/8X6yq8r8/aston-martin-valkyrie.png' },
-            { id: 'rr_sweptail', name: 'Rolls-Royce Sweptail', rarity: 'legendary', price: 1300000, emoji: '🚘', desc: 'Эксклюзивный автомобиль за $12.8 млн. Выпущен в единственном экземпляре в 2017 году. Ручная сборка и уникальный дизайн.', power: 453, speed: 250, acceleration: 5.5, weight: 2600, drive: 'Задний', fuel: 16.0, image: 'https://i.postimg.cc/9Y6yq8r8/rolls-royce-sweptail.png' },
-                        { id: 'rimac', name: 'Rimac Nevera', rarity: 'legendary', price: 1400000, emoji: '🏎️', desc: 'Электрический гиперкар. Выпускается с 2021 года. 1914 л.с., разгон до 100 за 1.85 секунды и максимальная скорость 412 км/ч.', power: 1914, speed: 412, acceleration: 1.85, weight: 2150, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/1Z6yq8r8/rimac-nevera.png' },
+            { id: 'ferrari_f8', name: 'Ferrari F8', rarity: 'legendary', price: 400000, emoji: '🏎️', desc: 'Итальянская страсть и скорость. Твин-турбо V8, 720 л.с. и разгон до 100 за 2.9 с.', power: 720, speed: 340, acceleration: 2.9, weight: 1330, drive: 'Задний', fuel: 13.5, image: 'https://i.postimg.cc/1P6yq8r8/ferrari-f8.png' },
+            { id: 'lamborghini_huracan', name: 'Lamborghini Huracan', rarity: 'legendary', price: 450000, emoji: '🏎️', desc: 'Агрессивный итальянский суперкар. Атмосферный V10, 640 л.с. и потрясающий звук.', power: 640, speed: 325, acceleration: 2.9, weight: 1422, drive: 'Полный', fuel: 13.0, image: 'https://i.postimg.cc/2Q6yq8r8/lamborghini-huracan.png' },
+            { id: 'mclaren_720', name: 'McLaren 720S', rarity: 'legendary', price: 500000, emoji: '🏎️', desc: 'Британский шедевр инженерии. Углепластиковый монокок, 720 л.с. и невероятная динамика.', power: 720, speed: 341, acceleration: 2.9, weight: 1283, drive: 'Задний', fuel: 12.5, image: 'https://i.postimg.cc/3R6yq8r8/mclaren-720s.png' },
+            { id: 'bugatti_chiron', name: 'Bugatti Chiron', rarity: 'legendary', price: 800000, emoji: '🏎️', desc: 'Гиперкар, способный развивать 1500 л.с. W16, четыре турбины и максималка 420 км/ч.', power: 1500, speed: 420, acceleration: 2.4, weight: 1995, drive: 'Полный', fuel: 22.0, image: 'https://i.postimg.cc/4S6yq8r8/bugatti-chiron.png' },
+            { id: 'lamborghini_aventador', name: 'Lamborghini Aventador', rarity: 'legendary', price: 900000, emoji: '🏎️', desc: 'Флагман Lamborghini. Атмосферный V12, 780 л.с. и двери-ножницы.', power: 780, speed: 350, acceleration: 2.8, weight: 1575, drive: 'Полный', fuel: 16.0, image: 'https://i.postimg.cc/5T6yq8r8/lamborghini-aventador.png' },
+            { id: 'koenigsegg', name: 'Koenigsegg Jesko', rarity: 'legendary', price: 1000000, emoji: '🏎️', desc: 'Шведский гиперкар. 1600 л.с., максимальная скорость 480 км/ч и революционная аэродинамика.', power: 1600, speed: 480, acceleration: 2.5, weight: 1420, drive: 'Задний', fuel: 18.0, image: 'https://i.postimg.cc/6V6yq8r8/koenigsegg-jesko.png' },
+            { id: 'pagani', name: 'Pagani Huayra', rarity: 'legendary', price: 1100000, emoji: '🏎️', desc: 'Итальянский гиперкар ручной сборки. Твин-турбо V12 от AMG, 730 л.с. и уникальный дизайн.', power: 730, speed: 383, acceleration: 2.8, weight: 1350, drive: 'Задний', fuel: 14.0, image: 'https://i.postimg.cc/7W6yq8r8/pagani-huayra.png' },
+            { id: 'aston_valkyrie', name: 'Aston Martin Valkyrie', rarity: 'legendary', price: 1200000, emoji: '🏎️', desc: 'Болид Формулы-1 для дорог. 1160 л.с., гибридная силовая установка.', power: 1160, speed: 402, acceleration: 2.5, weight: 1030, drive: 'Задний', fuel: 15.0, image: 'https://i.postimg.cc/8X6yq8r8/aston-martin-valkyrie.png' },
+            { id: 'rr_sweptail', name: 'Rolls-Royce Sweptail', rarity: 'legendary', price: 1300000, emoji: '🚘', desc: 'Эксклюзивный автомобиль за $12.8 млн. Выпущен в единственном экземпляре в 2017 году.', power: 453, speed: 250, acceleration: 5.5, weight: 2600, drive: 'Задний', fuel: 16.0, image: 'https://i.postimg.cc/9Y6yq8r8/rolls-royce-sweptail.png' },
+            { id: 'rimac', name: 'Rimac Nevera', rarity: 'legendary', price: 1400000, emoji: '🏎️', desc: 'Электрический гиперкар. 1914 л.с., разгон до 100 за 1.85 с и максималка 412 км/ч.', power: 1914, speed: 412, acceleration: 1.85, weight: 2150, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/1Z6yq8r8/rimac-nevera.png' },
 
             // СПЕЦИАЛЬНЫЕ (7)
-            { id: 'cybertruck', name: 'Tesla Cybertruck', rarity: 'special', price: 1500000, emoji: '🛻', desc: 'Электрический пикап будущего. Выпускается с 2023 года. Нержавеющая сталь, футуристичный дизайн и мощность 845 л.с.', power: 845, speed: 210, acceleration: 2.9, weight: 3000, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/2A6yq8r8/tesla-cybertruck.png' },
-            { id: 'model_s', name: 'Tesla Model S Plaid', rarity: 'special', price: 1600000, emoji: '🚘', desc: 'Самый быстрый седан в мире. Выпускается с 2021 года. 1020 л.с., разгон до 100 за 2.1 секунды и запас хода 600 км.', power: 1020, speed: 322, acceleration: 2.1, weight: 2200, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/3B6yq8r8/tesla-model-s-plaid.png' },
-            { id: 'lunar_rover', name: 'Lunar Rover', rarity: 'special', price: 2000000, emoji: '🛸', desc: 'Космический ровер. Использовался в миссиях Apollo. Электрический привод, специальные шины и возможность передвигаться по Луне.', power: 100, speed: 50, acceleration: 20.0, weight: 210, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/4C6yq8r8/lunar-rover.png' },
-            { id: 'batmobile', name: 'Batmobile', rarity: 'special', price: 3000000, emoji: '🦇', desc: 'Транспорт Темного рыцаря. Пуленепробиваемый, с ракетными двигателями и вооружением. Мечта любого фаната DC.', power: 1500, speed: 350, acceleration: 2.0, weight: 2500, drive: 'Полный', fuel: 20.0, image: 'https://i.postimg.cc/5D6yq8r8/batmobile.png' },
-            { id: 'delorean', name: 'DeLorean Time Machine', rarity: 'special', price: 3500000, emoji: '⏳', desc: 'Машина времени из «Назад в будущее». Легендарный DeLorean DMC-12 с потоковым накопителем. Требуется 1.21 гигаватт!', power: 300, speed: 240, acceleration: 8.0, weight: 1230, drive: 'Задний', fuel: 12.0, image: 'https://i.postimg.cc/6E6yq8r8/delorean-time-machine.png' },
-            { id: 'tank', name: 'Т-90 Танк', rarity: 'special', price: 5000000, emoji: '🚜', desc: 'Боевая машина. Бронированный танк с пушкой 125 мм. Никто не остановит!', power: 1000, speed: 60, acceleration: 15.0, weight: 46000, drive: 'Полный', fuel: 300, image: 'https://i.postimg.cc/7F6yq8r8/t-90-tank.png' },
-            { id: 'ufo', name: 'НЛО', rarity: 'special', price: 10000000, emoji: '👽', desc: 'Неопознанный летающий объект. Инопланетные технологии, антигравитация и скорость света. Никто не знает, откуда он взялся.', power: 9999, speed: 999, acceleration: 0.5, weight: 1000, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/8G6yq8r8/ufo.png' }
+            { id: 'cybertruck', name: 'Tesla Cybertruck', rarity: 'special', price: 1500000, emoji: '🛻', desc: 'Электрический пикап будущего. Нержавеющая сталь, футуристичный дизайн и мощность 845 л.с.', power: 845, speed: 210, acceleration: 2.9, weight: 3000, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/2A6yq8r8/tesla-cybertruck.png' },
+            { id: 'model_s', name: 'Tesla Model S Plaid', rarity: 'special', price: 1600000, emoji: '🚘', desc: 'Самый быстрый седан в мире. 1020 л.с., разгон до 100 за 2.1 с и запас хода 600 км.', power: 1020, speed: 322, acceleration: 2.1, weight: 2200, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/3B6yq8r8/tesla-model-s-plaid.png' },
+            { id: 'lunar_rover', name: 'Lunar Rover', rarity: 'special', price: 2000000, emoji: '🛸', desc: 'Космический ровер. Использовался в миссиях Apollo. Электрический привод и специальные шины.', power: 100, speed: 50, acceleration: 20.0, weight: 210, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/4C6yq8r8/lunar-rover.png' },
+            { id: 'batmobile', name: 'Batmobile', rarity: 'special', price: 3000000, emoji: '🦇', desc: 'Транспорт Темного рыцаря. Пуленепробиваемый, с ракетными двигателями и вооружением.', power: 1500, speed: 350, acceleration: 2.0, weight: 2500, drive: 'Полный', fuel: 20.0, image: 'https://i.postimg.cc/5D6yq8r8/batmobile.png' },
+            { id: 'delorean', name: 'DeLorean Time Machine', rarity: 'special', price: 3500000, emoji: '⏳', desc: 'Машина времени из «Назад в будущее». Требуется 1.21 гигаватт!', power: 300, speed: 240, acceleration: 8.0, weight: 1230, drive: 'Задний', fuel: 12.0, image: 'https://i.postimg.cc/6E6yq8r8/delorean-time-machine.png' },
+                        { id: 'tank', name: 'Т-90 Танк', rarity: 'special', price: 5000000, emoji: '🚜', desc: 'Боевая машина. Бронированный танк с пушкой 125 мм. Никто не остановит!', power: 1000, speed: 60, acceleration: 15.0, weight: 46000, drive: 'Полный', fuel: 300, image: 'https://i.postimg.cc/7F6yq8r8/t-90-tank.png' },
+            { id: 'ufo', name: 'НЛО', rarity: 'special', price: 10000000, emoji: '👽', desc: 'Неопознанный летающий объект. Инопланетные технологии, антигравитация и скорость света.', power: 9999, speed: 999, acceleration: 0.5, weight: 1000, drive: 'Полный', fuel: 0, image: 'https://i.postimg.cc/8G6yq8r8/ufo.png' }
         ];
 
         const CASES = [
@@ -745,7 +592,7 @@
             stats: { races: 0, wins: 0, casesOpened: 0, maxRoulette: 0, tuningDone: 0 },
             tasks: [], lastTaskRefresh: 0, unlockedAchievements: [],
             businesses: BUSINESSES.map(b => ({ ...b, owned: false })),
-            auctions: [], lastTournament: 0, selectedOpponent: null
+            auctions: [], lastTournament: 0
         };
 
         function loadState() {
@@ -802,7 +649,7 @@
         function getCarIncome() { return state.cars.filter(c => c.owned).reduce((sum, c) => sum + (INCOME_RATES[c.rarity] || 0), 0); }
         function getBusinessIncome() { return state.businesses.filter(b => b.owned).reduce((sum, b) => sum + b.income, 0); }
         function getTotalIncomePerSec() { return getCarIncome() + getBusinessIncome(); }
-        
+
         function tickIncome() {
             const now = Date.now();
             const elapsedSec = Math.floor((now - state.lastTick) / 1000);
@@ -811,17 +658,16 @@
                 state.lastTick = now; updateBalance(); saveState();
             }
         }
-        // Возвращает HTML подсветки днища (по ширине авто) + цвет кузова
+        // Подсветка днища — широкая полоса под всей машиной
         function carGlowHtml(car) {
-            const glowColor = car.neon || car.color || 'transparent';
-            if (glowColor === 'transparent' || !glowColor) return '';
-            return `<div class="car-glow-under" style="background:${glowColor}; box-shadow: 0 0 30px 8px ${glowColor};"></div>`;
+            const glowColor = car.neon || car.color;
+            if (!glowColor || glowColor === 'transparent') return '';
+            return `<div class="car-glow-under" style="background:${glowColor}; box-shadow: 0 0 40px 10px ${glowColor};"></div>`;
         }
-        // Применяем цвет кузова к картинке через CSS-фильтр (мягкое тонирование)
+        // Реальная покраска: тонируем сам PNG через hue-rotate + свечение контура цветом
         function carImageStyle(car) {
             if (!car.color) return '';
-            // используем drop-shadow + hue для визуального оттенка
-            return `filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)) drop-shadow(0 0 14px ${car.color});`;
+            return `filter: drop-shadow(0 10px 8px rgba(0,0,0,0.6)) drop-shadow(0 0 10px ${car.color}) saturate(1.15);`;
         }
 
         function renderGarage() {
@@ -830,7 +676,7 @@
             let filteredCars = state.cars.filter(c => c.owned);
             if (state.currentFilter !== 'all') filteredCars = filteredCars.filter(c => c.rarity === state.currentFilter);
             filteredCars.sort((a, b) => a.price - b.price);
-            
+
             document.getElementById('stat-owned').textContent = state.cars.filter(c => c.owned).length;
             document.getElementById('stat-income').textContent = getTotalIncomePerSec().toLocaleString('ru-RU') + '/с';
 
@@ -842,7 +688,7 @@
             filteredCars.forEach(car => {
                 const card = document.createElement('div');
                 card.className = `car-card rarity-${car.rarity}`;
-                let imageHtml = car.image 
+                let imageHtml = car.image
                     ? `<img src="${car.image}" class="car-image" alt="${car.name}" style="${carImageStyle(car)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div>`
                     : `<div class="car-placeholder">${car.emoji}</div>`;
                 let plateMiniHtml = car.plate ? `<div class="car-plate-mini ${car.plate.country.toLowerCase()}">${car.plate.main} ${car.plate.region || ''}</div>` : '';
@@ -850,7 +696,7 @@
                 card.innerHTML = `<div class="car-top"><span class="car-badge">${RARITIES[car.rarity].label}</span></div><div class="car-image-container">${carGlowHtml(car)}${imageHtml}${plateMiniHtml}</div><div class="car-name">${car.name}</div><div class="car-income">+${INCOME_RATES[car.rarity].toLocaleString('ru-RU')} ₽/сек</div>${actionHtml}`;
                 container.appendChild(card);
             });
-            
+
             document.querySelectorAll('.info-btn').forEach(btn => btn.addEventListener('click', (e) => {
                 const car = state.cars.find(c => c.id === e.target.dataset.id);
                 if (car) showCarInfo(car);
@@ -887,13 +733,13 @@
             filteredCars.forEach(car => {
                 const card = document.createElement('div');
                 card.className = `car-card rarity-${car.rarity}`;
-                let imageHtml = car.image 
+                let imageHtml = car.image
                     ? `<img src="${car.image}" class="car-image" alt="${car.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="car-placeholder" style="display:none;">${car.emoji}</div>`
                     : `<div class="car-placeholder">${car.emoji}</div>`;
                 card.innerHTML = `<div class="car-top"><span class="car-badge">${RARITIES[car.rarity].label}</span></div><div class="car-image-container">${imageHtml}</div><div class="car-name">${car.name}</div><div class="car-price">${car.price.toLocaleString('ru-RU')} ₽</div><div class="btn-row"><button class="btn-action btn-info info-btn" data-id="${car.id}">Инфо</button><button class="btn-action btn-buy buy-btn" data-id="${car.id}">Купить</button></div>`;
                 container.appendChild(card);
             });
-            
+
             document.querySelectorAll('.buy-btn').forEach(btn => btn.addEventListener('click', (e) => {
                 const car = state.cars.find(c => c.id === e.target.dataset.id);
                 if (car && !car.owned && state.balance >= car.price) {
@@ -937,7 +783,6 @@
             const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
             let colorSwatches = COLORS.map(c => `<div class="color-swatch ${car.color === c.hex ? 'selected' : ''}" style="background:${c.hex}" data-hex="${c.hex}"></div>`).join('');
             let neonSwatches = NEONS.map(n => `<div class="neon-swatch ${car.neon === n.color ? 'selected' : ''}" style="background:${n.color === 'transparent' ? 'rgba(255,255,255,0.1)' : n.color}; color:${n.color === 'transparent' ? '#fff' : '#000'}" data-color="${n.color}">${n.name}</div>`).join('');
-            // Превью авто с текущей подсветкой
             let preview = `<div class="car-image-container" style="height:110px;">${carGlowHtml(car)}${car.image ? `<img src="${car.image}" class="car-image" style="${carImageStyle(car)}" onerror="this.style.display='none'">` : `<div class="car-placeholder">${car.emoji}</div>`}</div>`;
             overlay.innerHTML = `<div class="modal-content"><div class="modal-title">Кастомизация</div><div class="modal-desc">${car.name}</div>${preview}<h3 style="margin-bottom:8px; font-size:14px;">🎨 Цвет кузова (1 000 ₽)</h3><div class="color-grid" id="color-grid">${colorSwatches}</div><h3 style="margin-bottom:8px; font-size:14px;">💡 Подсветка днища (2 000 ₽)</h3><div class="neon-grid" id="neon-grid">${neonSwatches}</div><button class="modal-close">Закрыть</button></div>`;
             document.body.appendChild(overlay);
@@ -952,7 +797,6 @@
             overlay.querySelector('.modal-close').addEventListener('click', () => overlay.remove());
             overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
         }
-
         function renderTuningSelector() {
             const container = document.getElementById('tuning-car-selector'); container.innerHTML = '';
             const owned = state.cars.filter(c => c.owned);
@@ -990,7 +834,7 @@
             const lettersRU = 'АВЕКМНОРСТУХ'; const lettersEN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             const ri = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
             const rc = (s) => s[Math.floor(Math.random() * s.length)];
-                        const rd = (len) => Array.from({ length: len }, () => ri(0, 9)).join('');
+            const rd = (len) => Array.from({ length: len }, () => ri(0, 9)).join('');
             switch (country) {
                 case 'RU': return { country: 'RU', main: `${rc(lettersRU)}${rd(3)}${rc(lettersRU)}${rc(lettersRU)}`, region: ri(1, 99).toString().padStart(2, '0') };
                 case 'KZ': return { country: 'KZ', main: `${rd(3)} ${rc(lettersEN)}${rc(lettersEN)}`, region: ri(1, 20).toString().padStart(2, '0') };
@@ -1027,7 +871,7 @@
                 if (!ownedCars.length) return alert('У вас нет машин!');
                 const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
                 let carOptions = ownedCars.map(c => `<button class="modal-close assign-car-btn" data-id="${c.id}" style="margin-bottom:8px; background: var(--card-bg); border:1px solid var(--border); color:#fff;">${c.name}</button>`).join('');
-                overlay.innerHTML = `<div class="modal-content"><div class="modal-title">Выберите машину</div><div class="modal-desc">На какую машину повесить номер?</div>${carOptions}<button class="modal-close" id="cancel-assign">Отмена</button></div>`;
+                                overlay.innerHTML = `<div class="modal-content"><div class="modal-title">Выберите машину</div><div class="modal-desc">На какую машину повесить номер?</div>${carOptions}<button class="modal-close" id="cancel-assign">Отмена</button></div>`;
                 document.body.appendChild(overlay);
                 overlay.querySelectorAll('.assign-car-btn').forEach(btn => btn.addEventListener('click', (e) => {
                     const car = state.cars.find(c => c.id === e.target.dataset.id);
@@ -1038,7 +882,6 @@
             });
         }
 
-        // --- КЕЙСЫ ---
         function renderCases() {
             const container = document.getElementById('case-list'); container.innerHTML = '';
             CASES.forEach(c => {
@@ -1057,9 +900,18 @@
             const pool = state.cars.filter(c => c.rarity === chosenRarity);
             const winCar = pool[Math.floor(Math.random() * pool.length)];
             const stripItems = [];
-            for (let i = 0; i < 50; i++) { if (i === 45) stripItems.push(winCar); else { const randomRarity = Object.keys(caseItem.chances).find(r => caseItem.chances[r] > 0); const randomPool = state.cars.filter(c => c.rarity === randomRarity); stripItems.push(randomPool[Math.floor(Math.random() * randomPool.length)]); } }
+            for (let i = 0; i < 50; i++) {
+                if (i === 45) stripItems.push(winCar);
+                else {
+                    const randomRarity = Object.keys(caseItem.chances).find(r => caseItem.chances[r] > 0);
+                    const randomPool = state.cars.filter(c => c.rarity === randomRarity);
+                    stripItems.push(randomPool[Math.floor(Math.random() * randomPool.length)]);
+                }
+            }
             const overlay = document.createElement('div'); overlay.className = 'case-overlay';
-            let stripHtml = ''; stripItems.forEach(car => { stripHtml += `<div class="case-strip-item">${car.image ? `<img src="${car.image}" onerror="this.parentElement.innerHTML='<div class=emoji>${car.emoji}</div>'">` : `<div class="emoji">${car.emoji}</div>`}<div class="name" style="color: var(--c-${car.rarity})">${car.name}</div></div>`; });
+            let stripHtml = ''; stripItems.forEach(car => {
+                stripHtml += `<div class="case-strip-item">${car.image ? `<img src="${car.image}" onerror="this.parentElement.innerHTML='<div class=emoji>${car.emoji}</div>'">` : `<div class="emoji">${car.emoji}</div>`}<div class="name" style="color: var(--c-${car.rarity})">${car.name}</div></div>`;
+            });
             overlay.innerHTML = `<div class="case-strip-container"><div class="case-strip-center-line"></div><div class="case-strip" id="case-strip">${stripHtml}</div></div>`;
             document.body.appendChild(overlay);
             setTimeout(() => {
@@ -1078,7 +930,6 @@
                 }, 4000);
             }, 100);
         }
-        // --- ГОНКИ (исправленная единая система) ---
         let raceState = 'idle';
         let currentOpponent = null;
         let raceStartTime = 0;
@@ -1086,7 +937,6 @@
         let enemyProgress = 0;
         let playerFinishTime = 0;
         let enemyFinishTime = 0;
-        let raceAnimationFrame = null;
         let playerSpeedKmh = 0;
         let enemySpeedKmh = 0;
         let startReactionTime = 0;
@@ -1296,7 +1146,6 @@
             document.getElementById('race-opponents-screen').style.display = 'block';
             renderRaceOpponents();
         }
-
         function setupRoulette() {
             const wheel = document.getElementById('roulette-wheel'); const center = wheel.querySelector('.roulette-center');
             const spinBtn = document.getElementById('spin-roulette-btn'); const betInput = document.getElementById('roulette-bet');
@@ -1342,6 +1191,7 @@
                 }, 1500);
             });
         }
+
         function renderBusiness() {
             const container = document.getElementById('business-list'); container.innerHTML = '';
             state.businesses.forEach(b => {
@@ -1357,7 +1207,6 @@
                 } else alert('Недостаточно средств!');
             }));
         }
-
         function renderAuction() {
             const container = document.getElementById('auction-list'); container.innerHTML = '';
             const ownedCars = state.cars.filter(c => c.owned);
@@ -1383,8 +1232,16 @@
                 container.appendChild(card);
             });
 
-            container.innerHTML += '<h3 style="margin:16px 0 8px; font-size:16px;">📥 Лоты других игроков</h3>';
-            if (otherAuctions.length === 0) container.innerHTML += '<p style="color:var(--text-muted);font-size:12px;">Пока нет лотов.</p>';
+            const otherHeader = document.createElement('h3');
+            otherHeader.style.cssText = 'margin:16px 0 8px; font-size:16px;';
+            otherHeader.textContent = '📥 Лоты других игроков';
+            container.appendChild(otherHeader);
+            if (otherAuctions.length === 0) {
+                const empty = document.createElement('p');
+                empty.style.cssText = 'color:var(--text-muted);font-size:12px;';
+                empty.textContent = 'Пока нет лотов.';
+                container.appendChild(empty);
+            }
             otherAuctions.forEach(a => {
                 const car = state.cars.find(c => c.id === a.carId); if (!car) return;
                 const card = document.createElement('div'); card.className = 'auction-card';
@@ -1423,7 +1280,109 @@
                 const auction = state.auctions.find(a => a.id === auctionId);
                 if (auction) {
                     const car = state.cars.find(c => c.id === auction.carId);
-                            // --- НАВИГАЦИЯ ---
+                    if (car) car.owned = true;
+                    state.auctions = state.auctions.filter(a => a.id !== auctionId);
+                    saveState(); renderGarage(); renderAuction();
+                }
+            }));
+            container.querySelectorAll('.btn-buy-auction[data-id]').forEach(btn => btn.addEventListener('click', (e) => {
+                const auctionId = e.target.dataset.id;
+                const auction = state.auctions.find(a => a.id === auctionId);
+                if (auction && state.balance >= auction.price) {
+                    const car = state.cars.find(c => c.id === auction.carId);
+                    if (car) car.owned = true;
+                    state.balance -= auction.price;
+                    state.auctions = state.auctions.filter(a => a.id !== auctionId);
+                    saveState(); updateBalance(); renderGarage(); renderAuction();
+                    if (tg) tg.HapticFeedback.notificationOccurred('success');
+                } else alert('Недостаточно средств!');
+            }));
+        }
+        function renderProfile() {
+            document.getElementById('profile-name').textContent = document.getElementById('user-name').textContent;
+            document.getElementById('stat-cars').textContent = state.cars.filter(c => c.owned).length;
+            document.getElementById('stat-races').textContent = state.stats.races;
+            document.getElementById('stat-wins').textContent = state.stats.wins;
+            document.getElementById('stat-cases').textContent = state.stats.casesOpened;
+            updateLevel();
+        }
+
+        function refreshTasks() {
+            const now = Date.now(); const cooldown = 24 * 60 * 60 * 1000;
+            if (now - state.lastTaskRefresh >= cooldown || !state.tasks.length) {
+                state.tasks = TASKS_TEMPLATE.map(t => ({ ...t, progress: 0, claimed: false }));
+                state.lastTaskRefresh = now; saveState();
+            }
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-list'); container.innerHTML = '';
+            if (!state.tasks.length) { container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;">Задания обновятся завтра.</p>'; return; }
+            state.tasks.forEach(task => {
+                let currentProgress = 0;
+                if (task.type === 'races') currentProgress = state.stats.wins;
+                else if (task.type === 'cases') currentProgress = state.stats.casesOpened;
+                else if (task.type === 'tuning') currentProgress = state.stats.tuningDone;
+                const progress = Math.min(currentProgress, task.target);
+                const isComplete = progress >= task.target && !task.claimed;
+                const card = document.createElement('div'); card.className = 'task-card';
+                card.innerHTML = `<div class="task-info"><div class="task-title">${task.title}</div><div class="task-progress">${progress} / ${task.target}</div><div class="task-reward">+${task.reward} ₽</div></div><button class="btn-claim" ${!isComplete ? 'disabled' : ''} data-id="${task.id}">${task.claimed ? '✅' : 'Забрать'}</button>`;
+                container.appendChild(card);
+            });
+                       container.querySelectorAll('.btn-claim').forEach(btn => btn.addEventListener('click', (e) => {
+                const task = state.tasks.find(t => t.id === e.target.dataset.id);
+                if (task && !task.claimed) {
+                    let currentProgress = task.type === 'races' ? state.stats.wins : task.type === 'cases' ? state.stats.casesOpened : state.stats.tuningDone;
+                    if (currentProgress >= task.target) { task.claimed = true; state.balance += task.reward; saveState(); updateBalance(); renderTasks(); }
+                }
+            }));
+        }
+
+        function renderAchievements() {
+            const container = document.getElementById('achievements-list'); container.innerHTML = '';
+            ACHIEVEMENTS.forEach(ach => {
+                const unlocked = state.unlockedAchievements.includes(ach.id);
+                const card = document.createElement('div'); card.className = 'ach-card';
+                card.innerHTML = `<div class="ach-icon">${ach.icon}</div><div class="ach-info"><div class="ach-title">${ach.title}</div><div class="ach-desc">${ach.desc} · +${ach.reward} ₽</div></div><div class="ach-status">${unlocked ? '✅' : '🔒'}</div>`;
+                container.appendChild(card);
+            });
+        }
+
+        function checkAchievements() {
+            ACHIEVEMENTS.forEach(ach => {
+                if (!state.unlockedAchievements.includes(ach.id) && ach.check(state)) {
+                    state.unlockedAchievements.push(ach.id); state.balance += ach.reward; saveState(); updateBalance();
+                    if (tg) tg.HapticFeedback.notificationOccurred('success');
+                    alert(`🏆 Достижение: ${ach.title}!\nНаграда: ${ach.reward} ₽`);
+                }
+            });
+        }
+
+        function setupBonus() {
+            const btn = document.getElementById('bonus-btn');
+            const cooldown = 24 * 60 * 60 * 1000;
+            const check = () => {
+                const now = Date.now();
+                if (now - state.lastBonus < cooldown) {
+                    btn.disabled = true;
+                    btn.textContent = `⏳ ${Math.ceil((cooldown - (now - state.lastBonus)) / 3600000)} ч.`;
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = '🎁 Бонус <span style="opacity:0.8;font-size:12px">+1000 ₽</span>';
+                }
+            };
+            btn.addEventListener('click', () => {
+                if (Date.now() - state.lastBonus >= cooldown) {
+                    state.balance += 1000; state.lastBonus = Date.now(); addXP(10);
+                    saveState(); updateBalance(); check();
+                }
+            });
+            check();
+            setInterval(check, 60000);
+        }
+
+        // --- НАВИГАЦИЯ ---
         function setupUI() {
             const nav = document.querySelectorAll('.nav-btn'); const tabs = document.querySelectorAll('.tab-content');
             nav.forEach(btn => btn.addEventListener('click', () => {
