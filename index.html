@@ -398,118 +398,87 @@
                     <button class="earn-tab-btn" data-panel="tournament">🏆 Турнир</button>
                 </div>
                 <div id="earn-race" class="earn-panel active">
-                    <div id="race-opponents-screen">
-                        <div class="race-header">
-                            <div class="race-header-left">
-                                <div class="race-level-badge">17</div>
-                                <h2 class="race-title">Гонки</h2>
-                            </div>
-                            <div class="race-balance">7.2 млн ₽</div>
-                        </div>
-                        <div class="race-my-car">
-                            <div class="race-my-car-header">
-                                <span>ТВОЯ МАШИНА</span>
-                                <span>11</span>
-                            </div>
-                            <div id="race-my-car-card" class="race-my-car-card"></div>
-                            <div class="race-fuel">
-                                <div class="race-fuel-text">⛽ Топливо 13/15</div>
-                                <div class="race-fuel-bar"><div class="race-fuel-fill"></div></div>
-                            </div>
-                        </div>
-                        <div class="race-opponents-header">
-                            <span>СОПЕРНИКИ · КЛАСС A</span>
-                            <span>ДРЭГ 402 М</span>
-                        </div>
-                        <div id="race-opponents-list" class="race-opponents-list"></div>
-                    </div>
+    <div id="race-opponents-screen">
+        <div class="race-header">
+            <div class="race-header-left">
+                <div class="race-level-badge">🏁</div>
+                <h2 class="race-title">Гонки</h2>
+            </div>
+        </div>
 
-                    <div id="race-active-screen" style="display:none;">
-                        <div class="race-header">
-                            <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
-                        </div>
-                        <div class="race-drag-area">
-                            <div class="race-timer-block">
-                                <div class="race-timer-label">ВРЕМЯ</div>
-                                <div class="race-timer" id="race-time">0,000</div>
-                            </div>
-                            <div class="race-gap-block">
-                                <div class="race-gap-label">РАЗРЫВ</div>
-                                <div class="race-gap" id="race-gap">—</div>
-                            </div>
-                        </div>
-                        <div class="race-progress-area">
-                            <div class="race-progress-row" id="player-race-row">
-                                <div class="race-car-info">
-                                    <div class="race-car-img" id="race-player-img">🚗</div>
-                                    <div class="race-car-name">Ты <span id="race-player-power" class="race-car-power">1065 л.с.</span></div>
-                                </div>
-                                <div class="race-bar-container">
-                                    <div class="race-bar" id="player-bar"></div>
-                                </div>
-                            </div>
-                            <div class="race-progress-row" id="enemy-race-row">
-                                <div class="race-car-info">
-                                    <div class="race-car-img" id="race-enemy-img">🚘</div>
-                                    <div class="race-car-name"><span id="race-enemy-name"></span> <span id="race-enemy-power" class="race-car-power">530 л.с.</span></div>
-                                </div>
-                                <div class="race-bar-container">
-                                    <div class="race-bar" id="enemy-bar" style="background:#ef4444;"></div>
-                                </div>
-                            </div>
-                            <div class="race-track-distances">
-                                <span>18 M</span>
-                                <span>201 M</span>
-                                <span>402 M</span>
-                            </div>
-                        </div>
-                        <div class="race-traffic-lights" id="race-traffic-lights">
-                            <div class="light"></div>
-                            <div class="light"></div>
-                            <div class="light"></div>
-                            <div class="light"></div>
-                        </div>
-                        <div class="race-speed-block">
-                            <div class="race-speed-value"><span id="race-speed">0</span> <span class="race-speed-unit">км/ч</span></div>
-                            <div class="race-gear"><span class="race-gear-label">ПЕРЕДАЧА</span> <span id="race-gear">N</span></div>
-                            <div class="race-speed-bar"><div id="race-speed-fill" style="width: 0%;"></div></div>
-                        </div>
-                        <div class="race-hint-text" id="race-hint">Жми «Газ», когда загорится зелёный</div>
-                        <button class="btn-gas" id="gas-btn" disabled>ГАЗ!</button>
-                    </div>
+        <div class="race-my-car">
+            <div class="race-my-car-header">
+                <span>ТВОЯ МАШИНА</span>
+                <span id="race-tuning-total">0</span>
+            </div>
+            <div id="race-my-car-card" class="race-my-car-card"></div>
+        </div>
 
-                    <div id="race-result-screen" style="display:none;">
-                        <div class="race-header">
-                            <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
-                        </div>
-                        <div class="race-result-content">
-                            <h1 id="race-result-title" style="color:var(--success); font-size: 32px; font-weight: 800;">Победа!</h1>
-                            <div id="race-result-diff" style="color:var(--text-muted); font-size: 16px; margin-bottom: 24px;">быстрее на 1,999 с</div>
-                            <div id="race-result-prize" style="color:var(--success); font-size: 28px; font-weight: 800; margin-bottom: 4px;">+15 000 ₽</div>
-                            <div style="color:var(--text-muted); font-size: 14px; margin-bottom: 24px;">приз</div>
-                            <div class="race-result-stats">
-                                <div class="race-result-row" id="result-player-row">
-                                    <div class="race-car-img" id="result-player-img">🚗</div>
-                                    <div class="race-car-info">
-                                        <div class="race-car-name">Ты 🏆</div>
-                                        <div class="race-car-subname" id="result-player-name">Aston Martin DB11</div>
-                                    </div>
-                                    <div class="race-result-time" id="result-player-time">8,397 с<br><span style="font-size:12px; color:var(--text-muted);" id="result-player-speed">261 км/ч</span></div>
-                                </div>
-                                <div class="race-result-row" id="result-enemy-row">
-                                    <div class="race-car-img" id="result-enemy-img">🚘</div>
-                                    <div class="race-car-info">
-                                        <div class="race-car-name" id="result-enemy-name">DriftKing</div>
-                                        <div class="race-car-subname" id="result-enemy-subname">Aurus Senat</div>
-                                    </div>
-                                    <div class="race-result-time" id="result-enemy-time">10,396 с<br><span style="font-size:12px; color:var(--text-muted);" id="result-enemy-speed">211 км/ч</span></div>
-                                </div>
-                            </div>
-                            <div class="race-result-start-info" id="race-start-info">Нормальный старт · 345 мс</div>
-                            <button class="race-next-btn" id="race-next-btn">Ещё гонка</button>
-                        </div>
-                    </div>
+        <div class="race-opponents-header">
+            <span>Выбери соперника</span>
+            <span>ДРЭГ 402 М</span>
+        </div>
+        <div id="race-opponents-list" class="race-opponents-list"></div>
+    </div>
+
+    <div id="race-active-screen" style="display:none;">
+        <div class="race-header">
+            <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
+        </div>
+        <div class="race-drag-area">
+            <div class="race-timer-block">
+                <div class="race-timer-label">ВРЕМЯ</div>
+                <div class="race-timer" id="race-time">0,000</div>
+            </div>
+            <div class="race-gap-block">
+                <div class="race-gap-label">РАЗРЫВ</div>
+                <div class="race-gap" id="race-gap">—</div>
+            </div>
+        </div>
+        <div class="race-progress-area">
+            <div class="race-progress-row" id="player-race-row">
+                <div class="race-car-info">
+                    <div class="race-car-img" id="race-player-img">🚗</div>
+                    <div class="race-car-name">Ты <span id="race-player-power" class="race-car-power"></span></div>
                 </div>
+                <div class="race-bar-container"><div class="race-bar" id="player-bar"></div></div>
+            </div>
+            <div class="race-progress-row" id="enemy-race-row">
+                <div class="race-car-info">
+                    <div class="race-car-img" id="race-enemy-img">🚘</div>
+                    <div class="race-car-name"><span id="race-enemy-name"></span> <span id="race-enemy-power" class="race-car-power"></span></div>
+                </div>
+                <div class="race-bar-container"><div class="race-bar" id="enemy-bar" style="background:#ef4444;"></div></div>
+            </div>
+            <div class="race-track-distances">
+                <span>18 M</span><span>201 M</span><span>402 M</span>
+            </div>
+        </div>
+        <div class="race-traffic-lights" id="race-traffic-lights">
+            <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+        </div>
+        <div class="race-speed-block">
+            <div class="race-speed-value"><span id="race-speed">0</span> <span class="race-speed-unit">км/ч</span></div>
+            <div class="race-gear"><span class="race-gear-label">ПЕРЕДАЧА</span> <span id="race-gear">N</span></div>
+            <div class="race-speed-bar"><div id="race-speed-fill" style="width: 0%;"></div></div>
+        </div>
+        <div class="race-hint-text" id="race-hint">Жми «Газ», когда загорится зелёный</div>
+        <button class="btn-gas" id="gas-btn" disabled>ГАЗ!</button>
+    </div>
+
+    <div id="race-result-screen" style="display:none;">
+        <div class="race-header">
+            <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
+        </div>
+        <div class="race-result-content">
+            <h1 id="race-result-title" style="font-size: 32px; font-weight: 800;">Победа!</h1>
+            <div id="race-result-diff" style="color:var(--text-muted); font-size: 16px; margin-bottom: 24px;">шанс 55%</div>
+            <div id="race-result-prize" style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">+60 000 ₽</div>
+            <div style="color:var(--text-muted); font-size: 14px; margin-bottom: 24px;">приз</div>
+            <button class="race-next-btn" id="race-next-btn">Ещё гонка</button>
+        </div>
+    </div>
+</div>
                 <div id="earn-roulette" class="earn-panel">
                     <div class="roulette-box">
                         <div class="roulette-legend">
@@ -1091,10 +1060,40 @@
         let startReactionTime = 0;
         let playerReactionPenalty = 1;
         let trafficLightTimer = null;
+        let raceWillWin = false;
+        let playerTargetFinish = 0;
+        let enemyTargetFinish = 0;
 
         const DISTANCE = 402;
-        const PLAYER_MAX_SPEED = 261;
-        const ENEMY_MAX_SPEED = 211;
+
+        const RACE_OPPONENTS = [
+            { id: 'opp1', name: 'Новичок',     carId: 'granta',    bet: 2000,   reward: 5000,    chanceBase: 100, tuningBonus: 0, diff: 'Тренировка' },
+            { id: 'opp2', name: 'Дрифтер',     carId: 'camry',     bet: 25000,  reward: 60000,   chanceBase: 55,  tuningBonus: 3, diff: 'Лёгкий' },
+            { id: 'opp3', name: 'Стритрейсер', carId: 'bmw_m5',    bet: 120000, reward: 300000,  chanceBase: 30,  tuningBonus: 4, diff: 'Средний' },
+            { id: 'opp4', name: 'Легенда',     carId: 'ferrari_f8',bet: 500000, reward: 1500000, chanceBase: 10,  tuningBonus: 5, diff: 'Сложный' }
+        ];
+
+        function getMyBestCar() {
+            const owned = state.cars.filter(c => c.owned);
+            if (!owned.length) return state.cars[0];
+            return owned.reduce((best, c) => {
+                const tBest = Object.values(best.tuning).reduce((a, b) => a + b, 0);
+                const tCur = Object.values(c.tuning).reduce((a, b) => a + b, 0);
+                if (tCur > tBest) return c;
+                if (tCur === tBest && c.power > best.power) return c;
+                return best;
+            }, owned[0]);
+        }
+
+        function getTotalTuning(car) {
+            return Object.values(car.tuning).reduce((a, b) => a + b, 0);
+        }
+
+        function getWinChance(opp) {
+            const myCar = getMyBestCar();
+            const tuning = getTotalTuning(myCar);
+            return Math.min(99, opp.chanceBase + tuning * opp.tuningBonus);
+        }
 
         function setupRace() {
             document.getElementById('race-next-btn').addEventListener('click', backToOpponents);
@@ -1102,47 +1101,44 @@
             renderRaceOpponents();
         }
 
-        function getMyBestCar() {
-            const owned = state.cars.filter(c => c.owned);
-            if (!owned.length) return state.cars[0];
-            return owned.reduce((best, c) => (c.power > best.power ? c : best), owned[0]);
-        }
-
         function renderRaceOpponents() {
             const myCar = getMyBestCar();
+            const tuningTotal = getTotalTuning(myCar);
+
             const myCarCard = document.getElementById('race-my-car-card');
-            let myCarImg = myCar.image ? `<img src="${myCar.image}" onerror="this.style.display='none'">` : `<div style="font-size:40px">${myCar.emoji}</div>`;
-            myCarCard.innerHTML = `${myCarImg}<div class="info"><div class="name">${myCar.name}</div><div class="power">${myCar.power} л.с.</div></div>`;
+            const myCarImg = myCar.image ? `<img src="${myCar.image}" onerror="this.style.display='none'">` : `<div style="font-size:40px">${myCar.emoji}</div>`;
+            myCarCard.innerHTML = `${myCarImg}<div class="info"><div class="name">${myCar.name}</div><div class="power">${myCar.power} л.с. · тюнинг: ${tuningTotal}</div></div>`;
+
+            document.getElementById('race-tuning-total').textContent = tuningTotal;
 
             const list = document.getElementById('race-opponents-list');
             list.innerHTML = '';
 
-            const opponentsData = [
-                { name: 'DriftKing', car: 'Aurus Senat', power: 530, win: 15000, bet: 0, diff: 'Тренировка', chance: 100 },
-                { name: 'Ghost', car: 'Mercedes-AMG G63', power: 584, win: 400000, bet: 120000, diff: 'Лёгкий', chance: 100 },
-                { name: 'Лёха_2107', car: 'Porsche 911 Turbo S', power: 696, win: 800000, bet: 240000, diff: 'Средний', chance: 100 },
-                { name: 'Гоша_Форсаж', car: 'Honda NSX NA1', power: 986, win: 1600000, bet: 480000, diff: 'Сложный', chance: 79 }
-            ];
-
-            opponentsData.forEach((opp) => {
+            RACE_OPPONENTS.forEach(opp => {
+                const oppCar = state.cars.find(c => c.id === opp.carId) || state.cars[0];
+                const chance = getWinChance(opp);
                 const card = document.createElement('div');
                 card.className = 'race-opponent-card';
+
                 let diffClass = 'tag-easy';
                 if (opp.diff === 'Средний') diffClass = 'tag-medium';
                 if (opp.diff === 'Сложный') diffClass = 'tag-hard';
+
+                const oppImg = oppCar.image ? `<img src="${oppCar.image}" onerror="this.style.display='none'">` : `<div style="font-size:40px">${oppCar.emoji}</div>`;
+
                 card.innerHTML = `
-                    <div style="font-size:40px">🚘</div>
+                    ${oppImg}
                     <div class="race-opponent-info">
                         <div class="race-opponent-name">${opp.name}</div>
-                        <div class="race-opponent-car">${opp.car} · ${opp.power} л.с.</div>
+                        <div class="race-opponent-car">${oppCar.name} · ${oppCar.power} л.с.</div>
                         <div class="race-opponent-tags">
                             <span class="tag-diff ${diffClass}">${opp.diff}</span>
-                            <span class="tag-chance">шанс ${opp.chance}%</span>
+                            <span class="tag-chance">шанс ${chance}%</span>
                         </div>
                     </div>
                     <div class="race-opponent-prize">
-                        <div class="prize-win">+${opp.win.toLocaleString('ru-RU')} ₽</div>
-                        <div class="prize-bet">${opp.bet === 0 ? 'без взноса' : `взнос ${opp.bet.toLocaleString('ru-RU')} ₽`}</div>
+                        <div class="prize-win">+${opp.reward.toLocaleString('ru-RU')} ₽</div>
+                        <div class="prize-bet">взнос ${opp.bet.toLocaleString('ru-RU')} ₽</div>
                     </div>`;
                 card.onclick = () => startRace(opp, myCar);
                 list.appendChild(card);
@@ -1150,9 +1146,25 @@
         }
 
         function startRace(opp, myCar) {
-            if (opp.bet > 0 && state.balance < opp.bet) return alert('Недостаточно средств для взноса!');
-            if (opp.bet > 0) { state.balance -= opp.bet; updateBalance(); }
+            if (state.balance < opp.bet) return alert('Недостаточно средств для взноса!');
+            state.balance -= opp.bet;
+            updateBalance();
             currentOpponent = opp;
+
+            // Исход определяем сразу — по шансу
+            const chance = getWinChance(opp);
+            raceWillWin = (Math.random() * 100) <= chance;
+
+            // Задаём таргетные времена финиша так, чтобы победитель совпал с исходом
+            // (это сохраняет прежнюю анимацию, но исход = броску шанса)
+            const base = 9 + Math.random() * 2; // 9–11 секунд
+            if (raceWillWin) {
+                playerTargetFinish = base;
+                enemyTargetFinish = base + (0.6 + Math.random() * 1.4); // соперник отстаёт
+            } else {
+                playerTargetFinish = base + (0.6 + Math.random() * 1.4);
+                enemyTargetFinish = base;
+            }
 
             document.getElementById('race-opponents-screen').style.display = 'none';
             document.getElementById('race-result-screen').style.display = 'none';
@@ -1162,11 +1174,13 @@
             playerProgress = 0; enemyProgress = 0; playerFinishTime = 0; enemyFinishTime = 0;
             playerSpeedKmh = 0; enemySpeedKmh = 0; startReactionTime = 0; playerReactionPenalty = 1;
 
+            const oppCar = state.cars.find(c => c.id === opp.carId) || state.cars[0];
+
             document.getElementById('race-player-img').innerHTML = myCar.image ? `<img src="${myCar.image}">` : `<div style="font-size:40px">${myCar.emoji}</div>`;
             document.getElementById('race-player-power').textContent = `${myCar.power} л.с.`;
-            document.getElementById('race-enemy-img').innerHTML = `<div style="font-size:40px">🚘</div>`;
+            document.getElementById('race-enemy-img').innerHTML = oppCar.image ? `<img src="${oppCar.image}">` : `<div style="font-size:40px">${oppCar.emoji}</div>`;
             document.getElementById('race-enemy-name').textContent = opp.name;
-            document.getElementById('race-enemy-power').textContent = `${opp.power} л.с.`;
+            document.getElementById('race-enemy-power').textContent = `${oppCar.power} л.с.`;
 
             document.getElementById('player-bar').style.width = '0%';
             document.getElementById('enemy-bar').style.width = '0%';
@@ -1205,16 +1219,18 @@
 
         function handleGasPress() {
             if (raceState === 'waiting_green') {
+                // Фальстарт
                 document.getElementById('race-hint').textContent = 'Фальстарт!';
                 document.getElementById('gas-btn').disabled = true;
-                setTimeout(() => { alert('Фальстарт! Вы нажали газ до зеленого сигнала.'); backToOpponents(); }, 1000);
+                setTimeout(() => { alert('Фальстарт! Вы нажали газ до зелёного сигнала.'); backToOpponents(); }, 1000);
                 return;
             }
             if (raceState === 'ready') {
                 const reaction = Date.now() - startReactionTime;
-                if (reaction < 100) { document.getElementById('race-hint').textContent = 'Идеальный старт! +4% мощности'; playerReactionPenalty = 1.04; document.getElementById('race-start-info').textContent = `Идеальный старт · ${reaction} мс`; }
-                else if (reaction < 500) { document.getElementById('race-hint').textContent = `Нормальный старт · ${reaction} мс`; playerReactionPenalty = 1.0; document.getElementById('race-start-info').textContent = `Нормальный старт · ${reaction} мс`; }
-                else { document.getElementById('race-hint').textContent = 'Плохой старт...'; playerReactionPenalty = 0.9; document.getElementById('race-start-info').textContent = `Плохой старт · ${reaction} мс`; }
+                if (reaction < 100) { document.getElementById('race-hint').textContent = 'Идеальный старт! +4%'; playerReactionPenalty = 1.04; }
+                else if (reaction < 500) { document.getElementById('race-hint').textContent = `Нормальный старт · ${reaction} мс`; playerReactionPenalty = 1.0; }
+                else { document.getElementById('race-hint').textContent = 'Плохой старт...'; playerReactionPenalty = 0.9; }
+
                 document.getElementById('gas-btn').disabled = true;
                 raceState = 'racing';
                 raceStartTime = Date.now();
@@ -1228,16 +1244,29 @@
             const elapsed = (now - raceStartTime) / 1000;
             document.getElementById('race-time').textContent = elapsed.toFixed(3).replace('.', ',');
 
-            if (playerProgress < DISTANCE) {
-                const accel = (PLAYER_MAX_SPEED / 5) * playerReactionPenalty;
-                playerSpeedKmh = Math.min(PLAYER_MAX_SPEED * playerReactionPenalty, playerSpeedKmh + accel * 0.016);
+            const myCar = getMyBestCar();
+            const oppCar = state.cars.find(c => c.id === currentOpponent.carId) || state.cars[0];
+
+            const tuning = getTotalTuning(myCar);
+            const playerMaxSpeed = Math.min(400, myCar.speed + tuning * 2);
+            const enemyMaxSpeed = Math.min(400, oppCar.speed);
+
+            // Прогресс игрока — как раньше, но с учётом реакции
+            if (playerProgress < DISTANCE && playerTargetFinish > 0) {
+                const accel = (playerMaxSpeed / 5) * playerReactionPenalty;
+                playerSpeedKmh = Math.min(playerMaxSpeed * playerReactionPenalty, playerSpeedKmh + accel * 0.016);
                 playerProgress += (playerSpeedKmh / 3.6) * 0.016;
+                // Визуально «докручиваем» до финиша к целевому времени
+                const expected = (elapsed / playerTargetFinish) * DISTANCE;
+                if (playerProgress < expected) playerProgress = Math.min(DISTANCE, expected);
                 if (playerProgress >= DISTANCE) { playerProgress = DISTANCE; playerFinishTime = elapsed; }
             }
-            if (enemyProgress < DISTANCE) {
-                const enemyAccel = ENEMY_MAX_SPEED / 5;
-                enemySpeedKmh = Math.min(ENEMY_MAX_SPEED, enemySpeedKmh + enemyAccel * 0.016);
-                enemyProgress += (enemySpeedKmh / 3.6) * 0.016;
+
+            // Прогресс соперника — по целевому времени
+            if (enemyProgress < DISTANCE && enemyTargetFinish > 0) {
+                const expected = (elapsed / enemyTargetFinish) * DISTANCE;
+                enemyProgress = Math.min(DISTANCE, Math.max(enemyProgress, expected));
+                enemySpeedKmh = (DISTANCE / enemyTargetFinish) * 3.6 * (enemyProgress / DISTANCE);
                 if (enemyProgress >= DISTANCE) { enemyProgress = DISTANCE; enemyFinishTime = elapsed; }
             }
 
@@ -1245,12 +1274,12 @@
             document.getElementById('enemy-bar').style.width = `${(enemyProgress / DISTANCE) * 100}%`;
             document.getElementById('race-speed').textContent = Math.round(playerSpeedKmh);
             let gear = 'N';
-            if (playerSpeedKmh > 0) gear = Math.min(6, Math.floor(playerSpeedKmh / (PLAYER_MAX_SPEED / 6)) + 1);
+            if (playerSpeedKmh > 0) gear = Math.min(6, Math.floor(playerSpeedKmh / (playerMaxSpeed / 6)) + 1);
             document.getElementById('race-gear').textContent = gear;
-            document.getElementById('race-speed-fill').style.width = `${(playerSpeedKmh / PLAYER_MAX_SPEED) * 100}%`;
+            document.getElementById('race-speed-fill').style.width = `${(playerSpeedKmh / playerMaxSpeed) * 100}%`;
 
             const gap = playerProgress - enemyProgress;
-            if (Math.abs(gap) < 1) { document.getElementById('race-gap').textContent = '—'; }
+            if (Math.abs(gap) < 1) document.getElementById('race-gap').textContent = '—';
             else {
                 document.getElementById('race-gap').textContent = `${gap > 0 ? '+' : ''}${(gap / 10).toFixed(2)}`;
                 document.getElementById('race-gap').style.color = gap > 0 ? 'var(--success)' : 'var(--danger)';
@@ -1261,29 +1290,33 @@
         }
 
         function showRaceResult() {
-            const diff = enemyFinishTime - playerFinishTime;
-            const isWin = playerFinishTime < enemyFinishTime || enemyFinishTime === 0;
+            const chance = getWinChance(currentOpponent);
+            const isWin = raceWillWin;
+
             document.getElementById('race-active-screen').style.display = 'none';
             document.getElementById('race-result-screen').style.display = 'block';
+
             const titleEl = document.getElementById('race-result-title');
             const diffEl = document.getElementById('race-result-diff');
             const prizeEl = document.getElementById('race-result-prize');
 
             if (isWin) {
                 titleEl.textContent = 'Победа!'; titleEl.style.color = 'var(--success)';
-                diffEl.textContent = `быстрее на ${Math.abs(diff).toFixed(3).replace('.', ',')} с`;
-                prizeEl.textContent = `+${currentOpponent.win.toLocaleString('ru-RU')} ₽`; prizeEl.style.color = 'var(--success)';
-                state.balance += currentOpponent.win; state.stats.wins++; state.stats.races++;
+                diffEl.textContent = `шанс ${chance}% · финиш ${playerFinishTime.toFixed(3).replace('.', ',')} с`;
+                prizeEl.textContent = `+${currentOpponent.reward.toLocaleString('ru-RU')} ₽`;
+                prizeEl.style.color = 'var(--success)';
+                state.balance += currentOpponent.reward;
+                state.stats.wins++;
+                state.stats.races++;
+                addXP(25);
+                if (tg) tg.HapticFeedback.notificationOccurred('success');
             } else {
                 titleEl.textContent = 'Поражение'; titleEl.style.color = 'var(--danger)';
-                diffEl.textContent = `медленнее на ${Math.abs(diff).toFixed(3).replace('.', ',')} с`;
-                prizeEl.textContent = `-${currentOpponent.bet.toLocaleString('ru-RU')} ₽`; prizeEl.style.color = 'var(--danger)';
+                diffEl.textContent = `шанс ${chance}% · соперник финишировал ${enemyFinishTime.toFixed(3).replace('.', ',')} с`;
+                prizeEl.textContent = `-${currentOpponent.bet.toLocaleString('ru-RU')} ₽`;
+                prizeEl.style.color = 'var(--danger)';
                 state.stats.races++;
             }
-            document.getElementById('result-player-time').innerHTML = `${playerFinishTime.toFixed(3).replace('.', ',')} с<br><span style="font-size:12px; color:var(--text-muted);">${Math.round(PLAYER_MAX_SPEED)} км/ч</span>`;
-            document.getElementById('result-enemy-time').innerHTML = `${enemyFinishTime.toFixed(3).replace('.', ',')} с<br><span style="font-size:12px; color:var(--text-muted);">${Math.round(ENEMY_MAX_SPEED)} км/ч</span>`;
-            document.getElementById('result-enemy-name').textContent = currentOpponent.name;
-            document.getElementById('result-enemy-subname').textContent = currentOpponent.car;
             updateBalance(); saveState();
         }
 
