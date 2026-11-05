@@ -411,6 +411,7 @@
                 <span>ТВОЯ МАШИНА</span>
                 <span id="race-tuning-total">0</span>
             </div>
+            <div id="race-car-selector"></div>
             <div id="race-my-car-card" class="race-my-car-card"></div>
         </div>
 
@@ -479,35 +480,6 @@
         </div>
     </div>
 </div>
-                <div id="earn-roulette" class="earn-panel">
-                    <div class="roulette-box">
-                        <div class="roulette-legend">
-                            <div class="legend-item"><span class="legend-color" style="background:#ef4444"></span> x0 (40%)</div>
-                            <div class="legend-item"><span class="legend-color" style="background:#f59e0b"></span> x0.5 (20%)</div>
-                            <div class="legend-item"><span class="legend-color" style="background:#10b981"></span> x1 (15%)</div>
-                            <div class="legend-item"><span class="legend-color" style="background:#3b82f6"></span> x2 (15%)</div>
-                            <div class="legend-item"><span class="legend-color" style="background:#a855f7"></span> x3 (7%)</div>
-                            <div class="legend-item"><span class="legend-color" style="background:#ffd700"></span> x5 (2.5%)</div>
-                            <div class="legend-item"><span class="legend-color" style="background:#ff00ff"></span> x10 (0.5%)</div>
-                        </div>
-                        <div class="roulette-wheel" id="roulette-wheel"><div class="roulette-center">x?</div></div>
-                        <div class="roulette-controls">
-                            <div class="roulette-bet-row"><input type="number" id="roulette-bet" placeholder="Ставка (1000-500000)" min="1000" max="500000" value="5000"><button id="spin-roulette-btn">🎰 Крутить</button></div>
-                            <div class="roulette-result" id="roulette-result"></div>
-                        </div>
-                    </div>
-                </div>
-                <div id="earn-tournament" class="earn-panel">
-                    <div class="race-box" style="text-align:center;">
-                        <h3 style="margin-bottom:12px; color:var(--c-legendary);">🏆 Ежедневный турнир</h3>
-                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Участие: 50 000 ₽. Победитель забирает x3 от ставки.</p>
-                        <p style="font-size:14px; margin-bottom:16px;">Ваша сила: <b id="tournament-power">0</b></p>
-                        <button id="join-tournament-btn" style="padding:14px 30px; background:linear-gradient(135deg,#6d28d9,#3b82f6); border:none; color:#fff; border-radius:30px; font-weight:700; font-size:16px; cursor:pointer;">Участвовать</button>
-                        <div id="tournament-result" style="margin-top:16px; font-weight:700;"></div>
-                    </div>
-                </div>
-            </div>
-
             <div id="tab-business" class="tab-content">
                 <h2><span>Бизнес</span></h2>
                 <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Покупайте недвижимость, чтобы получать пассивный доход!</p>
@@ -1048,7 +1020,7 @@
                 }, 4000);
             }, 100);
         }
-        let raceState = 'idle';
+                let raceState = 'idle';
         let currentOpponent = null;
         let raceStartTime = 0;
         let playerProgress = 0;
@@ -1063,6 +1035,7 @@
         let raceWillWin = false;
         let playerTargetFinish = 0;
         let enemyTargetFinish = 0;
+        let selectedRaceCarId = null;
 
         const DISTANCE = 402;
 
@@ -1073,7 +1046,11 @@
             { id: 'opp4', name: 'Легенда',     carId: 'ferrari_f8',bet: 500000, reward: 1500000, chanceBase: 10,  tuningBonus: 5, diff: 'Сложный' }
         ];
 
-        function getMyBestCar() {
+        function getSelectedRaceCar() {
+            if (selectedRaceCarId) {
+                const car = state.cars.find(c => c.id === selectedRaceCarId && c.owned);
+                if (car) return car;
+            }
             const owned = state.cars.filter(c => c.owned);
             if (!owned.length) return state.cars[0];
             return owned.reduce((best, c) => {
@@ -1090,7 +1067,7 @@
         }
 
         function getWinChance(opp) {
-            const myCar = getMyBestCar();
+            const myCar = getSelectedRaceCar();
             const tuning = getTotalTuning(myCar);
             return Math.min(99, opp.chanceBase + tuning * opp.tuningBonus);
         }
@@ -1098,18 +1075,56 @@
         function setupRace() {
             document.getElementById('race-next-btn').addEventListener('click', backToOpponents);
             document.getElementById('gas-btn').onclick = handleGasPress;
+            renderRaceCarSelector();
             renderRaceOpponents();
         }
 
-        function renderRaceOpponents() {
-            const myCar = getMyBestCar();
+        function renderRaceCarSelector() {
+            const container = document.getElementById('race-car-selector');
+            container.innerHTML = '';
+            const owned = state.cars.filter(c => c.owned);
+            if (!owned.length) return;
+
+            // Если выбранная машина больше не в гараже — сбрасываем
+            if (selectedRaceCarId && !owned.find(c => c.id === selectedRaceCarId)) {
+                selectedRaceCarId = null;
+            }
+            if (!selectedRaceCarId) {
+                selectedRaceCarId = getSelectedRaceCar().id;
+            }
+
+            const select = document.createElement('select');
+            select.className = 'tuning-select';
+            select.id = 'race-car-select';
+            owned.forEach(car => {
+                const opt = document.createElement('option');
+                opt.value = car.id;
+                opt.textContent = `${car.name} · тюнинг ${getTotalTuning(car)}`;
+                if (car.id === selectedRaceCarId) opt.selected = true;
+                select.appendChild(opt);
+            });
+            select.addEventListener('change', () => {
+                selectedRaceCarId = select.value;
+                renderRaceCarInfo();
+                renderRaceOpponents();
+            });
+            container.appendChild(select);
+        }
+
+        function renderRaceCarInfo() {
+            const myCar = getSelectedRaceCar();
             const tuningTotal = getTotalTuning(myCar);
+            document.getElementById('race-tuning-total').textContent = tuningTotal;
 
             const myCarCard = document.getElementById('race-my-car-card');
-            const myCarImg = myCar.image ? `<img src="${myCar.image}" onerror="this.style.display='none'">` : `<div style="font-size:40px">${myCar.emoji}</div>`;
+            const myCarImg = myCar.image
+                ? `<img src="${myCar.image}" onerror="this.style.display='none'">`
+                : `<div style="font-size:40px">${myCar.emoji}</div>`;
             myCarCard.innerHTML = `${myCarImg}<div class="info"><div class="name">${myCar.name}</div><div class="power">${myCar.power} л.с. · тюнинг: ${tuningTotal}</div></div>`;
+        }
 
-            document.getElementById('race-tuning-total').textContent = tuningTotal;
+        function renderRaceOpponents() {
+            renderRaceCarInfo();
 
             const list = document.getElementById('race-opponents-list');
             list.innerHTML = '';
@@ -1124,7 +1139,9 @@
                 if (opp.diff === 'Средний') diffClass = 'tag-medium';
                 if (opp.diff === 'Сложный') diffClass = 'tag-hard';
 
-                const oppImg = oppCar.image ? `<img src="${oppCar.image}" onerror="this.style.display='none'">` : `<div style="font-size:40px">${oppCar.emoji}</div>`;
+                const oppImg = oppCar.image
+                    ? `<img src="${oppCar.image}" onerror="this.style.display='none'">`
+                    : `<div style="font-size:40px">${oppCar.emoji}</div>`;
 
                 card.innerHTML = `
                     ${oppImg}
@@ -1140,7 +1157,7 @@
                         <div class="prize-win">+${opp.reward.toLocaleString('ru-RU')} ₽</div>
                         <div class="prize-bet">взнос ${opp.bet.toLocaleString('ru-RU')} ₽</div>
                     </div>`;
-                card.onclick = () => startRace(opp, myCar);
+                card.onclick = () => startRace(opp, getSelectedRaceCar());
                 list.appendChild(card);
             });
         }
@@ -1151,16 +1168,13 @@
             updateBalance();
             currentOpponent = opp;
 
-            // Исход определяем сразу — по шансу
             const chance = getWinChance(opp);
             raceWillWin = (Math.random() * 100) <= chance;
 
-            // Задаём таргетные времена финиша так, чтобы победитель совпал с исходом
-            // (это сохраняет прежнюю анимацию, но исход = броску шанса)
-            const base = 9 + Math.random() * 2; // 9–11 секунд
+            const base = 9 + Math.random() * 2;
             if (raceWillWin) {
                 playerTargetFinish = base;
-                enemyTargetFinish = base + (0.6 + Math.random() * 1.4); // соперник отстаёт
+                enemyTargetFinish = base + (0.6 + Math.random() * 1.4);
             } else {
                 playerTargetFinish = base + (0.6 + Math.random() * 1.4);
                 enemyTargetFinish = base;
@@ -1219,7 +1233,6 @@
 
         function handleGasPress() {
             if (raceState === 'waiting_green') {
-                // Фальстарт
                 document.getElementById('race-hint').textContent = 'Фальстарт!';
                 document.getElementById('gas-btn').disabled = true;
                 setTimeout(() => { alert('Фальстарт! Вы нажали газ до зелёного сигнала.'); backToOpponents(); }, 1000);
@@ -1244,25 +1257,22 @@
             const elapsed = (now - raceStartTime) / 1000;
             document.getElementById('race-time').textContent = elapsed.toFixed(3).replace('.', ',');
 
-            const myCar = getMyBestCar();
+            const myCar = getSelectedRaceCar();
             const oppCar = state.cars.find(c => c.id === currentOpponent.carId) || state.cars[0];
 
             const tuning = getTotalTuning(myCar);
             const playerMaxSpeed = Math.min(400, myCar.speed + tuning * 2);
             const enemyMaxSpeed = Math.min(400, oppCar.speed);
 
-            // Прогресс игрока — как раньше, но с учётом реакции
             if (playerProgress < DISTANCE && playerTargetFinish > 0) {
                 const accel = (playerMaxSpeed / 5) * playerReactionPenalty;
                 playerSpeedKmh = Math.min(playerMaxSpeed * playerReactionPenalty, playerSpeedKmh + accel * 0.016);
                 playerProgress += (playerSpeedKmh / 3.6) * 0.016;
-                // Визуально «докручиваем» до финиша к целевому времени
                 const expected = (elapsed / playerTargetFinish) * DISTANCE;
                 if (playerProgress < expected) playerProgress = Math.min(DISTANCE, expected);
                 if (playerProgress >= DISTANCE) { playerProgress = DISTANCE; playerFinishTime = elapsed; }
             }
 
-            // Прогресс соперника — по целевому времени
             if (enemyProgress < DISTANCE && enemyTargetFinish > 0) {
                 const expected = (elapsed / enemyTargetFinish) * DISTANCE;
                 enemyProgress = Math.min(DISTANCE, Math.max(enemyProgress, expected));
@@ -1312,7 +1322,7 @@
                 if (tg) tg.HapticFeedback.notificationOccurred('success');
             } else {
                 titleEl.textContent = 'Поражение'; titleEl.style.color = 'var(--danger)';
-                diffEl.textContent = `шанс ${chance}% · соперник финишировал ${enemyFinishTime.toFixed(3).replace('.', ',')} с`;
+                diffEl.textContent = `шанс ${chance}% · соперник ${enemyFinishTime.toFixed(3).replace('.', ',')} с`;
                 prizeEl.textContent = `-${currentOpponent.bet.toLocaleString('ru-RU')} ₽`;
                 prizeEl.style.color = 'var(--danger)';
                 state.stats.races++;
@@ -1326,6 +1336,7 @@
             document.getElementById('race-active-screen').style.display = 'none';
             document.getElementById('race-result-screen').style.display = 'none';
             document.getElementById('race-opponents-screen').style.display = 'block';
+            renderRaceCarSelector();
             renderRaceOpponents();
         }
         function setupRoulette() {
