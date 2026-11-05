@@ -1177,45 +1177,30 @@
         });
 
         const tg = window.Telegram?.WebApp;
-        let tgUserName = 'Гонщик';
-        if (tg) {
-            tg.ready();
-            tg.expand();
-            const user = tg.initDataUnsafe?.user;
-            if (user) {
-                tgUserName = user.first_name || user.username || 'Гонщик';
-            }
-        }
-        function applyUserName() {
-            const nameEl = document.getElementById('user-name');
-            const profileEl = document.getElementById('profile-name');
-            if (nameEl) nameEl.textContent = tgUserName;
-            if (profileEl) profileEl.textContent = tgUserName;
-        }
-        applyUserName();
+        if (tg) { tg.ready(); tg.expand(); const user = tg.initDataUnsafe?.user; if (user) document.getElementById('user-name').textContent = user.first_name || 'Гонщик'; }
 
         const RARITIES = { common: { label: 'Обычная' }, rare: { label: 'Редкая' }, epic: { label: 'Эпическая' }, mythic: { label: 'Мифическая' }, legendary: { label: 'Легендарная' }, special: { label: 'Специальная' } };
         const INCOME_RATES = { common: 400, rare: 1200, epic: 3200, mythic: 8000, legendary: 20000, special: 60000 };
 
                 const CAR_TEMPLATE = [
             // ОБЫЧНЫЕ (12)
-            { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'common', price: 5000, emoji: '🚗', desc: 'Классика советского автопрома. Заднеприводный седан, выпускавшийся с 1982 по 2012 год. Простая конструкция, доступные запчасти и отличная ремонтопригодность сделали её легендой.', power: 70, speed: 160, acceleration: 17.5, weight: 1030, drive: 'Задний', fuel: 9.5, image: 'https://i.postimg.cc/CMQ4Rxrx/lada-2107-19-no-bg-preview-(carve-photos)-(1).png' },
-            { id: 'logan', name: 'Renault Logan', rarity: 'common', price: 8000, emoji: '🚙', desc: 'Бюджетный седан, разработанный для развивающихся рынков. Славится своей надежностью и простотой обслуживания.', power: 82, speed: 170, acceleration: 12.5, weight: 1065, drive: 'Передний', fuel: 7.0, image: 'https://i.postimg.cc/x1tDBYXK/logan2-(1)-edited-free-(carve-photos).png' },
+            { id: 'vaz2107', name: 'ВАЗ-2107', rarity: 'common', price: 5000, emoji: '🚗', desc: 'Классика советского автопрома. Заднеприводный седан, выпускавшийся с 1982 по 2012 год. Простая конструкция, доступные запчасти и отличная ремонтопригодность сделали её легендой.', power: 70, speed: 160, acceleration: 17.5, weight: 1030, drive: 'Задний', fuel: 9.5, image: 'cars/vaz-2107-png.png' },
+            { id: 'logan', name: 'Renault Logan', rarity: 'common', price: 8000, emoji: '🚙', desc: 'Бюджетный седан, разработанный для развивающихся рынков. Славится своей надежностью и простотой обслуживания.', power: 82, speed: 170, acceleration: 12.5, weight: 1065, drive: 'Передний', fuel: 7.0, image: 'cars/renault-logan-png.png' },
             { id: 'granta', name: 'Lada Granta', rarity: 'common', price: 10000, emoji: '🚗', desc: 'Современный бюджетный автомобиль АвтоВАЗа, пришедший на смену «Калине». Выпускается с 2011 года.', power: 87, speed: 175, acceleration: 11.8, weight: 1080, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/YCXHLPZ2/lada-granta-png.png' },
-            { id: 'duster', name: 'Renault Duster', rarity: 'common', price: 12000, emoji: '🚙', desc: 'Компактный кроссовер, ставший бестселлером в России благодаря доступной цене и хорошей проходимости.', power: 115, speed: 180, acceleration: 10.5, weight: 1380, drive: 'Полный', fuel: 7.5, image: 'https://i.postimg.cc/wjSPCv6r/daster-no-bg-preview-(carve-photos).png' },
-            { id: 'rio', name: 'Kia Rio', rarity: 'common', price: 14000, emoji: '🚗', desc: 'Популярный корейский бюджетный седан, адаптированный для России. Хорошее соотношение цены и качества.', power: 123, speed: 190, acceleration: 10.2, weight: 1150, drive: 'Передний', fuel: 6.4, image: 'https://i.postimg.cc/bwbL2RhL/rio-(1)-no-bg-preview-(carve-photos).png' },
-            { id: 'solaris', name: 'Hyundai Solaris', rarity: 'common', price: 16000, emoji: '🚗', desc: 'Один из самых продаваемых автомобилей в России. Брат Kia Rio, отличается стильным дизайном.', power: 123, speed: 190, acceleration: 10.2, weight: 1150, drive: 'Передний', fuel: 6.4, image: 'https://i.postimg.cc/c6Gtqw52/f2d0cdd0751b4e065ab9a00aa21056f3-(1)-no-bg-preview-(carve-photos).png' },
-            { id: 'focus', name: 'Ford Focus', rarity: 'common', price: 18000, emoji: '🚗', desc: 'Легендарный американский хэтчбек, популярный во всем мире. Отличная управляемость и комфорт.', power: 125, speed: 195, acceleration: 10.0, weight: 1280, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/jqHNVdb6/focus.png' },
-            { id: 'polo', name: 'VW Polo', rarity: 'common', price: 20000, emoji: '🚗', desc: 'Компактный немецкий хэтчбек, сочетающий качество, комфорт и экономичность.', power: 110, speed: 190, acceleration: 10.5, weight: 1150, drive: 'Передний', fuel: 5.8, image: 'https://i.postimg.cc/QxVXQ001/polo-no-bg-preview-(carve-photos).png' },
-            { id: 'uaz', name: 'УАЗ Патриот', rarity: 'common', price: 22000, emoji: '🚙', desc: 'Русский внедорожник, созданный для бездорожья. Рамная конструкция, полный привод и высокий клиренс.', power: 150, speed: 150, acceleration: 14.5, weight: 2100, drive: 'Полный', fuel: 12.5, image: 'https://i.postimg.cc/7Yq8r8gG/uaz-patriot.png' },
-            { id: 'niva', name: 'Lada Niva', rarity: 'common', price: 24000, emoji: '🚙', desc: 'Легендарная Нива, выпускающаяся с 1977 года. Первый в мире компактный внедорожник с несущим кузовом.', power: 83, speed: 140, acceleration: 19.0, weight: 1210, drive: 'Полный', fuel: 9.8, image: 'https://i.postimg.cc/nrF8z1yY/lada-niva.png' },
-            { id: 'jetta', name: 'VW Jetta', rarity: 'common', price: 26000, emoji: '🚗', desc: 'Классический немецкий седан, известный качеством сборки и надежностью.', power: 150, speed: 200, acceleration: 8.9, weight: 1350, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/5tVv0sV5/vw-jetta.png' },
-            { id: 'corolla', name: 'Toyota Corolla', rarity: 'common', price: 28000, emoji: '🚗', desc: 'Самый продаваемый автомобиль в истории. Славится надежностью и экономичностью.', power: 140, speed: 195, acceleration: 10.5, weight: 1300, drive: 'Передний', fuel: 5.5, image: 'https://i.postimg.cc/3JfK5v5c/toyota-corolla.png' },
+            { id: 'duster', name: 'Renault Duster', rarity: 'common', price: 12000, emoji: '🚙', desc: 'Компактный кроссовер, ставший бестселлером в России благодаря доступной цене и хорошей проходимости.', power: 115, speed: 180, acceleration: 10.5, weight: 1380, drive: 'Полный', fuel: 7.5, image: 'cars/renault-duster1-png.png' },
+            { id: 'rio', name: 'Kia Rio', rarity: 'common', price: 14000, emoji: '🚗', desc: 'Популярный корейский бюджетный седан, адаптированный для России. Хорошее соотношение цены и качества.', power: 123, speed: 190, acceleration: 10.2, weight: 1150, drive: 'Передний', fuel: 6.4, image: 'cars/kia-rio-png.png' },
+            { id: 'solaris', name: 'Hyundai Solaris', rarity: 'common', price: 16000, emoji: '🚗', desc: 'Один из самых продаваемых автомобилей в России. Брат Kia Rio, отличается стильным дизайном.', power: 123, speed: 190, acceleration: 10.2, weight: 1150, drive: 'Передний', fuel: 6.4, image: 'cars/hyundai-solaris-png.png' },
+            { id: 'focus', name: 'Ford Focus', rarity: 'common', price: 18000, emoji: '🚗', desc: 'Легендарный американский хэтчбек, популярный во всем мире. Отличная управляемость и комфорт.', power: 125, speed: 195, acceleration: 10.0, weight: 1280, drive: 'Передний', fuel: 6.5, image: 'cars/ford-focus-png.png' },
+            { id: 'polo', name: 'VW Polo', rarity: 'common', price: 20000, emoji: '🚗', desc: 'Компактный немецкий хэтчбек, сочетающий качество, комфорт и экономичность.', power: 110, speed: 190, acceleration: 10.5, weight: 1150, drive: 'Передний', fuel: 5.8, image: 'cars/volkswagen-polo-png.png' },
+            { id: 'uaz', name: 'УАЗ Патриот', rarity: 'common', price: 22000, emoji: '🚙', desc: 'Русский внедорожник, созданный для бездорожья. Рамная конструкция, полный привод и высокий клиренс.', power: 150, speed: 150, acceleration: 14.5, weight: 2100, drive: 'Полный', fuel: 12.5, image: 'cars/uaz-patriot-png.png' },
+            { id: 'niva', name: 'Lada Niva', rarity: 'common', price: 24000, emoji: '🚙', desc: 'Легендарная Нива, выпускающаяся с 1977 года. Первый в мире компактный внедорожник с несущим кузовом.', power: 83, speed: 140, acceleration: 19.0, weight: 1210, drive: 'Полный', fuel: 9.8, image: 'cars/lada-niva-png.png' },
+            { id: 'jetta', name: 'VW Jetta', rarity: 'common', price: 26000, emoji: '🚗', desc: 'Классический немецкий седан, известный качеством сборки и надежностью.', power: 150, speed: 200, acceleration: 8.9, weight: 1350, drive: 'Передний', fuel: 6.5, image: 'cars/volkswagen-jetta-png.png' },
+            { id: 'corolla', name: 'Toyota Corolla', rarity: 'common', price: 28000, emoji: '🚗', desc: 'Самый продаваемый автомобиль в истории. Славится надежностью и экономичностью.', power: 140, speed: 195, acceleration: 10.5, weight: 1300, drive: 'Передний', fuel: 5.5, image: 'cars/toyota-corolla-png.png' },
 
             // РЕДКИЕ (12)
-            { id: 'vesta', name: 'Lada Vesta', rarity: 'rare', price: 30000, emoji: '🚗', desc: 'Флагман АвтоВАЗа, выпускающийся с 2015 года. Современный дизайн и хорошая динамика.', power: 122, speed: 200, acceleration: 11.0, weight: 1230, drive: 'Передний', fuel: 6.9, image: 'https://i.postimg.cc/9F5yq8r8/lada-vesta.png' },
-            { id: 'camry', name: 'Toyota Camry', rarity: 'rare', price: 35000, emoji: '🚘', desc: 'Бизнес-седан, ставший символом комфорта и надежности. Отличная шумоизоляция и плавность хода.', power: 200, speed: 220, acceleration: 8.5, weight: 1550, drive: 'Передний', fuel: 7.5, image: 'https://i.postimg.cc/qM6yq8r8/toyota-camry.png' },
-            { id: 'octavia', name: 'Skoda Octavia', rarity: 'rare', price: 40000, emoji: '🚗', desc: 'Чешский лифтбек с немецкими корнями. Огромный багажник и отличная управляемость.', power: 180, speed: 215, acceleration: 8.0, weight: 1350, drive: 'Передний', fuel: 6.2, image: 'https://i.postimg.cc/rF6yq8r8/skoda-octavia.png' },
+            { id: 'vesta', name: 'Lada Vesta', rarity: 'rare', price: 30000, emoji: '🚗', desc: 'Флагман АвтоВАЗа, выпускающийся с 2015 года. Современный дизайн и хорошая динамика.', power: 122, speed: 200, acceleration: 11.0, weight: 1230, drive: 'Передний', fuel: 6.9, image: 'cars/lada-veata-png.png' },
+            { id: 'camry', name: 'Toyota Camry', rarity: 'rare', price: 35000, emoji: '🚘', desc: 'Бизнес-седан, ставший символом комфорта и надежности. Отличная шумоизоляция и плавность хода.', power: 200, speed: 220, acceleration: 8.5, weight: 1550, drive: 'Передний', fuel: 7.5, image: 'cars/toyota-camry-png.png' },
+            { id: 'octavia', name: 'Skoda Octavia', rarity: 'rare', price: 40000, emoji: '🚗', desc: 'Чешский лифтбек с немецкими корнями. Огромный багажник и отличная управляемость.', power: 180, speed: 215, acceleration: 8.0, weight: 1350, drive: 'Передний', fuel: 6.2, image: 'cars/skoda-octavia-png.png' },
             { id: 'mazda6', name: 'Mazda 6', rarity: 'rare', price: 45000, emoji: '🚘', desc: 'Японский седан с выразительным дизайном. Технология SkyActiv обеспечивает экономичность и динамику.', power: 194, speed: 220, acceleration: 7.8, weight: 1450, drive: 'Передний', fuel: 6.5, image: 'https://i.postimg.cc/zX6yq8r8/mazda-6.png' },
             { id: 'accord', name: 'Honda Accord', rarity: 'rare', price: 50000, emoji: '🚘', desc: 'Надежный японский седан. Стильный дизайн, просторный салон и передовые технологии.', power: 192, speed: 225, acceleration: 7.5, weight: 1480, drive: 'Передний', fuel: 6.8, image: 'https://i.postimg.cc/4N6yq8r8/honda-accord.png' },
             { id: 'passat', name: 'VW Passat', rarity: 'rare', price: 55000, emoji: '🚗', desc: 'Классика немецкого автопрома. Солидный и практичный седан.', power: 190, speed: 220, acceleration: 7.9, weight: 1450, drive: 'Передний', fuel: 6.0, image: 'https://i.postimg.cc/8z6yq8r8/vw-passat.png' },
@@ -1696,28 +1681,12 @@
 
         const DISTANCE = 402;
 
-                // Фиксированные "слоты" соперников — меняется только машина
         const RACE_OPPONENTS = [
-            { id: 'opp1', name: 'Новичок',     bet: 2000,   reward: 5000,    chanceBase: 100, tuningBonus: 0, diff: 'Тренировка', minPower: 60,   maxPower: 130 },
-            { id: 'opp2', name: 'Дрифтер',     bet: 25000,  reward: 60000,   chanceBase: 55,  tuningBonus: 3, diff: 'Лёгкий',      minPower: 130,  maxPower: 260 },
-            { id: 'opp3', name: 'Стритрейсер', bet: 120000, reward: 300000,  chanceBase: 30,  tuningBonus: 4, diff: 'Средний',     minPower: 260,  maxPower: 600 },
-            { id: 'opp4', name: 'Легенда',     bet: 500000, reward: 1500000, chanceBase: 10,  tuningBonus: 5, diff: 'Сложный',     minPower: 600,  maxPower: 9999 }
+            { id: 'opp1', name: 'Новичок',     carId: 'granta',    bet: 2000,   reward: 5000,    chanceBase: 100, tuningBonus: 0, diff: 'Тренировка' },
+            { id: 'opp2', name: 'Дрифтер',     carId: 'camry',     bet: 25000,  reward: 60000,   chanceBase: 55,  tuningBonus: 3, diff: 'Лёгкий' },
+            { id: 'opp3', name: 'Стритрейсер', carId: 'bmw_m5',    bet: 120000, reward: 300000,  chanceBase: 30,  tuningBonus: 4, diff: 'Средний' },
+            { id: 'opp4', name: 'Легенда',     carId: 'ferrari_f8',bet: 500000, reward: 1500000, chanceBase: 10,  tuningBonus: 5, diff: 'Сложный' }
         ];
-
-        // Кэш выбранных машин соперников для текущего захода в меню
-        let currentOpponentCars = {};
-
-        // Перевыбираем машины соперников (вызывается при заходе в меню, после гонки, при смене авто)
-        function rerollOpponentCars() {
-            currentOpponentCars = {};
-            RACE_OPPONENTS.forEach(opp => {
-                const pool = state.cars.filter(c => !c.owned && c.power >= opp.minPower && c.power <= opp.maxPower);
-                // если пул пуст — берём любую в этом диапазоне по CAR_TEMPLATE
-                const source = pool.length ? pool : CAR_TEMPLATE.filter(c => c.power >= opp.minPower && c.power <= opp.maxPower);
-                const finalPool = source.length ? source : CAR_TEMPLATE;
-                currentOpponentCars[opp.id] = finalPool[Math.floor(Math.random() * finalPool.length)];
-            });
-        }
 
         function getSelectedRaceCar() {
             if (selectedRaceCarId) {
@@ -1745,13 +1714,13 @@
             return Math.min(99, opp.chanceBase + tuning * opp.tuningBonus);
         }
 
-              function setupRace() {
+        function setupRace() {
             document.getElementById('race-next-btn').addEventListener('click', backToOpponents);
             document.getElementById('gas-btn').onclick = handleGasPress;
-            rerollOpponentCars();
             renderRaceCarSelector();
             renderRaceOpponents();
         }
+
         function renderRaceCarSelector() {
             const container = document.getElementById('race-car-selector');
             container.innerHTML = '';
@@ -1776,9 +1745,8 @@
                 if (car.id === selectedRaceCarId) opt.selected = true;
                 select.appendChild(opt);
             });
-                select.addEventListener('change', () => {
+            select.addEventListener('change', () => {
                 selectedRaceCarId = select.value;
-                rerollOpponentCars();   // ← добавить
                 renderRaceCarInfo();
                 renderRaceOpponents();
             });
@@ -1797,14 +1765,14 @@
             myCarCard.innerHTML = `${myCarImg}<div class="info"><div class="name">${myCar.name}</div><div class="power">${myCar.power} л.с. · тюнинг: ${tuningTotal}</div></div>`;
         }
 
-               function renderRaceOpponents() {
+        function renderRaceOpponents() {
             renderRaceCarInfo();
 
             const list = document.getElementById('race-opponents-list');
             list.innerHTML = '';
 
             RACE_OPPONENTS.forEach(opp => {
-                const oppCar = currentOpponentCars[opp.id] || CAR_TEMPLATE[0];
+                const oppCar = state.cars.find(c => c.id === opp.carId) || state.cars[0];
                 const chance = getWinChance(opp);
                 const card = document.createElement('div');
                 card.className = 'race-opponent-card';
@@ -1831,18 +1799,16 @@
                         <div class="prize-win">+${opp.reward.toLocaleString('ru-RU')} ₽</div>
                         <div class="prize-bet">взнос ${opp.bet.toLocaleString('ru-RU')} ₽</div>
                     </div>`;
-                card.onclick = () => startRace(opp, getSelectedRaceCar(), oppCar);
+                card.onclick = () => startRace(opp, getSelectedRaceCar());
                 list.appendChild(card);
             });
         }
-            function startRace(opp, myCar, oppCar) {
+
+        function startRace(opp, myCar) {
             if (state.balance < opp.bet) return alert('Недостаточно средств для взноса!');
             state.balance -= opp.bet;
             updateBalance();
             currentOpponent = opp;
-
-            // если oppCar не передан (на всякий случай) — берём из кэша
-            if (!oppCar) oppCar = currentOpponentCars[opp.id] || CAR_TEMPLATE[0];
 
             const chance = getWinChance(opp);
             raceWillWin = (Math.random() * 100) <= chance;
@@ -1863,6 +1829,8 @@
             raceState = 'waiting_green';
             playerProgress = 0; enemyProgress = 0; playerFinishTime = 0; enemyFinishTime = 0;
             playerSpeedKmh = 0; enemySpeedKmh = 0; startReactionTime = 0; playerReactionPenalty = 1;
+
+            const oppCar = state.cars.find(c => c.id === opp.carId) || state.cars[0];
 
             document.getElementById('race-player-img').innerHTML = myCar.image ? `<img src="${myCar.image}">` : `<div style="font-size:40px">${myCar.emoji}</div>`;
             document.getElementById('race-player-power').textContent = `${myCar.power} л.с.`;
@@ -1925,14 +1893,15 @@
             }
         }
 
-               function raceLoop() {
+        function raceLoop() {
             if (raceState !== 'racing') return;
             const now = Date.now();
             const elapsed = (now - raceStartTime) / 1000;
             document.getElementById('race-time').textContent = elapsed.toFixed(3).replace('.', ',');
 
             const myCar = getSelectedRaceCar();
-            const oppCar = currentOpponentCars[currentOpponent.id] || CAR_TEMPLATE[0];
+            const oppCar = state.cars.find(c => c.id === currentOpponent.carId) || state.cars[0];
+
             const tuning = getTotalTuning(myCar);
             const playerMaxSpeed = Math.min(400, myCar.speed + tuning * 2);
             const enemyMaxSpeed = Math.min(400, oppCar.speed);
@@ -2003,13 +1972,12 @@
             updateBalance(); saveState();
         }
 
-            function backToOpponents() {
+        function backToOpponents() {
             clearInterval(trafficLightTimer);
             raceState = 'idle';
             document.getElementById('race-active-screen').style.display = 'none';
             document.getElementById('race-result-screen').style.display = 'none';
             document.getElementById('race-opponents-screen').style.display = 'block';
-            rerollOpponentCars();       // ← добавить
             renderRaceCarSelector();
             renderRaceOpponents();
         }
@@ -2208,8 +2176,8 @@
                 } else alert('Недостаточно средств!');
             }));
         }
-                function renderProfile() {
-            document.getElementById('profile-name').textContent = tgUserName;
+        function renderProfile() {
+            document.getElementById('profile-name').textContent = document.getElementById('user-name').textContent;
             document.getElementById('stat-cars').textContent = state.cars.filter(c => c.owned).length;
             document.getElementById('stat-races').textContent = state.stats.races;
             document.getElementById('stat-wins').textContent = state.stats.wins;
