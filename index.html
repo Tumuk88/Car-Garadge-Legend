@@ -397,91 +397,118 @@
                     <button class="earn-tab-btn" data-panel="roulette">🎰 Рулетка</button>
                     <button class="earn-tab-btn" data-panel="tournament">🏆 Турнир</button>
                 </div>
-                <div id="earn-race" class="earn-panel active">
-    <div id="race-opponents-screen">
-        <div class="race-header">
-            <div class="race-header-left">
-                <div class="race-level-badge">🏁</div>
-                <h2 class="race-title">Гонки</h2>
-            </div>
-        </div>
+                                <div id="earn-race" class="earn-panel active">
+                    <div id="race-opponents-screen">
+                        <div class="race-header">
+                            <div class="race-header-left">
+                                <div class="race-level-badge">🏁</div>
+                                <h2 class="race-title">Гонки</h2>
+                            </div>
+                        </div>
+                        <div class="race-my-car">
+                            <div class="race-my-car-header">
+                                <span>ТВОЯ МАШИНА</span>
+                                <span id="race-tuning-total">0</span>
+                            </div>
+                            <div id="race-car-selector"></div>
+                            <div id="race-my-car-card" class="race-my-car-card"></div>
+                        </div>
+                        <div class="race-opponents-header">
+                            <span>Выбери соперника</span>
+                            <span>ДРЭГ 402 М</span>
+                        </div>
+                        <div id="race-opponents-list" class="race-opponents-list"></div>
+                    </div>
 
-        <div class="race-my-car">
-            <div class="race-my-car-header">
-                <span>ТВОЯ МАШИНА</span>
-                <span id="race-tuning-total">0</span>
-            </div>
-            <div id="race-car-selector"></div>
-            <div id="race-my-car-card" class="race-my-car-card"></div>
-        </div>
+                    <div id="race-active-screen" style="display:none;">
+                        <div class="race-header">
+                            <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
+                        </div>
+                        <div class="race-drag-area">
+                            <div class="race-timer-block">
+                                <div class="race-timer-label">ВРЕМЯ</div>
+                                <div class="race-timer" id="race-time">0,000</div>
+                            </div>
+                            <div class="race-gap-block">
+                                <div class="race-gap-label">РАЗРЫВ</div>
+                                <div class="race-gap" id="race-gap">—</div>
+                            </div>
+                        </div>
+                        <div class="race-progress-area">
+                            <div class="race-progress-row" id="player-race-row">
+                                <div class="race-car-info">
+                                    <div class="race-car-img" id="race-player-img">🚗</div>
+                                    <div class="race-car-name">Ты <span id="race-player-power" class="race-car-power"></span></div>
+                                </div>
+                                <div class="race-bar-container"><div class="race-bar" id="player-bar"></div></div>
+                            </div>
+                            <div class="race-progress-row" id="enemy-race-row">
+                                <div class="race-car-info">
+                                    <div class="race-car-img" id="race-enemy-img">🚘</div>
+                                    <div class="race-car-name"><span id="race-enemy-name"></span> <span id="race-enemy-power" class="race-car-power"></span></div>
+                                </div>
+                                <div class="race-bar-container"><div class="race-bar" id="enemy-bar" style="background:#ef4444;"></div></div>
+                            </div>
+                            <div class="race-track-distances">
+                                <span>18 M</span><span>201 M</span><span>402 M</span>
+                            </div>
+                        </div>
+                        <div class="race-traffic-lights" id="race-traffic-lights">
+                            <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+                        </div>
+                        <div class="race-speed-block">
+                            <div class="race-speed-value"><span id="race-speed">0</span> <span class="race-speed-unit">км/ч</span></div>
+                            <div class="race-gear"><span class="race-gear-label">ПЕРЕДАЧА</span> <span id="race-gear">N</span></div>
+                            <div class="race-speed-bar"><div id="race-speed-fill" style="width: 0%;"></div></div>
+                        </div>
+                        <div class="race-hint-text" id="race-hint">Жми «Газ», когда загорится зелёный</div>
+                        <button class="btn-gas" id="gas-btn" disabled>ГАЗ!</button>
+                    </div>
 
-        <div class="race-opponents-header">
-            <span>Выбери соперника</span>
-            <span>ДРЭГ 402 М</span>
-        </div>
-        <div id="race-opponents-list" class="race-opponents-list"></div>
-    </div>
-
-    <div id="race-active-screen" style="display:none;">
-        <div class="race-header">
-            <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
-        </div>
-        <div class="race-drag-area">
-            <div class="race-timer-block">
-                <div class="race-timer-label">ВРЕМЯ</div>
-                <div class="race-timer" id="race-time">0,000</div>
-            </div>
-            <div class="race-gap-block">
-                <div class="race-gap-label">РАЗРЫВ</div>
-                <div class="race-gap" id="race-gap">—</div>
-            </div>
-        </div>
-        <div class="race-progress-area">
-            <div class="race-progress-row" id="player-race-row">
-                <div class="race-car-info">
-                    <div class="race-car-img" id="race-player-img">🚗</div>
-                    <div class="race-car-name">Ты <span id="race-player-power" class="race-car-power"></span></div>
+                    <div id="race-result-screen" style="display:none;">
+                        <div class="race-header">
+                            <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
+                        </div>
+                        <div class="race-result-content">
+                            <h1 id="race-result-title" style="font-size: 32px; font-weight: 800;">Победа!</h1>
+                            <div id="race-result-diff" style="color:var(--text-muted); font-size: 16px; margin-bottom: 24px;">шанс 55%</div>
+                            <div id="race-result-prize" style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">+60 000 ₽</div>
+                            <div style="color:var(--text-muted); font-size: 14px; margin-bottom: 24px;">приз</div>
+                            <button class="race-next-btn" id="race-next-btn">Ещё гонка</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="race-bar-container"><div class="race-bar" id="player-bar"></div></div>
-            </div>
-            <div class="race-progress-row" id="enemy-race-row">
-                <div class="race-car-info">
-                    <div class="race-car-img" id="race-enemy-img">🚘</div>
-                    <div class="race-car-name"><span id="race-enemy-name"></span> <span id="race-enemy-power" class="race-car-power"></span></div>
-                </div>
-                <div class="race-bar-container"><div class="race-bar" id="enemy-bar" style="background:#ef4444;"></div></div>
-            </div>
-            <div class="race-track-distances">
-                <span>18 M</span><span>201 M</span><span>402 M</span>
-            </div>
-        </div>
-        <div class="race-traffic-lights" id="race-traffic-lights">
-            <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
-        </div>
-        <div class="race-speed-block">
-            <div class="race-speed-value"><span id="race-speed">0</span> <span class="race-speed-unit">км/ч</span></div>
-            <div class="race-gear"><span class="race-gear-label">ПЕРЕДАЧА</span> <span id="race-gear">N</span></div>
-            <div class="race-speed-bar"><div id="race-speed-fill" style="width: 0%;"></div></div>
-        </div>
-        <div class="race-hint-text" id="race-hint">Жми «Газ», когда загорится зелёный</div>
-        <button class="btn-gas" id="gas-btn" disabled>ГАЗ!</button>
-    </div>
 
-    <div id="race-result-screen" style="display:none;">
-        <div class="race-header">
-            <div class="race-back-btn" onclick="backToOpponents()">❮ Меню</div>
-        </div>
-        <div class="race-result-content">
-            <h1 id="race-result-title" style="font-size: 32px; font-weight: 800;">Победа!</h1>
-            <div id="race-result-diff" style="color:var(--text-muted); font-size: 16px; margin-bottom: 24px;">шанс 55%</div>
-            <div id="race-result-prize" style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">+60 000 ₽</div>
-            <div style="color:var(--text-muted); font-size: 14px; margin-bottom: 24px;">приз</div>
-            <button class="race-next-btn" id="race-next-btn">Ещё гонка</button>
-           </div>
-        </div>
-      </div>
-   </div>
-</div>
+                <div id="earn-roulette" class="earn-panel">
+                    <div class="roulette-box">
+                        <div class="roulette-legend">
+                            <div class="legend-item"><span class="legend-color" style="background:#ef4444"></span> x0 (40%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#f59e0b"></span> x0.5 (20%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#10b981"></span> x1 (15%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#3b82f6"></span> x2 (15%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#a855f7"></span> x3 (7%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#ffd700"></span> x5 (2.5%)</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#ff00ff"></span> x10 (0.5%)</div>
+                        </div>
+                        <div class="roulette-wheel" id="roulette-wheel"><div class="roulette-center">x?</div></div>
+                        <div class="roulette-controls">
+                            <div class="roulette-bet-row"><input type="number" id="roulette-bet" placeholder="Ставка (1000-500000)" min="1000" max="500000" value="5000"><button id="spin-roulette-btn">🎰 Крутить</button></div>
+                            <div class="roulette-result" id="roulette-result"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="earn-tournament" class="earn-panel">
+                    <div class="race-box" style="text-align:center;">
+                        <h3 style="margin-bottom:12px; color:var(--c-legendary);">🏆 Ежедневный турнир</h3>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Участие: 50 000 ₽. Победитель забирает x3 от ставки.</p>
+                        <p style="font-size:14px; margin-bottom:16px;">Ваша сила: <b id="tournament-power">0</b></p>
+                        <button id="join-tournament-btn" style="padding:14px 30px; background:linear-gradient(135deg,#6d28d9,#3b82f6); border:none; color:#fff; border-radius:30px; font-weight:700; font-size:16px; cursor:pointer;">Участвовать</button>
+                        <div id="tournament-result" style="margin-top:16px; font-weight:700;"></div>
+                    </div>
+                </div>
+            </div>
+
             <div id="tab-business" class="tab-content">
                 <h2><span>Бизнес</span></h2>
                 <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Покупайте недвижимость, чтобы получать пассивный доход!</p>
